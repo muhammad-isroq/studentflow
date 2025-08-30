@@ -1,9 +1,12 @@
 StudentFlow - Sistem Manajemen Kursus(masih dalam pengembangan)
 
 Tentang Proyek Ini
+
+
 StudentFlow adalah aplikasi web modern yang dirancang untuk mengelola semua aspek administrasi di sebuah tempat kursus bahasa Inggris. Dibangun dengan Laravel 12 dan panel admin super cepat menggunakan Filament v4, aplikasi ini bertujuan untuk mengotomatiskan tugas-tugas manual sehingga staf bisa lebih fokus pada proses belajar mengajar.
 
 Sistem ini menangani semuanya, mulai dari pendaftaran siswa, pengelolaan program dan guru, hingga pembuatan tagihan bulanan (SPP) yang berjalan secara otomatis.
+
 
 
 Fitur Utama
@@ -18,6 +21,7 @@ Manajemen Role & User: Sistem hak akses dengan dua level (Admin & Staff), di man
 Dashboard Interaktif: Dilengkapi dengan grafik pendaftaran siswa dan widget peringatan untuk tagihan yang sudah jatuh tempo.
 
 Impor Data Massal: Fitur untuk mengimpor ratusan hingga ribuan data siswa dari file Excel, mempermudah migrasi dari sistem lama.
+
 
 
 Teknologi yang Digunakan

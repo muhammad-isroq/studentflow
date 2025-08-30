@@ -5,6 +5,7 @@ StudentFlow adalah aplikasi web modern yang dirancang untuk mengelola semua aspe
 
 Sistem ini menangani semuanya, mulai dari pendaftaran siswa, pengelolaan program dan guru, hingga pembuatan tagihan bulanan (SPP) yang berjalan secara otomatis.
 
+
 Fitur Utama
 Manajemen Siswa: CRUD (Create, Read, Update, Delete) lengkap untuk data siswa, termasuk biodata, foto, dan dokumen pendaftaran.
 
@@ -17,6 +18,7 @@ Manajemen Role & User: Sistem hak akses dengan dua level (Admin & Staff), di man
 Dashboard Interaktif: Dilengkapi dengan grafik pendaftaran siswa dan widget peringatan untuk tagihan yang sudah jatuh tempo.
 
 Impor Data Massal: Fitur untuk mengimpor ratusan hingga ribuan data siswa dari file Excel, mempermudah migrasi dari sistem lama.
+
 
 Teknologi yang Digunakan
 Backend: Laravel 12

@@ -35,7 +35,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(\Filament\Panel $panel): bool
     {
-        // pastikan hanya user dengan role admin atau staff yang bisa login
-        return $this->hasAnyRole(['admin', 'staff']);
+        return true;
     }
 }

@@ -42,19 +42,18 @@ class GenerateMonthlyBills extends Command
     $generatedCount = 0;
 
     foreach ($studentsToBill as $siswa) {
+        $isAlreadyPaid = $siswa->spp_paid_until && Carbon::parse($siswa->spp_paid_until)->isFuture();
         $billExists = Bill::where('siswa_id', $siswa->id)
             ->where('payment_type_id', $sppType->id)
             ->whereYear('due_date', Carbon::now()->year)
             ->whereMonth('due_date', Carbon::now()->month)
             ->exists();
 
-        // Cek jika belum ada tagihan DAN siswa memiliki nominal SPP yang harus dibayar
         if (!$billExists && $siswa->spp_amount > 0) {
             Bill::create([
                 'siswa_id' => $siswa->id,
                 'payment_type_id' => $sppType->id,
-                // ----- BARIS INI DIUBAH -----
-                'amount' => $siswa->spp_amount, // <-- Mengambil dari data siswa, bukan program
+                'amount' => $siswa->spp_amount, 
                 'due_date' => Carbon::now()->day($siswa->billing_day),
                 'status' => 'unpaid',
             ]);

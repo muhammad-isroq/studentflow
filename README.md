@@ -1,61 +1,38 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+StudentFlow - Sistem Manajemen Kursus(masih dalam pengembangan)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Tentang Proyek Ini
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+StudentFlow adalah aplikasi web modern yang dirancang untuk mengelola semua aspek administrasi di sebuah tempat kursus bahasa Inggris. Dibangun dengan Laravel 12 dan panel admin super cepat menggunakan Filament v4, aplikasi ini bertujuan untuk mengotomatiskan tugas-tugas manual sehingga staf bisa lebih fokus pada proses belajar mengajar.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Sistem ini menangani semuanya, mulai dari pendaftaran siswa, pengelolaan program dan guru, hingga pembuatan tagihan bulanan (SPP) yang berjalan secara otomatis.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Fitur Utama
+Manajemen Siswa: CRUD (Create, Read, Update, Delete) lengkap untuk data siswa, termasuk biodata, foto, dan dokumen pendaftaran.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Manajemen Program & Kelas: Kemudahan untuk membuat program baru, mengatur biayanya, dan memasukkan siswa ke dalam kelas masing-masing.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Tagihan Otomatis: Sistem scheduler (cron job) yang secara otomatis membuat tagihan SPP bulanan untuk setiap siswa aktif sesuai tanggal yang ditentukan.
 
-## Laravel Sponsors
+Manajemen Role & User: Sistem hak akses dengan dua level (Admin & Staff), di mana Admin dapat mengelola akun Staff.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Dashboard Interaktif: Dilengkapi dengan grafik pendaftaran siswa dan widget peringatan untuk tagihan yang sudah jatuh tempo.
 
-### Premium Partners
+Impor Data Massal: Fitur untuk mengimpor ratusan hingga ribuan data siswa dari file Excel, mempermudah migrasi dari sistem lama.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
 
-## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Teknologi yang Digunakan
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Backend: Laravel 12
 
-## Security Vulnerabilities
+Frontend & Panel Admin: Filament v4 (TALL Stack: Tailwind CSS, Alpine.js, Livewire)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Database: MySQL
 
-## License
+Jadwal Otomatis: Laravel Scheduler (Cron Job)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Roles & Permissions: Spatie Laravel Permission

@@ -85,7 +85,6 @@ class SiswaForm
                     TextInput::make('registration_fee')
                     ->label('Amount')
                     ->prefix('Rp')
-                    ->required()
                     // ->reactive()
                     ->afterStateUpdated(fn ($state, callable $set) =>
                         $set('registration_fee', $state ? number_format((int) str_replace('.', '', $state), 0, ',', '.') : null)
@@ -99,8 +98,7 @@ class SiswaForm
                     FileUpload::make('registration_proof')
                         ->label('Proof of payment')
                         ->imagePreviewHeight('250')
-                        ->downloadable()
-                        ->required(),
+                        ->downloadable(),
                 ])->columns(2)
                 ->columnSpanFull(), 
             ]);

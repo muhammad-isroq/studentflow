@@ -23,13 +23,11 @@ class SiswaForm
                     ->label('Name')
                     ->required(),
                 TextInput::make('kelas_disekolah')
-                    ->label('grade')
-                    ->required(),
+                    ->label('grade'),
                 FileUpload::make('foto_formulir')
                     ->label('Form registration')
                     ->imagePreviewHeight('250')
-                    ->downloadable()
-                    ->required(),
+                    ->downloadable(),
                 FileUpload::make('foto')
                     ->label('Photo')
                     ->default(null),

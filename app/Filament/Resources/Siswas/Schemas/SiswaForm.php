@@ -63,7 +63,7 @@ class SiswaForm
                     ->formatStateUsing(fn ($state) =>
                         $state ? number_format($state, 0, ',', '.') : null
                     ),
-                DateTimePicker::make('tgl_registrasi')
+                DatePicker::make('tgl_registrasi')
                     ->label('Registration date')
                     ->required(),
                 Select::make('program_id')

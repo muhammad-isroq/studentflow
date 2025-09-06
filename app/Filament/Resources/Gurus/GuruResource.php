@@ -33,6 +33,16 @@ class GuruResource extends Resource
         return parent::getEloquentQuery()->latest();
     }
 
+        public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of teachers';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return GuruForm::configure($schema);

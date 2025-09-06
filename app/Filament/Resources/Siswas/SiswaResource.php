@@ -34,6 +34,15 @@ class SiswaResource extends Resource
     
 
     
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of students';
+    }
 
     public static function form(Schema $schema): Schema
     {

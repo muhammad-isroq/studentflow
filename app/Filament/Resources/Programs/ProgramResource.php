@@ -26,9 +26,21 @@ class ProgramResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_program';
 
+    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->oldest();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'The number of programs';
     }
 
     public static function form(Schema $schema): Schema

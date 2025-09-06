@@ -42,6 +42,7 @@ class ProgramsTable
             ->filters([
                 //
             ])
+            ->paginated([10, 25, 50, 75, 100, 'all'])
             ->recordActions([
                 EditAction::make(),
                 // ViewAction::make(),

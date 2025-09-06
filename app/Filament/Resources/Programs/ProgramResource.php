@@ -28,7 +28,7 @@ class ProgramResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->latest();
+        return parent::getEloquentQuery()->oldest();
     }
 
     public static function form(Schema $schema): Schema

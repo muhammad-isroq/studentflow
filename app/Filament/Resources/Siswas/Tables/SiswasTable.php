@@ -30,6 +30,9 @@ class SiswasTable
                 TextColumn::make('program.nama_program')
                     ->label('Program')
                     ->searchable(),
+                TextColumn::make('program.nama_ruangan')
+                    ->label('Room Name')
+                    ->searchable(),
                 // TextColumn::make('kelas_disekolah')
                 //     ->label('Grade')
                 //     ->searchable(),

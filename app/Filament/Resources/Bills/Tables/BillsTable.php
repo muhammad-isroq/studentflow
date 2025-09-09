@@ -57,7 +57,7 @@ class BillsTable
             ->recordActions([
                 EditAction::make(),
                 Action::make('markAsPaid')
-                    ->label('Tandai Lunas')
+                    ->label('Mark paid off')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation() // Meminta konfirmasi admin

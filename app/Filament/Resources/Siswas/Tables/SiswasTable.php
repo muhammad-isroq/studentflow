@@ -22,17 +22,17 @@ class SiswasTable
                 TextColumn::make('nama')
                     ->label('Name')
                     ->searchable(),
-                ImageColumn::make('foto')
-                    ->label('Image')
-                    ->imageWidth(100)
-                    ->imageHeight(100)
-                    ->circular(),
+                // ImageColumn::make('foto')
+                //     ->label('Image')
+                //     ->imageWidth(100)
+                //     ->imageHeight(100)
+                //     ->circular(),
                 TextColumn::make('program.nama_program')
                     ->label('Program')
                     ->searchable(),
-                TextColumn::make('kelas_disekolah')
-                    ->label('Grade')
-                    ->searchable(),
+                // TextColumn::make('kelas_disekolah')
+                //     ->label('Grade')
+                //     ->searchable(),
                 TextColumn::make('no_wali')
                     ->label('Parents number')
                     ->searchable(),
@@ -48,6 +48,7 @@ class SiswasTable
             ->filters([
                 //
             ])
+            ->paginated([10, 25, 50, 75, 100, 'all'])
             ->recordActions([
                 EditAction::make(),
                 ViewAction::make(),

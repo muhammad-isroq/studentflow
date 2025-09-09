@@ -39,8 +39,7 @@ class SiswaForm
                     ->required()
                     ->columnSpanFull(),
                 DatePicker::make('tgl_lahir')
-                    ->label('Date of birth')
-                    ->required(),
+                    ->label('Date of birth'),
                 DatePicker::make('tgl_masuk')
                     ->label('Date of entry'),
                 TextInput::make('billing_day')

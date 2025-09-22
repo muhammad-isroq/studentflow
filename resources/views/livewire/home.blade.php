@@ -808,30 +808,73 @@
 
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const carousel = document.getElementById("myCarousel");
-    const slides = carousel.querySelectorAll(".carousel-item");
-    let index = 0;
+  // Gunakan 'load' untuk memastikan semua gambar sudah dimuat sebelum JS berjalan
+  window.addEventListener('load', function () {
+    // Elemen slider
+    const sliderContainer = document.getElementById('cardSlider');
+    const track = document.getElementById('cardTrack');
+    const slides = Array.from(track.children);
+    
+    // Tombol (jika Anda menambahkannya dari kode sebelumnya)
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
 
-    setInterval(() => {
-      index = (index + 1) % slides.length;
-      carousel.scrollTo({
-        left: slides[index].offsetLeft,
-        behavior: "smooth"
+    // Cek apakah elemen slider ada di halaman
+    if (!sliderContainer || !track || slides.length === 0) {
+      console.error("Elemen slider tidak ditemukan!");
+      return; // Hentikan eksekusi jika slider tidak ada
+    }
+
+    let currentIndex = 0;
+    let slideInterval;
+
+    // Fungsi utama untuk menggeser slider
+    const updateSlider = () => {
+      const targetSlide = slides[currentIndex];
+      // Menggunakan scrollTo yang lebih modern dan akurat
+      sliderContainer.scrollTo({
+        left: targetSlide.offsetLeft, // Scroll ke posisi kiri dari kartu target
+        behavior: 'smooth' // Animasi halus
       });
-    }, 3000); // 3 detik
-  });
+    };
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const track = document.getElementById("cardTrack");
-    const cards = track.children.length;
-    const visible = 3; // tampil 3 card
-    let index = 0;
+    const moveToNextSlide = () => {
+      // Logika looping yang lebih ringkas menggunakan modulo
+      currentIndex = (currentIndex + 1) % slides.length;
+      updateSlider();
+    };
 
-    setInterval(() => {
-      index++;
-      if (index > cards - visible) index = 0;
-      track.style.transform = `translateX(-${index * (100 / visible)}%)`;
-    }, 3000); // 3 detik
+    const moveToPrevSlide = () => {
+      // Menangani kasus saat di slide pertama dan menekan 'prev'
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      updateSlider();
+    };
+    
+    // Fungsi untuk memulai dan menghentikan slide otomatis
+    const startAutoSlide = () => {
+      // Hapus interval sebelumnya untuk menghindari duplikasi
+      stopAutoSlide(); 
+      slideInterval = setInterval(moveToNextSlide, 3000); // Ganti slide setiap 3 detik
+    };
+
+    const stopAutoSlide = () => {
+      clearInterval(slideInterval);
+    };
+
+    // Tambahkan event listener jika tombol ada
+    if (nextButton && prevButton) {
+      nextButton.addEventListener('click', () => {
+        moveToNextSlide();
+        startAutoSlide(); // Mulai ulang timer setelah diklik
+      });
+
+      prevButton.addEventListener('click', () => {
+        moveToPrevSlide();
+        startAutoSlide(); // Mulai ulang timer
+      });
+    }
+
+    // Mulai slider otomatis saat halaman selesai dimuat
+    startAutoSlide();
   });
 </script>

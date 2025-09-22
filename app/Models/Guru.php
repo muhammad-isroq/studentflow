@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Guru extends Model
 {
@@ -29,5 +30,10 @@ class Guru extends Model
             ->logOnly(['nama_guru', 'no_hp']) 
             ->logOnlyDirty() 
             ->dontSubmitEmptyLogs(); 
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
     }
 }

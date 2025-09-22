@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 
 class UsersTable
@@ -30,6 +31,11 @@ class UsersTable
                 // TextColumn::make('email_verified_at')
                 //     ->dateTime()
                 //     ->sortable(),
+                ImageColumn::make('photo')
+                    ->label('Image')
+                    ->imageWidth(100)
+                    ->imageHeight(100)
+                    ->circular(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

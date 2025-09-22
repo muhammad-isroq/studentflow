@@ -10,7 +10,7 @@ class CreateSiswa extends CreateRecord
     protected static string $resource = SiswaResource::class;
 
     protected function getRedirectUrl(): string
-{
-    return $this->getResource()::getUrl('index');
-}
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

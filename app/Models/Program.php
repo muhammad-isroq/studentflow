@@ -25,6 +25,11 @@ class Program extends Model
         return $this->belongsTo(Guru::class);
     }
 
+     public function classSessions(): HasMany
+    {
+        return $this->hasMany(ClassSession::class);
+    }
+
     public function siswas(): HasMany
     {
         return $this->hasMany(Siswa::class);

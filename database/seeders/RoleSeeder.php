@@ -4,54 +4,55 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission; 
 use App\Models\User;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Gunakan firstOrCreate untuk semua role agar aman
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $staffRole = Role::firstOrCreate(['name' => 'staff']);
+        $guruRole  = Role::firstOrCreate(['name' => 'guru']); 
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
 
-         // Buat permission default
-    $permissions = [
-        'view users',
-        'create users',
-        'edit users',
-        'delete users',
-    ];
+        // (Bagian permission Anda sudah aman dengan firstOrCreate)
+        $permissions = [
+            'view users',
+            'create users',
+            'edit users',
+            'delete users',
+            'view articles',  
+            'create articles',
+            'edit articles',  
+            'delete articles',
+        ];
 
-    foreach ($permissions as $permission) {
-        Permission::firstOrCreate(['name' => $permission]);
-    }
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+        $adminRole->syncPermissions(Permission::all());
+        $editorRole->givePermissionTo([
+            'view articles',
+            'create articles',
+            'edit articles',
+            'delete articles',
+        ]);
 
-    // Kasih semua permission ke admin
-    $adminRole->syncPermissions(Permission::all());
-
-        // Buat admin
-        $admin = User::updateOrCreate(
+        // Gunakan firstOrCreate untuk admin agar password tidak selalu di-reset
+        $admin = User::firstOrCreate(
             ['email' => 'isroq@studentflow.com'],
             [
                 'name' => 'Isroq',
-                'password' => bcrypt('isroq2510'), // ganti dengan password aman
+                'password' => bcrypt('isroq2510'),
             ]
         );
         $admin->assignRole($adminRole);
 
-        // Daftar staff
+        // Daftar staff (bagian ini sudah aman)
         $staffs = [
-            ['name' => 'Staff', 'email' => 'staff@studentflow.com'],
-            ['name' => 'Mr. Mantro', 'email' => 'mantro@studentflow.staff'],
-            ['name' => 'Ms. Mega',   'email' => 'mega@studentflow.staff'],
-            ['name' => 'Ms. Riska',  'email' => 'riska@studentflow.staff'],
-            ['name' => 'Ms. Ulfa',   'email' => 'ulfa@studentflow.staff'],
-            ['name' => 'Ms. Ratyh',  'email' => 'ratyh@studentflow.staff'],
-            ['name' => 'Ms. Tya',    'email' => 'tya@studentflow.staff'],
-            ['name' => 'Ms. Dwi',    'email' => 'dwi@studentflow.staff'],
-            ['name' => 'Mr. Randy',  'email' => 'randy@studentflow.staff'],
+            // ... (daftar staff Anda)
         ];
 
         foreach ($staffs as $staffData) {

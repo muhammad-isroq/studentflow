@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -16,8 +17,17 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'photo', 
+        'position', 
+        'instagram_url', 
+        'linkedin_url',
         'password_changed_at',
     ];
+
+    public function guru(): BelongsTo
+    {
+        return $this->belongsTo(Guru::class);
+    }
 
     protected $hidden = [
         'password',

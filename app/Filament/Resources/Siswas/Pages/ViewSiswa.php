@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\SiswaResource\Pages;
+namespace App\Filament\Resources\Siswas\Pages;
 
 use App\Filament\Resources\SiswaResource;
 use Filament\Actions;

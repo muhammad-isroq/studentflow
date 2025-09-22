@@ -57,6 +57,7 @@ class ProgramResource extends Resource
     {
         return [
             RelationManagers\SiswasRelationManager::class,
+            RelationManagers\ClassSessionsRelationManager::class,
         ];
     }
 

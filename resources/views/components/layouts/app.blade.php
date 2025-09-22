@@ -34,7 +34,7 @@
                     </li>
                     <li><a href="/testimoni" wire:navigate>Testimoni</a></li>
                     <li><a href="/tentang-kami" wire:navigate>Tentang Kami</a></li>
-                    <li><a href="/Instruktur" wire:navigate>Instruktur</a></li>
+                    <li><a href="/instruktur" wire:navigate>Instruktur</a></li>
                     <li><a href="/staff" wire:navigate>Staff</a></li>
                     <li><a href="/kontak" wire:navigate>Kontak</a></li>
                 </ul>

@@ -113,7 +113,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Persiapan Ujian Internasional</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3">
+              <p class="text-gray-600 mt-2 text-sm">
                 Raih skor terbaik TOEFL, IELTS, dan ujian bahasa Inggris lainnya dengan bimbingan terarah serta simulasi intensif.
               </p>
             </div>
@@ -127,7 +127,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Program Reguler</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3">
+              <p class="text-gray-600 mt-2 text-sm">
                 Ikuti kelas Bahasa Inggris dengan kurikulum terpercaya yang dirancang untuk semua level, mulai dari pemula hingga mahir.
               </p>
             </div>
@@ -140,7 +140,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Pengembangan Karier</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3">
+              <p class="text-gray-600 mt-2 text-sm">
                 Tingkatkan keterampilan komunikasi profesional untuk mendukung pekerjaan, presentasi, hingga peluang karier global.
               </p>
             </div>
@@ -153,7 +153,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Peningkatan Kompetensi</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3">
+              <p class="text-gray-600 mt-2 text-sm">
                 Perdalam pemahaman dan keterampilan berbahasa Inggris untuk menunjang kebutuhan akademik maupun profesional.
               </p>
             </div>
@@ -326,9 +326,8 @@
           </div>
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
   <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
-
     <!-- Card 1 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -341,7 +340,7 @@
     </div>
 
     <!-- Card 2 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -354,7 +353,7 @@
     </div>
 
     <!-- Card 3 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -367,7 +366,7 @@
     </div>
 
     <!-- Card 4 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -380,7 +379,7 @@
     </div>
 
     <!-- Card 5 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -392,8 +391,7 @@
       </div>
     </div>
 
-    <!-- Card 6 -->
-    <div class="flex-none w-1/2 sm:w-1/3 px-2">
+    <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
           <div class="w-24 sm:w-32 rounded-full">
@@ -407,7 +405,6 @@
 
   </div>
 </div>
-
       </div>
 
       <div class="w-full mx-auto py-6 sm:px-6 lg:px-8">
@@ -425,7 +422,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Lembaga Kursus yang Terpercaya</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Sejak awal hadir di Dumai, kami konsisten menjadi pilihan utama masyarakat untuk belajar bahasa Inggris dengan kualitas terbaik.
               </p>
             </div>
@@ -438,7 +435,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Instruktur Berpengalaman</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Pengajar kami memiliki pengalaman panjang dalam mengajar dan membimbing siswa sehingga metode pembelajaran lebih efektif dan mudah dipahami.
               </p>
             </div>
@@ -451,7 +448,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Pembelajaran Interaktif</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Kelas dirancang dengan metode yang menarik dan variatif agar suasana belajar lebih hidup, menyenangkan, serta mudah diserap siswa.
               </p>
             </div>
@@ -463,7 +460,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Program Belajar Fleksibel</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Kami menyediakan berbagai pilihan program yang dapat menyesuaikan kebutuhan, mulai dari anak-anak hingga persiapan tes internasional.
               </p>
             </div>
@@ -476,7 +473,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Akses Mudah ke Lembaga Kami</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Berlokasi di titik strategis kota, kursus kami mudah dijangkau sehingga siswa dapat belajar dengan lebih nyaman tanpa hambatan jarak.
               </p>
             </div>
@@ -488,7 +485,7 @@
 
               </div>
               <h3 class="text-lg font-semibold text-gray-800">Investasi Belajar yang Efisien</h3>
-              <p class="text-gray-600 mt-2 text-sm px-3 px-6 md:px-0 lg:px-0">
+              <p class="text-gray-600 mt-2 text-sm px-6 md:px-0 lg:px-0">
                 Dengan biaya kursus yang bersahabat, Anda bisa mendapatkan kualitas pembelajaran terbaik tanpa harus mengeluarkan biaya berlebihan.
               </p>
             </div>
@@ -699,7 +696,8 @@
                 </div>
 
                 <div class="mt-10">
-                    <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="inline-block bg-pink-600 text-white font-bold text-lg py-3 px-8 rounded-md hover:bg-pink-700 transition-colors duration-300">
+                    <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
+" class="inline-block bg-pink-600 text-white font-bold text-lg py-3 px-8 rounded-md hover:bg-pink-700 transition-colors duration-300">
                         Chat WhatsApp
                     </a>
                 </div>

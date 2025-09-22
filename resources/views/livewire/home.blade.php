@@ -61,7 +61,8 @@
       <p class="mt-2 text-lg">
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
       </p>
-      <a href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="btn bg-orange-500 border-none mt-4">Join Us Today</a>
+      <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
+" class="btn bg-orange-500 border-none mt-4">Join Us Today</a>
     </div>
   </div>
 
@@ -72,7 +73,8 @@
       <p class="mt-2 text-lg">
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
       </p>
-      <a href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="btn bg-orange-500 border-none mt-4">Join Now</a>
+      <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
+" class="btn bg-orange-500 border-none mt-4">Join Now</a>
     </div>
   </div>
 
@@ -83,7 +85,8 @@
       <p class="mt-2 text-lg">
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.
       </p>
-      <a href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="btn bg-orange-500 border-none mt-4">Get Started</a>
+      <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
+" class="btn bg-orange-500 border-none mt-4">Get Started</a>
     </div>
   </div>
 </div>
@@ -696,7 +699,7 @@
                 </div>
 
                 <div class="mt-10">
-                    <a href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="inline-block bg-pink-600 text-white font-bold text-lg py-3 px-8 rounded-md hover:bg-pink-700 transition-colors duration-300">
+                    <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="inline-block bg-pink-600 text-white font-bold text-lg py-3 px-8 rounded-md hover:bg-pink-700 transition-colors duration-300">
                         Chat WhatsApp
                     </a>
                 </div>

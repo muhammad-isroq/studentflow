@@ -327,10 +327,10 @@
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
   <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
     <!-- Card 1 -->
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
           </div>
@@ -340,10 +340,10 @@
     </div>
 
     <!-- Card 2 -->
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
           </div>
@@ -353,10 +353,10 @@
     </div>
 
     <!-- Card 3 -->
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
           </div>
@@ -366,10 +366,10 @@
     </div>
 
     <!-- Card 4 -->
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
           </div>
@@ -379,10 +379,10 @@
     </div>
 
     <!-- Card 5 -->
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
           </div>
@@ -391,10 +391,10 @@
       </div>
     </div>
 
-    <div class="flex-none w-1/3 px-4">
+    <div class="flex-none w-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-64 rounded-full">
+          <div class="w-24 md:w-60 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
           </div>

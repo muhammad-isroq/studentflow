@@ -327,10 +327,10 @@
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
   <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
     <!-- Card 1 -->
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
           </div>
@@ -340,10 +340,10 @@
     </div>
 
     <!-- Card 2 -->
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
           </div>
@@ -353,10 +353,10 @@
     </div>
 
     <!-- Card 3 -->
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
           </div>
@@ -366,10 +366,10 @@
     </div>
 
     <!-- Card 4 -->
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
           </div>
@@ -379,10 +379,10 @@
     </div>
 
     <!-- Card 5 -->
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
           </div>
@@ -391,10 +391,10 @@
       </div>
     </div>
 
-    <div class="flex-none w-1/3 px-2">
+    <div class="flex-none w-1/3 h-1/3 px-2">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 md:w-60 rounded-full">
+          <div class="w-40 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
           </div>
@@ -808,73 +808,30 @@
 
 </div>
 <script>
-  // Gunakan 'load' untuk memastikan semua gambar sudah dimuat sebelum JS berjalan
-  window.addEventListener('load', function () {
-    // Elemen slider
-    const sliderContainer = document.getElementById('cardSlider');
-    const track = document.getElementById('cardTrack');
-    const slides = Array.from(track.children);
-    
-    // Tombol (jika Anda menambahkannya dari kode sebelumnya)
-    const prevButton = document.getElementById('prev');
-    const nextButton = document.getElementById('next');
+  document.addEventListener("DOMContentLoaded", function () {
+    const carousel = document.getElementById("myCarousel");
+    const slides = carousel.querySelectorAll(".carousel-item");
+    let index = 0;
 
-    // Cek apakah elemen slider ada di halaman
-    if (!sliderContainer || !track || slides.length === 0) {
-      console.error("Elemen slider tidak ditemukan!");
-      return; // Hentikan eksekusi jika slider tidak ada
-    }
-
-    let currentIndex = 0;
-    let slideInterval;
-
-    // Fungsi utama untuk menggeser slider
-    const updateSlider = () => {
-      const targetSlide = slides[currentIndex];
-      // Menggunakan scrollTo yang lebih modern dan akurat
-      sliderContainer.scrollTo({
-        left: targetSlide.offsetLeft, // Scroll ke posisi kiri dari kartu target
-        behavior: 'smooth' // Animasi halus
+    setInterval(() => {
+      index = (index + 1) % slides.length;
+      carousel.scrollTo({
+        left: slides[index].offsetLeft,
+        behavior: "smooth"
       });
-    };
+    }, 3000); // 3 detik
+  });
 
-    const moveToNextSlide = () => {
-      // Logika looping yang lebih ringkas menggunakan modulo
-      currentIndex = (currentIndex + 1) % slides.length;
-      updateSlider();
-    };
+  document.addEventListener("DOMContentLoaded", () => {
+    const track = document.getElementById("cardTrack");
+    const cards = track.children.length;
+    const visible = 3; // tampil 3 card
+    let index = 0;
 
-    const moveToPrevSlide = () => {
-      // Menangani kasus saat di slide pertama dan menekan 'prev'
-      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-      updateSlider();
-    };
-    
-    // Fungsi untuk memulai dan menghentikan slide otomatis
-    const startAutoSlide = () => {
-      // Hapus interval sebelumnya untuk menghindari duplikasi
-      stopAutoSlide(); 
-      slideInterval = setInterval(moveToNextSlide, 3000); // Ganti slide setiap 3 detik
-    };
-
-    const stopAutoSlide = () => {
-      clearInterval(slideInterval);
-    };
-
-    // Tambahkan event listener jika tombol ada
-    if (nextButton && prevButton) {
-      nextButton.addEventListener('click', () => {
-        moveToNextSlide();
-        startAutoSlide(); // Mulai ulang timer setelah diklik
-      });
-
-      prevButton.addEventListener('click', () => {
-        moveToPrevSlide();
-        startAutoSlide(); // Mulai ulang timer
-      });
-    }
-
-    // Mulai slider otomatis saat halaman selesai dimuat
-    startAutoSlide();
+    setInterval(() => {
+      index++;
+      if (index > cards - visible) index = 0;
+      track.style.transform = `translateX(-${index * (100 / visible)}%)`;
+    }, 3000); // 3 detik
   });
 </script>

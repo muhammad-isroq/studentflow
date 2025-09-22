@@ -169,14 +169,14 @@ Bahasa Inggris semenyenangkan mungkin.
         </div>
     </div>
 
-    <div class="w-full text-center bg-white py-5 text-black">
+    <div class="w-full text-center bg-white py-5 text-black px-5">
         © Copyright 2010 – 2025 The Master of Dumai English Course
     </div>
 </footer>
 
 <div class="fab">
     <div class="tooltip tooltip-left" data-tip="Masih Bingung? Jangan Sungkan untuk Bertanya!">
-        <a tabindex="0" href="#" role="button" class="btn btn-lg w-20 h-20 btn-circle bg-green-600" >
+        <a tabindex="0" href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" role="button" class="btn btn-lg w-20 h-20 btn-circle bg-green-600" >
             <svg class="w-12 h-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 6.75z" />
             </svg>

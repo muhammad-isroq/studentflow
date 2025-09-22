@@ -59,8 +59,8 @@
             <div class="mx-auto bg-white grid max-w-6xl grid-cols-1 gap-8 text-center py-12 border mt-12">
                 <p class="text-3xl font-bold">Siap Memulai Petualangan Bahasa Inggrismu?</p>
                 <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-2">
-                    <a href="" class="text-2xl p-5 border transition duration-300 hover:-translate-y-1">Chat via WhatsApp</a>
-                    <a href="" class="text-2xl p-5 border transition duration-300 hover:-translate-y-1">Dapatkan Bantuan via Telepon </a>
+                    <a href="https://web.whatsapp.com/send?phone=6281277704026&text=Hallo%20admin%20The Master of Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="text-2xl p-5 border transition duration-300 hover:-translate-y-1">Chat via WhatsApp</a>
+                    <a href="tel:+6281277704026" class="text-2xl p-5 border transition duration-300 hover:-translate-y-1">Dapatkan Bantuan via Telepon </a>
                 </div>
             </div>
         </div>

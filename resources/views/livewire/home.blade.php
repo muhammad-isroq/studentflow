@@ -330,7 +330,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
           </div>
@@ -343,7 +343,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
           </div>
@@ -356,7 +356,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
           </div>
@@ -369,7 +369,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
           </div>
@@ -382,7 +382,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
           </div>
@@ -394,7 +394,7 @@
     <div class="flex-none w-1/3 px-4">
       <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
         <div class="avatar">
-          <div class="w-24 sm:w-32 rounded-full">
+          <div class="w-24 sm:w-64 rounded-full">
             <img class="transition-transform duration-300 hover:scale-110"
               src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
           </div>

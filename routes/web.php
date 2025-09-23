@@ -40,32 +40,35 @@ Route::get('/articles/{slug}', ShowArticle::class)->name('articles.show');
 Route::get('/generate-sitemap', function () {
 
     $sitemap = Sitemap::create()
-        // Menambahkan semua halaman statis dari website Anda
-        ->add(Url::create('/')->setPriority(1.0)->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY))
-        ->add(Url::create('/artikel')->setPriority(0.9)->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY))
-        ->add(Url::create('/master-preschool')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/master-kids')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/master-conversation')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/master-privat')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/master-toefl-preparation')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/master-onsite-training')->setPriority(0.8)->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY))
-        ->add(Url::create('/testimoni')->setPriority(0.7)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY))
-        ->add(Url::create('/tentang-kami')->setPriority(0.7)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY))
-        ->add(Url::create('/kontak')->setPriority(0.7)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY))
-        ->add(Url::create('/staff')->setPriority(0.6)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY))
-        ->add(Url::create('/instruktur')->setPriority(0.6)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY))
-        ->add(Url::create('/visi-misi')->setPriority(0.6)->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY));
+        ->add(Url::create('/')->setPriority(1.0)->setChangeFrequency('daily'))
+        ->add(Url::create('/artikel')->setPriority(0.9)->setChangeFrequency('weekly'))
+        ->add(Url::create('/master-preschool')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/master-kids')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/master-conversation')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/master-privat')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/master-toefl-preparation')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/master-onsite-training')->setPriority(0.8)->setChangeFrequency('monthly'))
+        ->add(Url::create('/testimoni')->setPriority(0.7)->setChangeFrequency('yearly'))
+        ->add(Url::create('/tentang-kami')->setPriority(0.7)->setChangeFrequency('yearly'))
+        ->add(Url::create('/kontak')->setPriority(0.7)->setChangeFrequency('yearly'))
+        ->add(Url::create('/staff')->setPriority(0.6)->setChangeFrequency('yearly'))
+        ->add(Url::create('/instruktur')->setPriority(0.6)->setChangeFrequency('yearly'))
+        ->add(Url::create('/visi-misi')->setPriority(0.6)->setChangeFrequency('yearly'));
 
-    // Mengambil semua artikel dari database untuk ditambahkan ke sitemap
-    // Pastikan Model 'Article' dan kolom 'slug' & 'updated_at' ada.
+    // Tambahkan artikel
     $articles = Article::all();
     foreach ($articles as $article) {
-        $sitemap->add(Url::create("/articles/{$article->slug}"));
+        $sitemap->add(
+            Url::create("/articles/{$article->slug}")
+                ->setLastModificationDate($article->updated_at ?? now())
+                ->setPriority(0.7)
+                ->setChangeFrequency('weekly')
+        );
     }
 
-    // Menyimpan file sitemap.xml ke folder public
     $sitemap->writeToFile(public_path('sitemap.xml'));
 
-    return 'Sitemap berhasil dibuat!';
+    return '✅ Sitemap berhasil dibuat!';
 });
+
 

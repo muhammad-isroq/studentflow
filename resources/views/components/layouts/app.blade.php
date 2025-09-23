@@ -2,7 +2,9 @@
 <html data-theme="cupcake">
   <head>
     <meta charset="utf-8" />
+    <title>Kursus Bahasa Inggris Dumai - The Master of Dumai</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Belajar bahasa Inggris mudah, menyenangkan, dan efektif di Dumai. Program Preschool, Kids, Conversation, TOEFL Preparation, hingga kelas privat bersama tutor berpengalaman.">
     @vite('resources/css/app.css')
   </head>
   <body class="pt-7 scroll-smooth">

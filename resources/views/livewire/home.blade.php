@@ -52,12 +52,13 @@
 
 </style>
 <div>
+  <h1 class="sr-only">Kursus Bahasa Inggris di Dumai – The Master of Dumai</h1>
     <div class="carousel w-full h-[700px] overflow-x-hidden relative" id="myCarousel">
   <div class="carousel-item relative w-full flex-shrink-0" id="slide1">
     <img src="{{ asset('images/1.jpg') }}" class="w-full object-cover" />
 
     <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
-      <h1 class="text-4xl font-bold">Shape Your Future with Confidence</h1>
+      <h2 class="text-4xl font-bold">Shape Your Future with Confidence</h2>
       <p class="mt-2 text-lg">
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
       </p>
@@ -69,7 +70,7 @@
   <div class="carousel-item relative w-full flex-shrink-0" id="slide2">
     <img src="{{ asset('images/2.jpg') }}" class="w-full object-cover" />
     <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
-      <h1 class="text-4xl font-bold">Learn Anytime, Anywhere</h1>
+      <h2 class="text-4xl font-bold">Learn Anytime, Anywhere</h2>
       <p class="mt-2 text-lg">
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
       </p>
@@ -81,7 +82,7 @@
   <div class="carousel-item relative w-full flex-shrink-0" id="slide3">
     <img src="{{ asset('images/3.jpg') }}" class="w-full object-cover" />
     <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
-      <h1 class="text-4xl font-bold">Boost Your Career with English</h1>
+      <h2 class="text-4xl font-bold">Boost Your Career with English</h2>
       <p class="mt-2 text-lg">
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.
       </p>
@@ -657,7 +658,7 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <section class="flex flex-col md:flex-row shadow-xl rounded-lg overflow-hidden">
-
+        
         <div class="w-full md:w-5/12 bg-sky-800 text-white p-8 md:p-12">
             <div class="max-w-md mx-auto">
                 <p class="text-blue-300 font-semibold">Get In Touch!</p>

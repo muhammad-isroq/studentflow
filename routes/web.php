@@ -60,7 +60,7 @@ Route::get('/generate-sitemap', function () {
     // Pastikan Model 'Article' dan kolom 'slug' & 'updated_at' ada.
     $articles = Article::all();
     foreach ($articles as $article) {
-        $sitemap->add(Url::create("/articles/{$article->slug}")->setLastModificationDate($article->updated_at));
+        $sitemap->add(Url::create("/articles/{$article->slug}"));
     }
 
     // Menyimpan file sitemap.xml ke folder public

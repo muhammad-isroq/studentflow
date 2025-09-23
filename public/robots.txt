@@ -1,4 +1,14 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /storage
+Disallow: /vendor
+Disallow: /node_modules
+Disallow: /bootstrap
+Disallow: /config
+Disallow: /database
+Disallow: /resources
+Disallow: /routes
+Disallow: /tests
+Allow: /
 
 Sitemap: https://themasterofdumai.com/sitemap.xml

@@ -13,6 +13,11 @@ class StudentRegistrationChart extends ChartWidget
     protected static ?int $sort = 1;
     protected int|string|array $columnSpan = 1;
 
+    public static function canView(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff']);
+    }
+
     protected function getData(): array
     {
          $data = [];
@@ -49,5 +54,5 @@ class StudentRegistrationChart extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
-    }
+    }    
 }

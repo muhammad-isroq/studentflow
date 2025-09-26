@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Filament\Pages;
+
+use Filament\Pages\Page;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use App\Models\ClassSession;
+use App\Models\Program;
+use BackedEnum;
+use Filament\Support\Icons\Heroicon;
+use App\Filament\Pages\FillAttendance;
+use Filament\Actions\Action;
+
+class ProgramSchedule extends Page implements HasTable
+{
+    use InteractsWithTable;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+
+    // Route halaman ini akan menerima parameter {program}
+    protected static ?string $slug = 'program-schedule/{program}';
+
+    protected string $view = 'filament.pages.program-schedule';
+
+    // Jangan daftarkan halaman ini ke navigasi secara otomatis
+    protected static bool $shouldRegisterNavigation = false;
+
+    public Program $program;
+
+    // Method 'mount' akan mengambil data program dari URL
+    public function mount(Program $program): void
+    {
+        $this->program = $program;
+    }
+
+    // Atur judul halaman secara dinamis
+    public function getTitle(): string
+    {
+        return 'Jadwal untuk Program: ' . $this->program->nama_program;
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            // Query hanya akan mengambil sesi dari program yang sedang dibuka
+            ->query(
+                ClassSession::query()->where('program_id', $this->program->id)
+            )
+            ->columns([
+                TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),
+                TextColumn::make('guru.nama_guru')->label('Teacher'),
+                TextColumn::make('program.nama_ruangan')->label('Room Name'),
+                TextColumn::make('topic')->label('Topic'),
+            ])
+            ->actions([
+                Action::make('fill_attendance')
+                    ->label('Isi Absensi')
+                    ->icon('heroicon-o-pencil-square')
+                    // Arahkan ke halaman FillAttendance dengan membawa ID Sesi
+                    ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record])),
+            ])
+            ->defaultSort('session_date', 'asc');
+    }
+}

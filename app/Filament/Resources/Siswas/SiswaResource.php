@@ -57,7 +57,7 @@ class SiswaResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\BillsRelationManager::class,
         ];
     }
 
@@ -80,6 +80,12 @@ class SiswaResource extends Resource
             'index' => ListSiswas::route('/'),
             'create' => CreateSiswa::route('/create'),
             'edit' => EditSiswa::route('/{record}/edit'),
+            // 'view' => ViewSiswa::route('/{record}'),
         ];
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff']);
     }
 }

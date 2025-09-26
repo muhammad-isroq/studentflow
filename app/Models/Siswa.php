@@ -65,4 +65,28 @@ class Siswa extends Model
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    public function getUnpaidBillsAttribute()
+    {
+        return $this->bills()->whereIn('status', ['unpaid', 'partial', 'overdue'])->sum('amount');
+    }
+
+    /**
+     * Accessor untuk mendapatkan jumlah tagihan yang belum dibayar
+     */
+    public function getUnpaidBillsCountAttribute()
+    {
+        return $this->bills()->whereIn('status', ['unpaid', 'partial', 'overdue'])->count();
+    }
+
+    /**
+     * Scope untuk filter siswa dengan tagihan terlambat
+     */
+    public function scopeWithOverdueBills($query)
+    {
+        return $query->whereHas('bills', function ($q) {
+            $q->where('due_date', '<', now())
+              ->where('status', '!=', 'paid');
+        });
+    }
 }

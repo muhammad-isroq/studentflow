@@ -21,4 +21,41 @@ class PaymentType extends Model
             ->logOnlyDirty() // hanya catat field yang berubah
             ->dontSubmitEmptyLogs(); // jangan log kalau tidak ada perubahan
     }
+
+    /**
+     * Relasi dengan Bills
+     */
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class);
+    }
+
+    /**
+     * Scope untuk payment type SPP/Monthly
+     */
+    public function scopeSpp($query)
+    {
+        return $query->where('name', 'like', '%spp%')
+                    ->orWhere('name', 'like', '%SPP%')
+                    ->orWhere('name', 'like', '%Monthly%');
+    }
+
+    /**
+     * Scope untuk payment type non-SPP
+     */
+    public function scopeNonSpp($query)
+    {
+        return $query->where('name', 'not like', '%spp%')
+                    ->where('name', 'not like', '%SPP%')
+                    ->where('name', 'not like', '%Monthly%');
+    }
+
+    /**
+     * Helper method untuk check apakah ini SPP
+     */
+    public function isSpp(): bool
+    {
+        return stripos($this->name, 'spp') !== false || 
+               stripos($this->name, 'monthly') !== false;
+    }
 }

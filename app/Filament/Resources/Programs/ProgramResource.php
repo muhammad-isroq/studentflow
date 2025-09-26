@@ -69,4 +69,9 @@ class ProgramResource extends Resource
             'edit' => EditProgram::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff']);
+    }
 }

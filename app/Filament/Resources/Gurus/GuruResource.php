@@ -68,4 +68,9 @@ class GuruResource extends Resource
             'edit' => EditGuru::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff']);
+    }
 }

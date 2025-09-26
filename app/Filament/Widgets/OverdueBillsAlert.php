@@ -29,6 +29,10 @@ class OverdueBillsAlert extends Widget
     // Method ini untuk menyembunyikan widget jika tidak ada tagihan telat
     public static function canView(): bool
     {
+        if (! auth()->user()->hasAnyRole(['admin', 'staff'])) {
+            return false;
+        }
+
         // Hanya tampilkan widget jika ada tagihan SPP yang telat
         return Bill::where('status', 'unpaid')
             ->where('due_date', '<', Carbon::now())

@@ -53,4 +53,9 @@ class BillResource extends Resource
             'edit' => EditBill::route('/{record}/edit'),
         ];
     }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff']);
+    }
 }

@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->authGuard('web')
             ->login()
+            
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -62,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 
             ])
-            ->globalSearch(false);
+            ->globalSearch(false)
+            ->viteTheme('resources/css/filament/admin/theme.css');
     }
 }

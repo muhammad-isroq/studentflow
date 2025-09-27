@@ -42,6 +42,7 @@ class UserForm
                     ->helperText('Isi ini jika user yang dibuat adalah seorang guru.'),
                 FileUpload::make('photo')
                     ->label('Foto Profil')
+                    ->maxSize(10240)
                     ->image(),
 
                 TextInput::make('position')

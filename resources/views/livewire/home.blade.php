@@ -328,7 +328,7 @@
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
             <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
               <!-- Card 1 -->
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
@@ -341,7 +341,7 @@
               </div>
 
               <!-- Card 2 -->
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
@@ -354,7 +354,7 @@
               </div>
 
               <!-- Card 3 -->
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
@@ -367,7 +367,7 @@
               </div>
 
               <!-- Card 4 -->
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
@@ -380,7 +380,7 @@
               </div>
 
               <!-- Card 5 -->
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
@@ -392,7 +392,7 @@
                 </div>
               </div>
 
-              <div class="flex-none w-1/2 md:w-1/3 px-2">
+              <div class="flex-none w-1/3 h-1/3 px-2">
                 <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">

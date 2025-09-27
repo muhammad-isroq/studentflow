@@ -326,86 +326,86 @@
               <div class="w-24 h-1 bg-sky-500 mx-auto mt-4 rounded"></div>
           </div>
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
-  <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
-    <!-- Card 1 -->
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Green Parker</p>
-      </div>
-    </div>
+            <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
+              <!-- Card 1 -->
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Green Parker</p>
+                </div>
+              </div>
 
-    <!-- Card 2 -->
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Iron Tony</p>
-      </div>
-    </div>
+              <!-- Card 2 -->
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Iron Tony</p>
+                </div>
+              </div>
 
-    <!-- Card 3 -->
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Cap Steve</p>
-      </div>
-    </div>
+              <!-- Card 3 -->
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Cap Steve</p>
+                </div>
+              </div>
 
-    <!-- Card 4 -->
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Thor Odinson</p>
-      </div>
-    </div>
+              <!-- Card 4 -->
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Thor Odinson</p>
+                </div>
+              </div>
 
-    <!-- Card 5 -->
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Natasha Romanoff</p>
-      </div>
-    </div>
+              <!-- Card 5 -->
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Natasha Romanoff</p>
+                </div>
+              </div>
 
-    <div class="flex-none w-1/3 h-1/3 px-2">
-      <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-        <div class="avatar">
-          <div class="w-40 rounded-full">
-            <img class="transition-transform duration-300 hover:scale-110"
-              src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
-          </div>
-        </div>
-        <p class="pt-3 font-bold">Carl Jhonson</p>
-      </div>
-    </div>
+              <div class="flex-none w-1/2 sm:w-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
+                    </div>
+                  </div>
+                  <p class="pt-3 font-bold">Carl Jhonson</p>
+                </div>
+              </div>
 
-  </div>
-</div>
+            </div>
+          </div>
       </div>
 
       <div class="w-full mx-auto py-6 sm:px-6 lg:px-8">

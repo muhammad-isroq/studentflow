@@ -45,7 +45,7 @@ class UserForm
                     ->label('Foto Profil')
                     ->maxSize(10240)
                     ->image(),
-
+                    // ->imageEditor(),  
                 TextInput::make('position')
                     ->label('Jabatan'),
 

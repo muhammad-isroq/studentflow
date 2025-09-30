@@ -33,8 +33,9 @@ class UsersTable
                 //     ->sortable(),
                 ImageColumn::make('photo')
                     ->label('Image')
-                    ->imageWidth(100)
-                    ->imageHeight(100)
+                    ->getStateUsing(fn ($record) => asset('storage/' . $record->photo))
+                    ->width(100)
+                    ->height(100)
                     ->circular(),
                 TextColumn::make('created_at')
                     ->dateTime()

@@ -14,7 +14,7 @@
                 @foreach ($teachers as $teacher)
                 <div class="bg-white rounded-lg shadow-lg p-6 text-center transition-transform duration-300 hover:-translate-y-2">
                     <img class="w-48 h-48 rounded-full mx-auto mb-4 object-cover border-4 border-sky-200" 
-                         src="{{ $teacher->photo ? Storage::url($teacher->photo) : asset('images/default-avatar.png') }}"
+                         src="{{ Storage::url($teacher->photo) }}"
     alt="Foto {{ $teacher->name }}">
                     
                     <h3 class="text-xl font-bold text-gray-800">{{ $teacher->name }}</h3>

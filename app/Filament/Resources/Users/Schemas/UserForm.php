@@ -44,7 +44,10 @@ class UserForm
                 FileUpload::make('photo')
                     ->label('Foto Profil')
                     ->maxSize(10240)
-                    ->image(),
+                    ->image()
+                    ->disk('public')          // simpan ke storage/app/public
+                    ->directory('users')      // simpan di dalam folder users/
+                    ->visibility('public'),
                     // ->imageEditor(),  
                 TextInput::make('position')
                     ->label('Jabatan'),

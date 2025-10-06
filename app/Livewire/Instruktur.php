@@ -12,7 +12,7 @@ class Instruktur extends Component
     public function mount()
     {
         // Ambil semua user yang hanya memiliki role 'guru'
-        $this->teachers = User::role('guru')->get();
+        $this->teachers = User::role('guru')->orderBy('name', 'asc')->get();
     }
     
     public function render()

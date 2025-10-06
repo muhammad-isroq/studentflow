@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Siswa;
 use Filament\Pages\Page;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;

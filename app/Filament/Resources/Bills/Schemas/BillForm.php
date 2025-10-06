@@ -41,8 +41,7 @@ class BillForm
                 FileUpload::make('proof_of_payment')
                     ->label('Proof of payment')
                     ->imagePreviewHeight('250')
-                    ->downloadable()
-                    ->required(),
+                    ->downloadable(),
                 DatePicker::make('due_date')
                     ->label('Due Date')
                     ->required(),

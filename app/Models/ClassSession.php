@@ -29,5 +29,10 @@ class ClassSession extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function replacementGuru(): BelongsTo
+    {
+        return $this->belongsTo(Guru::class, 'replacement_guru_id');
+    }
+
     
 }

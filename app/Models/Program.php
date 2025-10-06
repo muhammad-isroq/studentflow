@@ -11,7 +11,7 @@ use Spatie\Activitylog\LogOptions;
 
 class Program extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity; 
 
     protected $fillable = [
         'nama_program',

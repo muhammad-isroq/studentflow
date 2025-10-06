@@ -10,7 +10,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                <div class="bg-white rounded-lg shadow-lg p-6 text-center transition-transform duration-300 hover:-translate-y-2">
+                {{-- <div class="bg-white rounded-lg shadow-lg p-6 text-center transition-transform duration-300 hover:-translate-y-2">
                     <img class="w-48 h-48 rounded-full mx-auto mb-4 object-cover border-4 border-sky-200" src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" alt="Foto Jane Doe">
                     <h3 class="text-xl font-bold text-gray-800">Mr. Acca</h3>
                     <p class="text-sky-600 font-medium mb-4">Pimpinan</p>
@@ -92,10 +92,10 @@
                              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.389 0-1.601 1.086-1.601 2.206v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.225-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-3.096 0 1.548 1.548 0 013.096 0zM6.55 8.014v8.59H3.455v-8.59H6.55zM18 1H6a5 5 0 00-5 5v12a5 5 0 005 5h12a5 5 0 005-5V6a5 5 0 00-5-5z" clip-rule="evenodd"/></svg>
                         </a>
                     </div>
-                </div>
+                </div> --}}
 
 
-                {{-- @foreach ($staffs as $staff)
+                @foreach ($staffs as $staff)
                 <div class="bg-white rounded-lg shadow-lg p-6 text-center transition-transform duration-300 hover:-translate-y-2">
                     <img class="w-48 h-48 rounded-full mx-auto mb-4 object-cover border-4 border-sky-200" 
                          src="{{ $staff->photo ? Storage::url($staff->photo) : 'https://ui-avatars.com/api/?name='.urlencode($staff->name).'&color=7F9CF5&background=EBF4FF' }}" 
@@ -122,7 +122,7 @@
                         @endif
                     </div>
                 </div>
-            @endforeach --}}
+            @endforeach
             
             </div>
         </div>

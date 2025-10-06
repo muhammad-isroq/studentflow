@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Programs\RelationManagers;
 
 use App\Models\ClassSession;
+use App\Models\Guru;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -26,22 +27,31 @@ class ClassSessionsRelationManager extends RelationManager
     protected static string $relationship = 'classSessions';
     protected static ?string $title = 'Class Session';
 
-    
-
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                DatePicker::make('session_date')
-                    ->label('Session Date')
-                    ->required(),
-                Select::make('guru_id')
-                    ->relationship('guru', 'nama_guru')
-                    ->label('teacher in charge')
-                    ->required(),
-                TextInput::make('topic')
-                    ->maxLength(255),
-            ]);
+        $components = [
+            DatePicker::make('session_date')
+                ->label('Session Date')
+                ->required(),
+            Select::make('guru_id')
+                ->relationship('guru', 'nama_guru')
+                ->label('Teacher in Charge')
+                ->required(),
+        ];
+
+        // Tambahkan field replacement untuk SEMUA user (bisa disesuaikan nanti)
+        $components[] = Select::make('replacement_guru_id')
+            ->relationship('replacementGuru', 'nama_guru')
+            ->label('Replacement Teacher (if any)')
+            ->placeholder('Pilih guru pengganti jika ada')
+            ->searchable()
+            ->helperText('Pilih guru pengganti jika guru utama tidak bisa hadir');
+
+        $components[] = TextInput::make('topic')
+            ->label('Topic')
+            ->maxLength(255);
+
+        return $schema->components($components);
     }
 
     public function table(Table $table): Table
@@ -55,19 +65,25 @@ class ClassSessionsRelationManager extends RelationManager
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('guru.nama_guru')
-                    ->label('Teacher'),
-                TextColumn::make('topic'),
+                    ->label('Teacher')
+                    ->badge()
+                    ->color(fn ($record) => $record->replacement_guru_id ? 'gray' : 'success'),
+                TextColumn::make('replacementGuru.nama_guru')
+                    ->label('Replacement')
+                    ->badge()
+                    ->color('warning')
+                    ->placeholder('-'),
+                TextColumn::make('topic')
+                    ->placeholder('-'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 CreateAction::make(),
-                // AssociateAction::make(),
             ])
             ->actions([
                 EditAction::make(),
-                // DissociateAction::make(),
                 Action::make('view_attendance')
                     ->label('Lihat Absensi')
                     ->icon('heroicon-o-eye')
@@ -77,11 +93,9 @@ class ClassSessionsRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    // DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('session_date', 'asc');
-            
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
@@ -13,6 +12,7 @@ use BackedEnum;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Pages\FillAttendance;
 use Filament\Actions\Action;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramSchedule extends Page implements HasTable
 {
@@ -44,10 +44,19 @@ class ProgramSchedule extends Page implements HasTable
 
     public function table(Table $table): Table
     {
+        // Dapatkan ID guru yang terhubung dengan user yang login
+        $user = Auth::user();
+        $guruId = $user->guru_id; // User memiliki guru_id yang merujuk ke tabel gurus
+
         return $table
-            // Query hanya akan mengambil sesi dari program yang sedang dibuka
+            // Query dengan filter: hanya tampilkan sesi milik guru yang sedang login
             ->query(
-                ClassSession::query()->where('program_id', $this->program->id)
+                ClassSession::query()
+                    ->where('program_id', $this->program->id)
+                    ->when($guruId, function ($query) use ($guruId) {
+                        // Hanya filter jika user memiliki guru_id
+                        $query->where('guru_id', $guruId);
+                    })
             )
             ->columns([
                 TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),

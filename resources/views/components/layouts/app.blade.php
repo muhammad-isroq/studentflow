@@ -83,7 +83,7 @@
 
             <div class="space-y-4">
                 <div class="flex items-center">
-                    <img class="h-12 w-12 rounded-full bg-white p-1" src="{{ asset('images/logo.png') }}" alt="The Master of Dumai Logo">
+                    <img class="h-12 w-12 rounded-full bg-white p-1" src="{{ asset('images/logo1.png') }}" alt="The Master of Dumai Logo">
                     <span class="ml-3 text-white text-2xl font-bold">The Master of Dumai</span>
                 </div>
                 <p class="text-white text-sm leading-relaxed indent-8">

@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Actions\BulkAction;
 
 
 class SiswasRelationManager extends RelationManager
@@ -56,11 +57,31 @@ class SiswasRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-                DetachAction::make(),
+                // Ganti DetachAction dengan Action kustom
+                Action::make('remove')
+                    ->label('Remove')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Remove Student from Program')
+                    ->modalDescription('Are you sure you want to remove this student from the program? This will not delete the student data.')
+                    ->action(function (Siswa $record) {
+                        // Set program_id menjadi null untuk melepaskan siswa dari program
+                        $record->update(['program_id' => null]);
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make(),
+                    // Ganti DetachBulkAction dengan BulkAction kustom
+                    BulkAction::make('remove_selected')
+                        ->label('Remove Selected')
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            // Loop semua record yang dipilih dan update program_id menjadi null
+                            $records->each->update(['program_id' => null]);
+                        }),
                 ]),
             ]);
     }

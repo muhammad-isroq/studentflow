@@ -9,6 +9,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\ViewAction;
+use Filament\Actions\Action;
+use App\Filament\Pages\StudentAttendanceHistory;
 
 class SiswasTable
 {
@@ -55,6 +57,12 @@ class SiswasTable
             ->recordActions([
                 EditAction::make(),
                 ViewAction::make(),
+                    Action::make('attendance_history')
+                        ->label('Lihat Absensi')
+                        ->icon('heroicon-o-calendar-days')
+                        ->color('success')
+                        // Arahkan ke halaman riwayat absensi dengan membawa record Siswa saat ini
+                        ->url(fn (\App\Models\Siswa $record): string => StudentAttendanceHistory::getUrl(['siswa' => $record])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

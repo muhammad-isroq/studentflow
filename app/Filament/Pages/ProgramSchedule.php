@@ -13,6 +13,7 @@ use Filament\Support\Icons\Heroicon;
 use App\Filament\Pages\FillAttendance;
 use Filament\Actions\Action;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\TextInputColumn;
 
 class ProgramSchedule extends Page implements HasTable
 {
@@ -24,6 +25,17 @@ class ProgramSchedule extends Page implements HasTable
     protected static ?string $slug = 'program-schedule/{program}';
 
     protected string $view = 'filament.pages.program-schedule';
+    
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('Rekap Absen')
+            ->label('Rekap Absen')
+            ->icon('heroicon-o-document-chart-bar')
+            // Arahkan ke halaman AttendanceRecap dengan membawa ID Program saat ini
+            ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->program->id])),
+        ];
+    }
 
     // Jangan daftarkan halaman ini ke navigasi secara otomatis
     protected static bool $shouldRegisterNavigation = false;
@@ -62,7 +74,7 @@ class ProgramSchedule extends Page implements HasTable
                 TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),
                 TextColumn::make('guru.nama_guru')->label('Teacher'),
                 TextColumn::make('program.nama_ruangan')->label('Room Name'),
-                TextColumn::make('topic')->label('Topic'),
+                TextInputColumn::make('topic')->label('Topic'),
             ])
             ->actions([
                 Action::make('fill_attendance')

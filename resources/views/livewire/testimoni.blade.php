@@ -55,6 +55,60 @@
             </div>
         </div>
     </div>
+
+    <div class="w-full mx-auto pb-12 sm:px-6 lg:px-8">
+        <!-- Judul Video Testimoni -->
+        <div class="overflow-hidden rounded-lg p-6 mb-5">
+            <p class="mt-2 text-3xl text-center mb-3 font-bold">
+            Video Testimoni
+            </p>
+            <p class="text-1xl text-center italic text-gray-600">
+                Lihat langsung bagaimana program kami membawa perubahan positif.
+            </p>
+        </div>
+            @forelse ($videoTestimonis as $testimoni)
+        <!-- Card Video Testimoni -->
+            <div class="mx-auto max-w-5xl mt-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-lg shadow-2xl overflow-hidden">
+                    <!-- Kolom Video -->
+                    <div class="h-full">
+                        <iframe 
+                            class="w-full h-full" 
+                            src="https://www.youtube.com/embed/{{ $testimoni->link_video }}" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <!-- Kolom Teks -->
+                    <div class="p-8 flex flex-col justify-center">
+                        <svg class="w-10 h-10 text-primary mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.348 14.652a3.75 3.75 0 0 1 0-5.304m5.304 0a3.75 3.75 0 0 1 0 5.304m-7.425 2.122a6.75 6.75 0 0 1 0-9.546m9.546 0a6.75 6.75 0 0 1 0 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12Z" />
+                        </svg>
+
+                        <h3 class="text-2xl font-bold text-slate-900">{{ $testimoni->notes1 }}</h3>
+                        <p class="mt-4 leading-relaxed text-gray-600">
+                            {{ $testimoni->notes2 }}
+                        </p>
+                        <div class="mt-6">
+                            <p class="font-semibold text-slate-800">{{ $testimoni->nama_ortu }}</p>
+                            <p class="text-sm text-gray-500">Orang Tua dari {{ $testimoni->nama_anak }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             @empty
+                <!-- Tampilan jika tidak ada data sama sekali -->
+                <div class="mx-auto max-w-5xl">
+                    <div class="bg-base-100 rounded-lg shadow-lg p-8 text-center">
+                        <p class="text-gray-600">Saat ini belum ada video testimoni yang diunggah.</p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
             <div class="w-full py-12">
             <div class="mx-auto bg-white grid max-w-6xl grid-cols-1 gap-8 text-center py-12 border mt-12">
                 <p class="text-3xl font-bold">Siap Memulai Petualangan Bahasa Inggrismu?</p>

@@ -19,53 +19,53 @@
                     </svg>
                 </div>
                 <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                    <li><a href="/" wire:navigate>Beranda</a></li>
-                    <li><a href="/artikel" wire:navigate>Berita</a></li>
+                    <li><a href="/" wire:navigate class="{{ request()->is('/') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Beranda</a></li>
+                    <li><a href="/artikel" wire:navigate class="{{ request()->is('artikel') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Berita</a></li>
                     
                     <li>
                         <details>
                             <summary>Program</summary>
                             <ul class="p-2">
-                                <li><a class="whitespace-nowrap" href="/master-preschool" wire:navigate>Master PRE-school</a></li>
-                                <li><a class="whitespace-nowrap" href="/master-kids" wire:navigate>Master Kids</a></li>
-                                <li><a class="whitespace-nowrap" href="/master-conversation" wire:navigate>Master Conversation</a></li>
-                                <li><a class="whitespace-nowrap" href="/master-privat" wire:navigate>Master Private</a></li>
-                                <li><a class="whitespace-nowrap" href="/master-toefl-preparation" wire:navigate>Master Toefl Preparation</a></li>
-                                <li><a class="whitespace-nowrap" href="/master-onsite-training" wire:navigate>Master On-site Training</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-preschool" wire:navigate class="{{ request()->is('master-preschool') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master PRE-school</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-kids" wire:navigate class="{{ request()->is('master-kids') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Kids</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-conversation" wire:navigate class="{{ request()->is('master-conversation') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Conversation</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-privat" wire:navigate class="{{ request()->is('master-privat') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Private</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-toefl-preparation" wire:navigate class="{{ request()->is('master-toefl-preparation') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Toefl Preparation</a></li>
+                                <li><a class="whitespace-nowrap" href="/master-onsite-training" wire:navigate class="{{ request()->is('master-onsite-training') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master On-site Training</a></li>
                             </ul>
                         </details>
                     </li>
-                    <li><a href="/testimoni" wire:navigate>Testimoni</a></li>
-                    <li><a href="/tentang-kami" wire:navigate>Tentang Kami</a></li>
-                    <li><a href="/instruktur" wire:navigate>Instruktur</a></li>
-                    <li><a href="/staff" wire:navigate>Staff</a></li>
-                    <li><a href="/kontak" wire:navigate>Kontak</a></li>
+                    <li><a href="/testimoni" wire:navigate class="{{ request()->is('testimoni') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Testimoni</a></li>
+                    <li><a href="/tentang-kami" wire:navigate class="{{ request()->is('tentang-kami') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Tentang Kami</a></li>
+                    <li><a href="/instruktur" wire:navigate class="{{ request()->is('/') ? 'textinstrukturprimary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Instruktur</a></li>
+                    <li><a href="/staff" wire:navigate class="{{ request()->is('staff') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Staff</a></li>
+                    <li><a href="/kontak" wire:navigate class="{{ request()->is('kontak') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Kontak</a></li>
                 </ul>
             </div>
             <a href="/" class="btn btn-ghost text-xl">The Master of Dumai</a>
         </div>
         <div class="navbar-center hidden lg:flex ml-[-40px]">
         <ul class="menu menu-horizontal px-1">
-            <li><a href="/" wire:navigate>Beranda</a></li>
-            <li><a href="/artikel" wire:navigate>Berita</a></li>
+            <li><a href="/" wire:navigate class="{{ request()->is('/') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Beranda</a></li>
+            <li><a href="/artikel" wire:navigate class="{{ request()->is('artikel') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Berita</a></li>
             <li>
                 <details>
                     <summary>Program</summary>
                     <ul class="p-2 z-[1]">  
-                        <li><a class="whitespace-nowrap" href="/master-preschool" wire:navigate>Master PRE-school</a></li>
-                        <li><a class="whitespace-nowrap" href="/master-kids" wire:navigate>Master Kids</a></li>
-                        <li><a class="whitespace-nowrap" href="/master-conversation" wire:navigate>Master Conversation</a></li>
-                        <li><a class="whitespace-nowrap" href="/master-privat" wire:navigate>Master Private</a></li>
-                        <li><a class="whitespace-nowrap" href="/master-toefl-preparation" wire:navigate>Master Toefl Preparation</a></li>
-                        <li><a class="whitespace-nowrap" href="/master-onsite-training" wire:navigate>Master On-site Training</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-preschool" wire:navigate class="{{ request()->is('master-preschool') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master PRE-school</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-kids" wire:navigate class="{{ request()->is('master-kids') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Kids</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-conversation" wire:navigate class="{{ request()->is('master-conversation') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Conversation</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-privat" wire:navigate class="{{ request()->is('master-privat') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Private</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-toefl-preparation" wire:navigate class="{{ request()->is('master-toefl-preparation') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master Toefl Preparation</a></li>
+                        <li><a class="whitespace-nowrap" href="/master-onsite-training" wire:navigate class="{{ request()->is('master-onsite-training') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master On-site Training</a></li>
                     </ul>
                 </details>
             </li>
-            <li><a href="/testimoni" wire:navigate>Testimoni</a></li>
-            <li><a href="/tentang-kami" wire:navigate>Tentang Kami</a></li>
-            <li><a href="/instruktur" wire:navigate>Instruktur</a></li>
-            <li><a href="/staff" wire:navigate>Staff</a></li>
-            <li><a href="/kontak" wire:navigate>Kontak</a></li>
+            <li><a href="/testimoni" wire:navigate class="{{ request()->is('testimoni') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Testimoni</a></li>
+            <li><a href="/tentang-kami" wire:navigate class="{{ request()->is('tentang-kami') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Tentang Kami</a></li>
+            <li><a href="/instruktur" wire:navigate class="{{ request()->is('instruktur') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Instruktur</a></li>
+            <li><a href="/staff" wire:navigate class="{{ request()->is('staff') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Staff</a></li>
+            <li><a href="/kontak" wire:navigate class="{{ request()->is('kontak') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Kontak</a></li>
         </ul>
             </div>
             {{-- <div class="navbar-end">
@@ -116,8 +116,8 @@ Bahasa Inggris semenyenangkan mungkin.
                     <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/kids" wire:navigate>Master Kids</a></li>
                     <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="//master-conversation" wire:navigate>Master Conversation</a></li>
                     <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/master-privat" wire:navigate>Master Private</a></li>
-                    <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/master-toefl-preparation" wire:navigate>Master Toefl Preparation</a></li>
-                    <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/master-onsite-training" wire:navigate>Master On-site Training</a></li>
+                    <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/master-toefl-preparation" wire:navigate >Master Toefl Preparation</a></li>
+                    <li><a class="whitespace-nowrap hover:text-blue-200 text-white hover:underline" href="/master-onsite-training" wire:navigate >Master On-site Training</a></li>
                 </ul>
             </div>
 

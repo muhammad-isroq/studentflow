@@ -86,6 +86,6 @@ class SiswaResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'staff']);
+        return auth()->user()->hasAnyRole(['admin', 'staff', 'editor']);
     }
 }

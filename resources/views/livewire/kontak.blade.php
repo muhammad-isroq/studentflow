@@ -77,6 +77,9 @@
             </div>
 
             <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-2 text-center">Kirimkan Pesan Anda</h3>
+                <p class="text-gray-500 mb-6 indent-8">Isi formulir di bawah ini untuk menghubungi kami. Kami akan segera merespons pesan Anda secepatnya.</p>
+
                 <form action="https://formspree.io/f/xeolyeqk" method="POST">
                     <div class="space-y-6">
                         <div>

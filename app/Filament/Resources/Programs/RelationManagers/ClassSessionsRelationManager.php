@@ -21,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Pages\ViewAttendance;
 use Filament\Actions\Action;
+use App\Filament\Pages\AttendanceRecap;
 
 class ClassSessionsRelationManager extends RelationManager
 {
@@ -81,6 +82,11 @@ class ClassSessionsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make(),
+                Action::make('Rekap Absen')
+                    ->color('success')
+                    ->icon('heroicon-o-document-chart-bar')
+                    // Arahkan ke halaman rekap dengan membawa ID Program saat ini
+                    ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->getOwnerRecord()->id])),
             ])
             ->actions([
                 EditAction::make(),

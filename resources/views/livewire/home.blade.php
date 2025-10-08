@@ -63,7 +63,7 @@
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
       </p>
       <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
-" class="btn bg-orange-500 border-none mt-4">Join Us Today</a>
+" class="btn bg-orange-500 border-none mt-4">Daftar Kursus</a>
     </div>
   </div>
 
@@ -75,7 +75,7 @@
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
       </p>
       <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
-" class="btn bg-orange-500 border-none mt-4">Join Now</a>
+" class="btn bg-orange-500 border-none mt-4">Daftar Kursus</a>
     </div>
   </div>
 
@@ -87,7 +87,7 @@
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.
       </p>
       <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris
-" class="btn bg-orange-500 border-none mt-4">Get Started</a>
+" class="btn bg-orange-500 border-none mt-4">Daftar Kursus</a>
     </div>
   </div>
 </div>
@@ -327,82 +327,30 @@
           </div>
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
             <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
-              <!-- Card 1 -->
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+             {{-- Loop untuk menampilkan setiap guru --}}
+            @forelse ($teachers as $teacher)
+                <div class="flex-none w-full sm:w-1/2 md:w-1/3 px-2">
+                    <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md h-full">
+                        <div class="avatar">
+                            <div class="w-28 sm:w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                <img 
+                                    class="transition-transform duration-300 hover:scale-110"
+                                    src="{{ Storage::url($teacher->photo) }}" 
+                                    alt="Foto {{ $teacher->name }}"
+                                    {{-- Fallback jika foto tidak ada/gagal dimuat --}}
+                                    onerror="this.onerror=null; this.src='https://placehold.co/192x192/E0E0E0/4A4A4A?text={{ substr($teacher->name, 0, 1) }}';" 
+                                />
+                            </div>
+                        </div>
+                        <p class="pt-4 font-bold text-lg">{{ $teacher->name }}</p>
                     </div>
-                  </div>
-                  <p class="pt-3 font-bold">Green Parker</p>
                 </div>
-              </div>
-
-              <!-- Card 2 -->
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/batperson@192.webp" />
-                    </div>
-                  </div>
-                  <p class="pt-3 font-bold">Iron Tony</p>
+            @empty
+                {{-- Tampilan jika tidak ada data guru sama sekali --}}
+                <div class="w-full text-center py-12">
+                    <p class="text-gray-500">Saat ini belum ada data instruktur yang bisa ditampilkan.</p>
                 </div>
-              </div>
-
-              <!-- Card 3 -->
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" />
-                    </div>
-                  </div>
-                  <p class="pt-3 font-bold">Cap Steve</p>
-                </div>
-              </div>
-
-              <!-- Card 4 -->
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/averagebulk@192.webp" />
-                    </div>
-                  </div>
-                  <p class="pt-3 font-bold">Thor Odinson</p>
-                </div>
-              </div>
-
-              <!-- Card 5 -->
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/wonderperson@192.webp" />
-                    </div>
-                  </div>
-                  <p class="pt-3 font-bold">Natasha Romanoff</p>
-                </div>
-              </div>
-
-              <div class="flex-none w-1/3 h-1/3 px-2">
-                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
-                  <div class="avatar">
-                    <div class="w-28 sm:w-40 rounded-full">
-                      <img class="transition-transform duration-300 hover:scale-110"
-                        src="https://img.daisyui.com/images/profile/demo/distracted1@192.webp" />
-                    </div>
-                  </div>
-                  <p class="pt-3 font-bold">Carl Jhonson</p>
-                </div>
-              </div>
+            @endforelse
 
             </div>
           </div>

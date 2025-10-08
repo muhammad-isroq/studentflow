@@ -334,7 +334,7 @@
                         <div class="avatar">
                             <div class="w-28 sm:w-40 rounded-full">
                                 <img 
-                                    class="transition-transform duration-300 hover:scale-110 w-full h-full object-cover"
+                                    class="transition-transform duration-300 hover:scale-110"
                                     src="{{ Storage::url($teacher->photo) }}" 
                                     alt="Foto {{ $teacher->name }}"
                                     {{-- Fallback jika foto tidak ada/gagal dimuat --}}

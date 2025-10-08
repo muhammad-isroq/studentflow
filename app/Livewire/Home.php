@@ -12,7 +12,7 @@ class Home extends Component
 
     public function mount()
     {
-        $this->teachers = User::role('guru')->orderBy('name', 'asc')->take(6)->get();
+        $this->teachers = User::role('guru')->orderBy('name', 'asc')->get();
     }
 
     public function render()

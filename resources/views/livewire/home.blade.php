@@ -327,25 +327,19 @@
           </div>
           <div class="overflow-hidden max-w-6xl mx-auto" id="cardSlider">
             <div class="flex transition-transform duration-700 ease-in-out" id="cardTrack">
-             {{-- Loop untuk menampilkan setiap guru --}}
-            @forelse ($teachers as $teacher)
-                <div class="flex-none w-full sm:w-1/2 md:w-1/3 px-2">
-                    <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md h-full">
-                        <div class="avatar">
-                            <div class="w-28 sm:w-40 rounded-full">
-                                <img 
-                                    class="transition-transform duration-300 hover:scale-110"
-                                    src="{{ Storage::url($teacher->photo) }}" 
-                                    alt="Foto {{ $teacher->name }}"
-                                    {{-- Fallback jika foto tidak ada/gagal dimuat --}}
-                                    onerror="this.onerror=null; this.src='https://placehold.co/192x192/E0E0E0/4A4A4A?text={{ substr($teacher->name, 0, 1) }}';" 
-                                />
-                            </div>
-                        </div>
-                        <p class="pt-4 font-bold text-lg">{{ $teacher->name }}</p>
+              @forelse ($teachers as $teacher)
+              <div class="flex-none w-1/3 h-1/3 px-2">
+                <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md">
+                  <div class="avatar">
+                    <div class="w-28 sm:w-40 rounded-full">
+                      <img class="transition-transform duration-300 hover:scale-110"
+                        src="{{ Storage::url($teacher->photo) }}"  alt="Foto {{ $teacher->name }}"/>
                     </div>
+                  </div>
+                  <p class="pt-3 font-bold">{{ $teacher->name }}</p>
                 </div>
-            @empty
+              </div>
+              @empty
                 {{-- Tampilan jika tidak ada data guru sama sekali --}}
                 <div class="w-full text-center py-12">
                     <p class="text-gray-500">Saat ini belum ada data instruktur yang bisa ditampilkan.</p>

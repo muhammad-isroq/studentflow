@@ -332,7 +332,7 @@
                 <div class="flex-none w-full sm:w-1/2 md:w-1/3 px-2">
                     <div class="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-md h-full">
                         <div class="avatar">
-                            <div class="w-28 sm:w-40 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <div class="w-28 sm:w-40 rounded-full">
                                 <img 
                                     class="transition-transform duration-300 hover:scale-110 w-full h-full object-cover"
                                     src="{{ Storage::url($teacher->photo) }}" 

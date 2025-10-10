@@ -23,14 +23,14 @@ class Staff extends Component
                     WHEN name LIKE '%Mr. Acca Manurung, S.IP%' THEN 1  
                     WHEN name LIKE '%Mr. Mantro%' THEN 2 
                     WHEN name LIKE '%Ms. Mega%' THEN 3  
-                    WHEN name LIKE '%Ms. Riska%' THEN 3  
-                    WHEN name LIKE '%Ms. Ulfa%' THEN 3  
-                    WHEN name LIKE '%Ms. Ratyh%' THEN 3  
-                    WHEN name LIKE '%Mr. Randy%' THEN 3  
-                    WHEN name LIKE '%Ms. Fathiyya%' THEN 3  
-                    WHEN name LIKE '%Ms. Dwi%' THEN 3  
-                    WHEN name LIKE '%Mr. Isroq%' THEN 3  
-                    ELSE 4 
+                    WHEN name LIKE '%Ms. Riska%' THEN 4  
+                    WHEN name LIKE '%Ms. Ulfa%' THEN 5  
+                    WHEN name LIKE '%Ms. Ratyh%' THEN 6  
+                    WHEN name LIKE '%Mr. Randy%' THEN 7  
+                    WHEN name LIKE '%Ms. Fathiyya%' THEN 8  
+                    WHEN name LIKE '%Ms. Dwi%' THEN 9  
+                    WHEN name LIKE '%Mr. Isroq%' THEN 10  
+                    ELSE 11 
                 END
             ")
             ->get();

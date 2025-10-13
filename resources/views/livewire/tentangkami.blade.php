@@ -102,7 +102,7 @@ Bahasa Inggris di kota Dumai.</p>
         let currentIndex = 0;
         let slideInterval;
 
-        // Membuat titik navigasi
+        
         for (let i = 0; i < totalSlides; i++) {
             const dot = document.createElement('button');
             dot.classList.add('w-3', 'h-3', 'bg-gray-400', 'rounded-full', 'transition', 'hover:bg-gray-600');
@@ -114,11 +114,11 @@ Bahasa Inggris di kota Dumai.</p>
 
         const dots = dotsContainer.children;
 
-        // Fungsi untuk update slider dan titik aktif
+        
         function updateSlider() {
             slider.style.transform = `translateX(-${currentIndex * 100}%)`;
             
-            // Update kelas untuk titik aktif
+            
             for (let i = 0; i < totalSlides; i++) {
                 dots[i].classList.remove('bg-gray-800');
                 dots[i].classList.add('bg-gray-400');
@@ -138,7 +138,7 @@ Bahasa Inggris di kota Dumai.</p>
             resetInterval();
         }
 
-        // Fungsi untuk tombol navigasi
+        
         prevButton.addEventListener('click', () => {
             goToSlide(currentIndex - 1);
         });
@@ -147,11 +147,11 @@ Bahasa Inggris di kota Dumai.</p>
             goToSlide(currentIndex + 1);
         });
 
-        // Fungsi untuk interval otomatis
+        
         function startInterval() {
             slideInterval = setInterval(() => {
                 goToSlide(currentIndex + 1);
-            }, 4000); // Ganti gambar setiap 4 detik
+            }, 4000); 
         }
 
         function resetInterval() {
@@ -159,7 +159,7 @@ Bahasa Inggris di kota Dumai.</p>
             startInterval();
         }
 
-        // Inisialisasi
+        
         updateSlider();
         startInterval();
     </script> 

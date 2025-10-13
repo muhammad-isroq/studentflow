@@ -20,7 +20,7 @@
                 <div class="mt-12 border-t pt-6">
     <p class="text-sm text-slate-600 mb-3">Bagikan artikel ini:</p>
     <div class="flex space-x-4">
-        <!-- Facebook -->
+        
         <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}"
            target="_blank"
            class="text-blue-600 hover:text-blue-800">
@@ -29,7 +29,7 @@
             </svg>
         </a>
 
-        <!-- Twitter / X -->
+       
         <a href="https://x.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($article->title) }}"
            target="_blank"
            class="text-sky-500 hover:text-sky-700">
@@ -38,7 +38,7 @@
             </svg>
         </a>
 
-        <!-- WhatsApp -->
+        
         <a href="https://wa.me/?text={{ urlencode($article->title . ' ' . request()->fullUrl()) }}"
            target="_blank"
            class="text-green-500 hover:text-green-700">

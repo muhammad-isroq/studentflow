@@ -220,4 +220,6 @@
         </button>
     </div>
     <livewire:create-bill-modal />
+    <livewire:edit-bill-modal />
+    
 </div>

@@ -340,7 +340,7 @@
                 </div>
               </div>
               @empty
-                {{-- Tampilan jika tidak ada data guru sama sekali --}}
+                
                 <div class="w-full text-center py-12">
                     <p class="text-gray-500">Saat ini belum ada data instruktur yang bisa ditampilkan.</p>
                 </div>

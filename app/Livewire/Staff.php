@@ -13,10 +13,7 @@ class Staff extends Component
 
     public function mount()
     {
-        // Ambil semua user yang memiliki role 'staff' atau 'guru'
-        // $this->staffs = User::role(['staff', 'editor'])->orderBy('name', 'asc')->get();
-
-        // PERBAIKAN: Nama variabel diubah dari $teachers menjadi $staffs
+        
         $this->staffs = User::role('staff')
             ->orderByRaw("
                 CASE 

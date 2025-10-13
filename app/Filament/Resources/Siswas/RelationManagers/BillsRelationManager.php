@@ -14,6 +14,12 @@ class BillsRelationManager extends RelationManager
     protected static ?string $title = 'Riwayat Tagihan';
     protected string $view = 'filament.relation-managers.bills-grouped';
 
+    // Tambahkan listener untuk event dari child component
+    protected $listeners = [
+        'bill-updated' => 'refreshAfterUpdate',
+        'open-edit-bill-modal' => '$refresh'
+    ];
+
     public function table(Table $table): Table
     {
         return $table
@@ -110,8 +116,6 @@ class BillsRelationManager extends RelationManager
                 'paid_at' => now(),
             ]);
             
-            $this->dispatch('refresh');
-            
             \Filament\Notifications\Notification::make()
                 ->title('Tagihan berhasil ditandai sebagai lunas')
                 ->success()
@@ -139,8 +143,6 @@ class BillsRelationManager extends RelationManager
             'due_date' => $dueDate,
             'status' => 'unpaid',
         ]);
-
-        $this->dispatch('refresh');
         
         \Filament\Notifications\Notification::make()
             ->title('Tagihan SPP berhasil dibuat')
@@ -151,11 +153,21 @@ class BillsRelationManager extends RelationManager
 
     public function editBill($billId)
     {
-        // Redirect ke halaman edit atau buka modal
-        $this->dispatch('open-modal', [
-            'id' => 'edit-bill-modal',
-            'billId' => $billId
-        ]);
+        // Redirect ke halaman edit Bill Resource
+        return redirect()->route('filament.admin.resources.bills.edit', ['record' => $billId]);
+    }
+
+    public function viewBill($billId)
+    {
+        // Redirect ke halaman view Bill Resource
+        return redirect()->route('filament.admin.resources.bills.view', ['record' => $billId]);
+    }
+
+    #[On('bill-updated')]
+    public function refreshAfterUpdate()
+    {
+        // Refresh component setelah bill diupdate
+        // Livewire 3 otomatis refresh setelah event
     }
 
     public function deleteBill($billId)
@@ -163,8 +175,6 @@ class BillsRelationManager extends RelationManager
         $bill = \App\Models\Bill::find($billId);
         if ($bill) {
             $bill->delete();
-            
-            $this->dispatch('refresh');
             
             \Filament\Notifications\Notification::make()
                 ->title('Tagihan berhasil dihapus')
@@ -186,13 +196,12 @@ class BillsRelationManager extends RelationManager
     {
         $this->dispatch('open-modal', [
             'id' => 'create-new-payment-type-modal',
-        'siswaId' => $this->getOwnerRecord()->id
+            'siswaId' => $this->getOwnerRecord()->id
         ]);
     }
 
     public function refreshBills(): void
     {
-        // Cukup panggil $this->js('location.reload()') atau biarkan kosong
-        // Livewire biasanya cukup pintar untuk me-refresh parent
+        // Method untuk refresh data
     }
 }

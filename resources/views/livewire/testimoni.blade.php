@@ -57,7 +57,7 @@
     </div>
 
     <div class="w-full mx-auto pb-12 sm:px-6 lg:px-8">
-        <!-- Judul Video Testimoni -->
+        
         <div class="overflow-hidden rounded-lg p-6 mb-5">
             <p class="mt-2 text-3xl text-center mb-3 font-bold">
             Video Testimoni
@@ -67,10 +67,10 @@
             </p>
         </div>
             @forelse ($videoTestimonis as $testimoni)
-        <!-- Card Video Testimoni -->
+        
             <div class="mx-auto max-w-5xl mt-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-lg shadow-2xl overflow-hidden">
-                    <!-- Kolom Video -->
+                    
                     <div class="h-full">
                         <iframe 
                             class="w-full h-full" 
@@ -82,7 +82,7 @@
                         </iframe>
                     </div>
 
-                    <!-- Kolom Teks -->
+                    
                     <div class="p-8 flex flex-col justify-center">
                         <svg class="w-10 h-10 text-primary mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.348 14.652a3.75 3.75 0 0 1 0-5.304m5.304 0a3.75 3.75 0 0 1 0 5.304m-7.425 2.122a6.75 6.75 0 0 1 0-9.546m9.546 0a6.75 6.75 0 0 1 0 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12Z" />
@@ -100,7 +100,7 @@
                 </div>
             </div>
              @empty
-                <!-- Tampilan jika tidak ada data sama sekali -->
+                
                 <div class="mx-auto max-w-5xl">
                     <div class="bg-base-100 rounded-lg shadow-lg p-8 text-center">
                         <p class="text-gray-600">Saat ini belum ada video testimoni yang diunggah.</p>

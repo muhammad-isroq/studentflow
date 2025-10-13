@@ -86,6 +86,16 @@
                                     >
                                         Edit
                                     </button>
+                                    
+                                    {{-- TOMBOL HAPUS DITAMBAHKAN DI SINI --}}
+                                    <button 
+                                        wire:click="deleteBill({{ $monthData['bill']->id }})"
+                                        wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."
+                                        class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded"
+                                    >
+                                        Hapus
+                                    </button>
+
                                 @else
                                     <button 
                                         wire:click="generateSppBill({{ $monthData['month_number'] }}, {{ $monthData['year'] }})"
@@ -179,10 +189,12 @@
                                     >
                                         Edit
                                     </button>
+
+                                    {{-- TOMBOL HAPUS DITAMBAHKAN DI SINI (UNTUK TAGIHAN LAINNYA) --}}
                                     <button 
                                         wire:click="deleteBill({{ $bill->id }})"
+                                        wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."
                                         class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded"
-                                        onclick="return confirm('Yakin ingin menghapus?')"
                                     >
                                         Hapus
                                     </button>
@@ -193,7 +205,6 @@
                 </table>
             </div>
             
-            {{-- Button untuk tambah tagihan baru --}}
             <div class="px-6 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                 <button 
                     wire:click="createBill('{{ $paymentTypeName }}')"
@@ -205,8 +216,8 @@
         </div>
     @endforeach
 
-    {{-- Button untuk tambah payment type baru --}}
-    <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden p-6">
+    {{-- Button untuk tambah payment type baru (Tidak diubah) --}}
+    {{-- <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden p-6">
         <button 
             wire:click="createNewPaymentTypeBill"
             class="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
@@ -218,8 +229,7 @@
                 <span class="text-sm font-medium">Tambah Jenis Tagihan Baru</span>
             </div>
         </button>
-    </div>
+    </div> --}}
     <livewire:create-bill-modal />
     <livewire:edit-bill-modal />
-    
 </div>

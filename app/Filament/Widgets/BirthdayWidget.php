@@ -42,7 +42,7 @@ class BirthdayWidget extends BaseWidget
             ->heading('Upcoming Birthday (7 Days)')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Staff or Teacher Name'),
+                    ->label('Staff or Teacher name'),
 
                 Tables\Columns\TextColumn::make('tanggal_lahir')
                     ->label('Date of birth')

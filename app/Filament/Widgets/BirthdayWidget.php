@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class BirthdayWidget extends BaseWidget
 {
-    protected static ?int $sort = 4;
-    protected int | string | array $columnSpan = 'full';
+    protected static ?int $sort = 2;
+    protected int | string | array $columnSpan = '1';
 
     public function table(Table $table): Table
     {

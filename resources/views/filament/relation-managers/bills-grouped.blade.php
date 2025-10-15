@@ -87,7 +87,7 @@
                                         Edit
                                     </button>
                                     
-                                    {{-- TOMBOL HAPUS DITAMBAHKAN DI SINI --}}
+                                    
                                     <button 
                                         wire:click="deleteBill({{ $monthData['bill']->id }})"
                                         wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."
@@ -190,7 +190,7 @@
                                         Edit
                                     </button>
 
-                                    {{-- TOMBOL HAPUS DITAMBAHKAN DI SINI (UNTUK TAGIHAN LAINNYA) --}}
+                                   
                                     <button 
                                         wire:click="deleteBill({{ $bill->id }})"
                                         wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."

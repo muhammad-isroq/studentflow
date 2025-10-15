@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\DatePicker;
 
 class UserForm
 {
@@ -25,6 +26,9 @@ class UserForm
                     ->required()
                     ->unique(ignoreRecord: true),
                 DateTimePicker::make('email_verified_at'),
+                DatePicker::make('tanggal_lahir')
+                    ->label('Tanggal Lahir')
+                    ->native(false),
                 TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state)) // Selalu hash password baru

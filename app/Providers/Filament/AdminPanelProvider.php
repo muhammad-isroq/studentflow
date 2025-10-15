@@ -21,9 +21,21 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\StudentRegistrationChart;
 use App\Http\Middleware\CheckPasswordChanged;
+use App\Filament\Widgets\BirthdayWidget;
+use App\Filament\Widgets\BirthdayNotifierWidget;
+use Filament\Notifications\Livewire\Notifications;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\VerticalAlignment;
+
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        Notifications::alignment(Alignment::Center);
+        Notifications::verticalAlignment(VerticalAlignment::Start);
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -47,6 +59,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
                 StudentRegistrationChart::class,
                 OverdueBillsAlert::class,
+                BirthdayWidget::class,
+                BirthdayNotifierWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -20,6 +20,9 @@ class UsersTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
+                    TextColumn::make('tanggal_lahir')
+                    ->date('d M Y') // Format tampilan tanggal
+                    ->sortable(),
                 // TextColumn::make('email_verified_at')
                 //     ->dateTime()
                 //     ->sortable(),

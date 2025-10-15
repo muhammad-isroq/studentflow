@@ -22,6 +22,7 @@ class User extends Authenticatable implements FilamentUser
         'instagram_url', 
         'linkedin_url',
         'password_changed_at',
+        'tanggal_lahir',
     ];
 
     public function guru(): BelongsTo
@@ -39,6 +40,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tanggal_lahir' => 'date',
         ];
     }
 

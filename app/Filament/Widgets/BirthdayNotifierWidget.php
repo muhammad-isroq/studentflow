@@ -26,8 +26,8 @@ class BirthdayNotifierWidget extends Widget
             foreach ($birthdayUsers as $user) {
                 Notification::make()
                     
-                    ->title(new HtmlString('<span class="text-lg font-bold">Selamat Ulang Tahun!</span>'))
-                    ->body(new HtmlString("<span class=\"text-base\">Hari ini <strong>{$user->name}</strong> sedang berulang tahun. Jangan lupa ucapkan selamat!</span>"))
+                    ->title(new HtmlString('<span class="text-lg font-bold">Happy Birthday!</span>'))
+                    ->body(new HtmlString("<span class=\"text-base\">Today is <strong>{$user->name}'s</strong> birthday. Don’t forget to wish her</span>"))
                     
                     ->success()
                     ->icon('heroicon-o-cake')

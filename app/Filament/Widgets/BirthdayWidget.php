@@ -39,18 +39,18 @@ class BirthdayWidget extends BaseWidget
                     })
                     ->orderByRaw('DAYOFYEAR(tanggal_lahir)');
             })
-            ->heading('Ulang Tahun Mendatang (7 Hari)')
+            ->heading('Upcoming Birthday (7 Days)')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nama Staff atau Guru'),
+                    ->label('Staff or Teacher Name'),
 
                 Tables\Columns\TextColumn::make('tanggal_lahir')
-                    ->label('Tanggal Lahir')
+                    ->label('Date of birth')
                     ->date('d F'),
 
                 // Logika `getStateUsing` Anda sudah benar dan tidak perlu diubah
                 Tables\Columns\TextColumn::make('keterangan')
-                    ->label('Keterangan')
+                    ->label('Information')
                     ->getStateUsing(function (User $record): string {
                         if (!$record->tanggal_lahir) {
                             return '-';
@@ -65,16 +65,16 @@ class BirthdayWidget extends BaseWidget
                         }
 
                         if ($birthdayThisYear->isSameDay($today)) {
-                            return '🎉 Hari Ini!';
+                            return '🎉 Today!';
                         }
                         
                         $diff = $today->diffInDays($birthdayThisYear, false);
 
                         if ($diff === 1) {
-                            return '🎂 Besok';
+                            return '🎂 Tomorrow';
                         }
                         
-                        return "Dalam {$diff} hari";
+                        return "In {$diff} days";
                     })
                     ->badge()
                     ->color(function (User $record) {

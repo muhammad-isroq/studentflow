@@ -15,6 +15,8 @@ use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Actions\BulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 
 
 class SiswasRelationManager extends RelationManager
@@ -28,6 +30,15 @@ class SiswasRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('nama')
             ->columns([
+                Tables\Columns\TextColumn::make('nomor_urut')
+                    ->label('No.')
+                    ->getStateUsing(function (Model $record, $rowLoop, $livewire): string {
+                        // Formula ini akan membuat nomor urut yang benar bahkan saat ada paginasi
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecords()->currentPage() - 1) * $livewire->getTableRecords()->perPage()
+                        );
+                    }),
                 Tables\Columns\TextColumn::make('nama')->label('name'),
                 Tables\Columns\TextColumn::make('kelas_disekolah')->label('grade'),
             ])

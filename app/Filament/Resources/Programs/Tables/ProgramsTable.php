@@ -46,13 +46,13 @@ class ProgramsTable
             ->recordActions([
                 EditAction::make(),
                 // ViewAction::make(),
-                Action::make('view_class')
-                    ->label('Lihat Kelas')
-                    ->icon('heroicon-o-users')
-                    ->color('info')
-                    ->url(fn (Program $record): string =>
-                        SiswaResource::getUrl('index', ['program_id' => $record->id])
-                    ),
+                // Action::make('view_class')
+                //     ->label('Lihat Kelas')
+                //     ->icon('heroicon-o-users')
+                //     ->color('info')
+                //     ->url(fn (Program $record): string =>
+                //         SiswaResource::getUrl('index', ['program_id' => $record->id])
+                //     ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -21,27 +21,39 @@ class ActivitiesTable
                 TextColumn::make('subject_id') ->label('Siswa')
                 ->label('Record')
                 ->formatStateUsing(function ($record) {
-                    if (! class_exists($record->subject_type)) {
-                        return $record->subject_id; // fallback kalau model tidak ada
-                    }
+                        if (! class_exists($record->subject_type)) {
+                            return $record->subject_id;
+                        }
 
-                    $model = $record->subject_type::find($record->subject_id);
+                        $model = $record->subject_type::find($record->subject_id);
 
-                    if (! $model) {
-                        return $record->subject_id; // fallback kalau data sudah terhapus
-                    }
+                        if (! $model) {
+                            return $record->subject_id . ' (dihapus)';
+                        }
 
-                    // Tentukan kolom yang mewakili nama
-                    if ($model->getAttribute('nama')) {
-                        return $model->nama;
-                    } elseif ($model->getAttribute('name')) {
-                        return $model->name;
-                    } elseif ($model->getAttribute('title')) {
-                        return $model->title;
-                    }
+                        // --- PERBAIKAN DAN PENAMBAHAN LOGIKA DI SINI ---
+                        // Cek apakah modelnya adalah Bill
+                        if ($model instanceof \App\Models\Bill) {
+                            // Pastikan relasi siswa dan paymentType ada untuk menghindari error
+                            if ($model->siswa && $model->paymentType) {
+                                // Tampilkan format: "Jenis Tagihan - Nama Siswa"
+                                return "{$model->paymentType->name} - {$model->siswa->nama}";
+                            }
+                            // Fallback jika relasi tidak ditemukan
+                            return "Tagihan #{$model->id}";
+                        }
 
-                    return $record->subject_id; // fallback terakhir
-                }),
+                        // Logika lama Anda untuk model lain
+                        if ($model->getAttribute('nama')) {
+                            return $model->nama;
+                        } elseif ($model->getAttribute('name')) {
+                            return $model->name;
+                        } elseif ($model->getAttribute('title')) {
+                            return $model->title;
+                        }
+
+                        return $record->subject_id; // fallback terakhir
+                    }),
                 TextColumn::make('created_at')->label('Time')->dateTime()->sortable(),
                 TextColumn::make('changes')
                     ->label('Changes')

@@ -27,7 +27,8 @@ class SiswaForm
                 FileUpload::make('foto_formulir')
                     ->label('Form registration')
                     ->imagePreviewHeight('250')
-                    ->downloadable(),
+                    ->downloadable()
+                    ->openable(),
                 FileUpload::make('foto')
                     ->label('Photo')
                     ->default(null),

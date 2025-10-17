@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
+use App\Filament\Resources\Siswas\Pages;
 
 class SiswaResource extends Resource
 {
@@ -31,6 +32,7 @@ class SiswaResource extends Resource
     protected static ?string $modelLabel = 'Student';
     protected static ?string $pluralModelLabel = 'Students';
     protected static ?string $slug = 'students';
+    
     
 
     
@@ -80,6 +82,7 @@ class SiswaResource extends Resource
             'index' => ListSiswas::route('/'),
             'create' => CreateSiswa::route('/create'),
             'edit' => EditSiswa::route('/{record}/edit'),
+            'edit-bill' => Pages\EditSiswaBill::route('/{record}/bills/{billRecord}/edit'),
             // 'view' => ViewSiswa::route('/{record}'),
         ];
     }

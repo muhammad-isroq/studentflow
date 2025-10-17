@@ -8,11 +8,16 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 
+use Illuminate\Support\Facades\Redirect;
+use App\Filament\Resources\Siswas\SiswaResource;
+
 class BillsRelationManager extends RelationManager
 {
     protected static string $relationship = 'bills';
     protected static ?string $title = 'Riwayat Tagihan';
     protected string $view = 'filament.relation-managers.bills-grouped';
+
+    
 
     // Tambahkan listener untuk event dari child component
     protected $listeners = [
@@ -153,10 +158,14 @@ class BillsRelationManager extends RelationManager
 
     public function editBill($billId)
     {
-        // Redirect ke halaman edit Bill Resource
-        return redirect()->route('filament.admin.resources.bills.edit', ['record' => $billId]);
+        // Redirect ke halaman edit bill
+        return redirect()->to(
+            SiswaResource::getUrl('edit-bill', [
+                'record' => $this->getOwnerRecord()->id,
+                'billRecord' => $billId,
+            ])
+        );
     }
-
     public function viewBill($billId)
     {
         // Redirect ke halaman view Bill Resource

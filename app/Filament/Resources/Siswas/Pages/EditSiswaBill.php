@@ -37,17 +37,11 @@ class EditSiswaBill extends Page implements HasForms
         $this->record = $record;
         $this->bill = $billRecord;
         
-        // Validasi bahwa bill ini milik siswa ini
         if ($this->bill->siswa_id !== $this->record->id) {
             abort(403, 'Unauthorized');
         }
-        
-        $this->form->fill([
-            'amount' => $this->bill->amount,
-            'due_date' => $this->bill->due_date,
-            'payment_type_id' => $this->bill->payment_type_id,
-            'description' => $this->bill->description,
-        ]);
+
+        $this->form->fill($this->bill->toArray());
     }
 
     public function form(Schema $schema): Schema
@@ -71,7 +65,8 @@ class EditSiswaBill extends Page implements HasForms
                 FileUpload::make('proof_of_payment')
                     ->label('Proof of payment')
                     ->imagePreviewHeight('250')
-                    ->downloadable(),
+                    ->downloadable()
+                    ->openable(),
                 DatePicker::make('due_date')
                     ->label('Due Date')
                     ->required(),
@@ -79,9 +74,7 @@ class EditSiswaBill extends Page implements HasForms
                 ->options([
                         'unpaid' => 'Belum Lunas',
                         'paid' => 'Lunas',
-                         ])
-                    ->required()
-                    ->default('unpaid'),
+                ]),
                 DateTimePicker::make('paid_at'),
             ])
             ->statePath('data');

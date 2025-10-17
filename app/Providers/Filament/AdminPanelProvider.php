@@ -26,6 +26,7 @@ use App\Filament\Widgets\BirthdayNotifierWidget;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\VerticalAlignment;
+use App\Filament\Widgets\UpcomingMeetingsWidget; 
 
 
 class AdminPanelProvider extends PanelProvider
@@ -61,6 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 OverdueBillsAlert::class,
                 BirthdayWidget::class,
                 BirthdayNotifierWidget::class,
+                UpcomingMeetingsWidget::class
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -9,11 +9,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
-
+use Filament\Actions\Action;
+use App\Models\Guru; 
 
 
 class GurusTable
 {
+    
     public static function configure(Table $table): Table
     {
         return $table
@@ -47,6 +49,11 @@ class GurusTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('recap')
+        ->label('Rekap Absen')
+        ->icon('heroicon-o-chart-bar-square')
+        ->color('gray')
+        ->url(fn (Guru $record): string => \App\Filament\Resources\Gurus\GuruResource::getUrl('recap', ['record' => $record])),
                 // ViewAction::make(),
             ])
             ->toolbarActions([

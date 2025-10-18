@@ -14,6 +14,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\Gurus\Pages;
 
 class GuruResource extends Resource
 {
@@ -27,6 +28,7 @@ class GuruResource extends Resource
     protected static ?string $modelLabel = 'Teacher';
     protected static ?string $pluralModelLabel = 'Teachers';
     protected static ?string $slug = 'teachers';
+    
 
     public static function getEloquentQuery(): Builder
     {
@@ -66,6 +68,7 @@ class GuruResource extends Resource
             'index' => ListGurus::route('/'),
             'create' => CreateGuru::route('/create'),
             'edit' => EditGuru::route('/{record}/edit'),
+            'recap' => Pages\TeacherRecap::route('/{record}/recap'),
         ];
     }
 

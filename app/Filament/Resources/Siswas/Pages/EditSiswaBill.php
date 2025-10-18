@@ -25,7 +25,7 @@ class EditSiswaBill extends Page implements HasForms
 
     protected static string $resource = SiswaResource::class;
     
-    // PERBAIKAN: Hapus 'static' untuk Filament 4
+    
     protected string $view = 'filament.resources.siswas.pages.edit-siswa-bill';
 
     public ?array $data = [];

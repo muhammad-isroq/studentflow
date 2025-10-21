@@ -28,6 +28,13 @@ class ProgramForm
                     ->searchable()
                     ->preload()
                     ->required(),
+                    TextInput::make('jam_pelajaran')
+                    ->label('Durasi per Pertemuan (menit)')
+                    ->numeric()
+                    ->required()
+                    ->default(90)
+                    ->minValue(1)
+                    ->helperText('Masukkan durasi dalam satuan menit. Contoh: 90 untuk 1.5 jam.'),
             ]);
     }
 }

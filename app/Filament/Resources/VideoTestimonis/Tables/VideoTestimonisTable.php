@@ -18,6 +18,8 @@ class VideoTestimonisTable
                     ->searchable(),
                 TextColumn::make('notes1')
                     ->searchable(),
+                TextColumn::make('notes2')
+                    ->searchable(),
                 TextColumn::make('nama_ortu')
                     ->searchable(),
                 TextColumn::make('nama_anak')

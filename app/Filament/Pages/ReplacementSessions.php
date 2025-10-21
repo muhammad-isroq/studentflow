@@ -12,6 +12,7 @@ use App\Models\ClassSession;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Pages\FillAttendance;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Columns\TextInputColumn;
 use BackedEnum;
 
 class ReplacementSessions extends Page implements HasTable
@@ -78,7 +79,7 @@ class ReplacementSessions extends Page implements HasTable
                     ->label('Program'),
                 TextColumn::make('program.nama_ruangan')
                     ->label('Ruangan'),
-                TextColumn::make('topic')
+                TextInputColumn::make('topic')
                     ->label('Topik')
                     ->placeholder('-'),
             ])

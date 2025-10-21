@@ -18,6 +18,7 @@ class Program extends Model
         'nama_ruangan',
         'jadwal_program',
         'guru_id',
+        'jam_pelajaran',
     ];
 
     public function guru(): BelongsTo

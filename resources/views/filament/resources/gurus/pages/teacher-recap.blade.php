@@ -19,7 +19,7 @@
     </div>
     <div class="fi-ta-ctn overflow-hidden bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 sm:rounded-xl">
         <table class="fi-ta-table w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5">
-            <thead class="bg-gray-50 dark:bg-white/5">
+            <thead class="bg-gray-50">
                 <tr class="text-sm">
                     <th class="fi-ta-header-cell px-3 py-3.5 sm:px-6 text-left">
                         Nama Program
@@ -89,7 +89,7 @@
             </tbody>
 
              @if ($this->programsWithTotals->isNotEmpty())
-                <tfoot class="bg-gray-50 dark:bg-white/5 border-t-2 border-gray-300 dark:border-white/10">
+                <tfoot class="bg-gray-50 border-t-2 border-gray-300 dark:border-white/10">
                     <tr class="text-base">
                         <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3">
                             <div class="fi-ta-col-wrp px-3 py-4 text-left font-bold text-gray-700 dark:text-gray-300">

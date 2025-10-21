@@ -25,10 +25,10 @@
                         Nama Program
                     </th>
                     <th class="fi-ta-header-cell px-3 py-3.5 sm:px-6 text-left">
-                        Jumlah Pertemuan Diajar
+                        Jumlah Pertemuan 
                     </th>
                     <th class="fi-ta-header-cell px-3 py-3.5 sm:px-6 text-left">
-                        Jumlah Jam pelajaran
+                        Jumlah Jam Mengajar
                     </th>
                     <th class="fi-ta-header-cell px-3 py-3.5 sm:px-6 text-left">
                         Jumlah Siswa dikelas

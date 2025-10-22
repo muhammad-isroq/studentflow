@@ -1,5 +1,5 @@
 <style>
-  /* From Uiverse.io by vamsidevendrakumar */ 
+
 .card {
   width: 320px;
   height: 320px;
@@ -27,15 +27,16 @@
 }
 
 .card-front {
-  background-color: #4b53ce;
+  /* background-color: #4b53ce; */
   color: #fff;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  border: 10px solid #4b53ce;
+  border: 10px solid #4b53ce; */
   border-radius: 10px;
-  justify-content: center;
+  /* justify-content: center; */
   font-size: 14px;
   transform: rotateY(0deg);
+  overflow: hidden;
 }
 
 .card-back {
@@ -48,6 +49,7 @@
   justify-content: center;
   font-size: 14px;
   transform: rotateY(180deg);
+  padding: 1rem;
 }
 
 </style>
@@ -55,9 +57,9 @@
   <h1 class="sr-only">Kursus Bahasa Inggris di Dumai – The Master of Dumai</h1>
     <div class="carousel w-full h-[700px] overflow-x-hidden relative" id="myCarousel">
   <div class="carousel-item relative w-full flex-shrink-0" id="slide1">
-    <img src="{{ asset('images/1.jpg') }}" class="w-full object-cover" />
+    <img src="{{ asset('images/11.jpg') }}" class="w-full object-cover" />
 
-    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Shape Your Future with Confidence</h2>
       <p class="mt-2 text-lg">
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
@@ -68,8 +70,8 @@
   </div>
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide2">
-    <img src="{{ asset('images/2.jpg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
+    <img src="{{ asset('images/12.jpeg') }}" class="w-full object-cover" />
+    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Learn Anytime, Anywhere</h2>
       <p class="mt-2 text-lg">
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
@@ -80,8 +82,8 @@
   </div>
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide3">
-    <img src="{{ asset('images/3.jpg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
+    <img src="{{ asset('images/13.jpeg') }}" class="w-full object-cover" />
+    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Boost Your Career with English</h2>
       <p class="mt-2 text-lg">
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.
@@ -173,110 +175,121 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
 
-              <div class="flex flex-col items-center text-center"> 
-                <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-academic-cap class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master Pre-Scool</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program yang dirancang untuk anak usia dini (4-6 tahun) yang bertujuan untuk memberikan pengetahun penggunaan bahasa inggris dalam sehari-hariyang berbasis fun learning atau bermain dan belajar. Program ini cocok diikuit sebelum anak memulai sekolah TK dan SD</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center text-center">
-                <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-puzzle-piece class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master Kids</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program yang dirancang untuk anak sekolah dasar (6-12 tahun) dengan tujuan memberikan eksponsor penggunaan bahasa inggris sehari-hari. Pelajaran diampaikan secara komunikatif dan menyenangkan dengan media game di setiap sesi pertemuan. Sehingga anak merasa senang dalam mempelajarai bahasa inggris</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center text-center">
-                 <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-rocket-launch class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master Conversation</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program yang dirancang untuk siswa tingkat SMP, SMA danUmum dengan tujuan meningkatkan kemampuan komunikasi dan percaya diri dalam bahasa inggris baik secara lisan maupun tulisan</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center text-center">
-                 <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-lock-closed class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master Private</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program yang dirancang untuk siswa tingkat SMP, SMA dan Umum dengan tujaun meningkatkan kemampuan komunikasi dan percaya diri dalam bahasa inggris baik secara lisan maupun tulisan. Program ini merupakan program yang ditujukan untuk siswa yang ingin belajar bahasa inggris dengan materi dan kurikulum yang dapat disesuaikan dengan kebutuhan siswa baik dari tingkat pemula ataupun lanjutan</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center text-center">
-                 <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-document-text class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master TOEFL Preparation</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program ini utnuk mereka yang sedang mempersiapkan diri untuk mengambil test TOEFL, baik untuk keperluan studi lanjut di dalam dan luar negeri maupun untuk tujuan-tujuan lainnya seperti persyaratan penerimaan pegawai, promosi jabatan dan sebagainya.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center text-center">
-                 <div class="card p-4">
-                  <div class="card-inner">
-                    <div class="card-front">
-                      <div className="grid grid-cols-1 grid-rows-2 gap-4">
-                          <div class="flex justify-center items-center">
-                            <x-heroicon-o-building-office class="w-20 h-20 text-primary" />
-                          </div>
-                          <div class="text-lg font-bold">Master On-Site Training</div>
-                      </div>
-                    </div>
-                    <div class="card-back">
-                      <div >Program ini ditawarkan kepada perusahaan yang membutuhkan peningkatan skill SDM terkait oenguasaan bahasa inggris terhadap karyawan. kami menyediakan program ini dengan sistem yang mudah dipahami dan cepat untuk dipelajari</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1549490121-3e414c81a62e?q=80&w=2070&auto=format&fit=crop" 
+               alt="Master Pre-School" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white">Master Pre-Scool</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program yang dirancang untuk anak usia dini (4-6 tahun) yang bertujuan untuk memberikan pengetahun penggunaan bahasa inggris dalam sehari-hariyang berbasis fun learning atau bermain dan belajar. Program ini cocok diikuit sebelum anak memulai sekolah TK dan SD</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            </div>
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1503944583232-2d94c0400451?q=80&w=2070&auto=format&fit=crop" 
+               alt="Master Kids" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white">Master Kids</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program yang dirancang untuk anak sekolah dasar (6-12 tahun) dengan tujuan memberikan eksponsor penggunaan bahasa inggris sehari-hari. Pelajaran diampaikan secara komunikatif dan menyenangkan dengan media game di setiap sesi pertemuan. Sehingga anak merasa senang dalam mempelajarai bahasa inggris</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop" 
+               alt="Master Conversation" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white">Master Conversation</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program yang dirancang untuk siswa tingkat SMP, SMA danUmum dengan tujuan meningkatkan kemampuan komunikasi dan percaya diri dalam bahasa inggris baik secara lisan maupun tulisan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1516534778568-b6c41144a406?q=80&w=2070&auto=format&fit=crop" 
+               alt="Master Private" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white">Master Private</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program yang dirancang untuk siswa tingkat SMP, SMA dan Umum dengan tujaun meningkatkan kemampuan komunikasi dan percaya diri dalam bahasa inggris baik secara lisan maupun tulisan. Program ini merupakan program yang ditujukan untuk siswa yang ingin belajar bahasa inggris dengan materi dan kurikulum yang dapat disesuaikan dengan kebutuhan siswa baik dari tingkat pemula ataupun lanjutan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop" 
+               alt="Master TOEFL" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white text-center">Master TOEFL Preparation</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program ini utnuk mereka yang sedang mempersiapkan diri untuk mengambil test TOEFL, baik untuk keperluan studi lanjut di dalam dan luar negeri maupun untuk tujuan-tujuan lainnya seperti persyaratan penerimaan pegawai, promosi jabatan dan sebagainya.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center text-center">
+    <div class="card p-4">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" 
+               alt="On-Site Training" 
+               class="absolute inset-0 w-full h-full object-cover">
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
+            <div class="text-lg font-bold text-white text-center">Master On-Site Training</div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div>Program ini ditawarkan kepada perusahaan yang membutuhkan peningkatan skill SDM terkait oenguasaan bahasa inggris terhadap karyawan. kami menyediakan program ini dengan sistem yang mudah dipahami dan cepat untuk dipelajari</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
         </div>
 
       <div class="w-full mx-auto py-6 sm:px-6 lg:px-8">
@@ -287,7 +300,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/4.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+              <img src="{{ asset('images/14.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
 
               <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                 Master Pre-School
@@ -298,7 +311,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/5.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/15.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Kids
                   <br>
@@ -308,7 +321,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/6.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/16.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Conversation
                   <br>
@@ -449,7 +462,7 @@
         <div class="flex items-center gap-4 sm:p-3">
           <img class="h-16 w-16 rounded-full object-cover" src="https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Foto Karina Aulia">
           <div>
-            <p class="font-bold text-slate-800">Karina Aulia</p>
+            <p class="font-bold text-slate-800">Iqbal Ramadhan</p>
             <p class="text-sm text-gray-500">Marketing Specialist</p>
           </div>
         </div>

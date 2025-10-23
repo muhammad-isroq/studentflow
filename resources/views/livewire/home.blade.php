@@ -300,7 +300,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/14.jpg') }}" class="w-full h-auto rounded-lg block">
+              <img src="{{ asset('images/14.JPG') }}" class="w-full h-auto rounded-lg block">
 
               <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                 Master Pre-School
@@ -311,7 +311,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/15.jpg') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/15.JPG') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Kids
                   <br>
@@ -321,7 +321,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/16.jpg') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/16.JPG') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Conversation
                   <br>

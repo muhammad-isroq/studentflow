@@ -59,7 +59,7 @@
   <div class="carousel-item relative w-full flex-shrink-0" id="slide1">
     <img src="{{ asset('images/11.jpg') }}" class="w-full object-cover" />
 
-    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Shape Your Future with Confidence</h2>
       <p class="mt-2 text-lg">
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
@@ -71,7 +71,7 @@
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide2">
     <img src="{{ asset('images/12.jpeg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Learn Anytime, Anywhere</h2>
       <p class="mt-2 text-lg">
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
@@ -83,7 +83,7 @@
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide3">
     <img src="{{ asset('images/13.jpeg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/10 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Boost Your Career with English</h2>
       <p class="mt-2 text-lg">
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.
@@ -300,7 +300,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/14.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+              <img src="{{ asset('images/14.jpg') }}" class="w-full h-auto rounded-lg block">
 
               <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                 Master Pre-School
@@ -311,7 +311,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/15.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/15.jpg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Kids
                   <br>
@@ -321,7 +321,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/16.jpg') }}" alt="Seorang pelajar tersenyum di dalam kelas" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/16.jpg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Conversation
                   <br>

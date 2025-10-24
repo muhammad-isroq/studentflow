@@ -179,12 +179,12 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://images.unsplash.com/photo-1549490121-3e414c81a62e?q=80&w=2070&auto=format&fit=crop" 
+          <img src="{{ asset('images/4.JPG') }}" 
                alt="Master Pre-School" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white">Master Pre-Scool</div>
+            <div class="text-lg font-extrabold text-white">Master Pre-Scool</div>
           </div>
         </div>
         <div class="card-back">
@@ -198,12 +198,12 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://images.unsplash.com/photo-1503944583232-2d94c0400451?q=80&w=2070&auto=format&fit=crop" 
+          <img src="{{ asset('images/7.JPG') }}" 
                alt="Master Kids" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white">Master Kids</div>
+            <div class="text-lg font-extrabold text-white">Master Kids</div>
           </div>
         </div>
         <div class="card-back">
@@ -222,7 +222,7 @@
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white">Master Conversation</div>
+            <div class="text-lg font-extrabold text-white">Master Conversation</div>
           </div>
         </div>
         <div class="card-back">
@@ -236,12 +236,12 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://images.unsplash.com/photo-1516534778568-b6c41144a406?q=80&w=2070&auto=format&fit=crop" 
+          <img src="{{ asset('images/5.JPG') }}" 
                alt="Master Private" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white">Master Private</div>
+            <div class="text-lg font-extrabold text-white">Master Private</div>
           </div>
         </div>
         <div class="card-back">
@@ -260,7 +260,7 @@
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white text-center">Master TOEFL Preparation</div>
+            <div class="text-lg font-extrabold text-white text-center">Master TOEFL Preparation</div>
           </div>
         </div>
         <div class="card-back">
@@ -279,7 +279,7 @@
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
           <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-4">
-            <div class="text-lg font-bold text-white text-center">Master On-Site Training</div>
+            <div class="text-lg font-extrabold text-white text-center">Master On-Site Training</div>
           </div>
         </div>
         <div class="card-back">
@@ -300,7 +300,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/14.JPG') }}" class="w-full h-auto rounded-lg block">
+              <img src="{{ asset('images/4.JPG') }}" class="w-full h-auto rounded-lg block">
 
               <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                 Master Pre-School
@@ -311,7 +311,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/15.JPG') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/7.jpg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Kids
                   <br>
@@ -321,7 +321,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/16.JPG') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/8.jpg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Conversation
                   <br>

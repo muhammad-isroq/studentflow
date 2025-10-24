@@ -179,7 +179,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="{{ asset('images/4.JPG') }}" 
+          <img src="{{ asset('images/4.jpg') }}" 
                alt="Master Pre-School" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
@@ -198,7 +198,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="{{ asset('images/7.JPG') }}" 
+          <img src="{{ asset('images/7.jpg') }}" 
                alt="Master Kids" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
@@ -236,7 +236,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="{{ asset('images/5.JPG') }}" 
+          <img src="{{ asset('images/5.jpg') }}" 
                alt="Master Private" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
@@ -300,7 +300,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/4.JPG') }}" class="w-full h-auto rounded-lg block">
+              <img src="{{ asset('images/4.jpg') }}" class="w-full h-auto rounded-lg block">
 
               <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                 Master Pre-School

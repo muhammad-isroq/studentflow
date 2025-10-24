@@ -59,7 +59,7 @@
   <div class="carousel-item relative w-full flex-shrink-0" id="slide1">
     <img src="{{ asset('images/11.jpg') }}" class="w-full object-cover" />
 
-    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Shape Your Future with Confidence</h2>
       <p class="mt-2 text-lg">
         Belajar bahasa Inggris mudah, menyenangkan, dan efektif bersama The Master Of Dumai.
@@ -71,7 +71,7 @@
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide2">
     <img src="{{ asset('images/12.jpeg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Learn Anytime, Anywhere</h2>
       <p class="mt-2 text-lg">
         Belajar fleksibel dengan materi interaktif dan tutor berpengalaman
@@ -83,7 +83,7 @@
 
   <div class="carousel-item relative w-full flex-shrink-0" id="slide3">
     <img src="{{ asset('images/13.jpeg') }}" class="w-full object-cover" />
-    <div class="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center text-white px-4">
+    <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
       <h2 class="text-4xl font-bold">Boost Your Career with English</h2>
       <p class="mt-2 text-lg">
         Tingkatkan peluang karier dengan penguasaan bahasa Inggris profesional.

@@ -48,4 +48,9 @@ class BorrowingResource extends Resource
             'edit' => EditBorrowing::route('/{record}/edit'),
         ];
     }
+    
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->hasAnyRole(['admin', 'staff', 'editor']);
+    }
 }

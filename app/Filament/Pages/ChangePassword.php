@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Filament\Notifications\Notification;
 use Filament\Forms\Concerns\InteractsWithForms; 
 use Filament\Forms\Contracts\HasForms;
+use Filament\Actions\Action;
 
 class ChangePassword extends Page implements HasForms
 {
@@ -16,6 +17,9 @@ class ChangePassword extends Page implements HasForms
 
     protected string $view = 'filament.pages.change-password';
     protected static bool $shouldRegisterNavigation = false;
+
+    protected static ?string $slug = 'change-password';
+    protected static ?string $title = 'Ganti Password';
 
     public ?array $data = [];
 
@@ -62,6 +66,15 @@ class ChangePassword extends Page implements HasForms
             ->success()
             ->send();
 
-        return redirect()->route('filament.admin.pages.dashboard');
+        $this->form->fill();
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Action::make('save')
+                ->label('Simpan Perubahan')
+                ->submit('submit'),
+        ];
     }
 }

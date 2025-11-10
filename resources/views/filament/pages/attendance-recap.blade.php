@@ -1,70 +1,57 @@
 <x-filament-panels::page>
-
-    <div class="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow">
-        <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
+        <table class="min-w-full divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+            <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                    <th scope="col" class="px-6 py-3 sticky left-0 bg-gray-50 dark:bg-gray-700 z-10">
+                    <th scope="col" class="sticky left-0 z-10 w-48 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:bg-gray-700 dark:text-gray-300">
                         Nama Siswa
                     </th>
+
                     @foreach ($sessions as $session)
-                        <th scope="col" class="px-6 py-3 text-center">
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
                             {{ $session->session_date->format('d M') }}
                         </th>
                     @endforeach
+
+                    <th scope="col" class="sticky right-0 z-10 bg-gray-50 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+                        Persentase
+                    </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse ($siswas as $siswa)
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white sticky left-0 bg-white dark:bg-gray-800 z-10">
+                    <tr>
+                        <td class="sticky left-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium text-gray-900 dark:bg-gray-800 dark:text-white">
                             {{ $siswa->nama }}
                         </td>
+
                         @foreach ($sessions as $session)
                             @php
-                                // Ambil status dari array yang sudah kita siapkan di file Page
-                                $status = $attendanceData[$siswa->id][$session->id] ?? null;
-                                $bgColorClass = match ($status) {
-                                    'Hadir' => 'bg-green-100 dark:bg-green-900',
-                                    'Izin' => 'bg-yellow-100 dark:bg-yellow-900',
-                                    'Sakit' => 'bg-blue-100 dark:bg-blue-900',
-                                    'Alpa' => 'bg-red-100 dark:bg-red-900',
-                                    default => '',
-                                };
-                                $textColorClass = match ($status) {
-                                    'Hadir' => 'text-green-800 dark:text-green-300',
-                                    'Izin' => 'text-yellow-800 dark:text-yellow-300',
-                                    'Sakit' => 'text-blue-800 dark:text-blue-300',
-                                    'Alpa' => 'text-red-800 dark:text-red-300',
+                                $status = $attendanceData[$siswa->id][$session->id] ?? '-';
+                                $colorClass = match($status) {
+                                    'Hadir' => 'text-green-500',
+                                    'Absen' => 'text-red-500',
+                                    'Izin' => 'text-yellow-500',
                                     default => 'text-gray-400',
                                 };
                             @endphp
-                            <td class="px-6 py-4 text-center {{ $bgColorClass }} {{ $textColorClass }}">
-                                {{ $status ?? '-' }}
+                            <td class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium {{ $colorClass }}">
+                                {{ $status }}
                             </td>
                         @endforeach
-                         @php
-                            $score = $attendanceScores[$siswa->id] ?? 0;
-                            $scoreColorClass = match (true) {
-                                $score >= 85 => 'text-green-600 dark:text-green-400',
-                                $score >= 70 => 'text-yellow-600 dark:text-yellow-400',
-                                default => 'text-red-600 dark:text-red-400',
-                            };
-                        @endphp
-                        <td class="px-6 py-4 font-bold text-center sticky right-0 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600 z-10 {{ $scoreColorClass }}">
-                            {{ $score }}%
+
+                        <td class="sticky right-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-center text-sm font-medium text-gray-900 dark:bg-gray-800 dark:text-white">
+                            {{ $attendanceScores[$siswa->id] ?? 0 }}%
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ count($sessions) + 1 }}" class="px-6 py-4 text-center text-gray-500">
-                            Tidak ada siswa yang terdaftar di program ini.
+                        <td colspan="{{ $sessions->count() + 2 }}" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                            Tidak ada siswa di program ini.
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
 </x-filament-panels::page>
-

@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Navigation\MenuItem;
+use App\Filament\Pages\ChangePassword;
 use App\Filament\Widgets\OverdueBillsAlert;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -48,6 +50,12 @@ class AdminPanelProvider extends PanelProvider
             
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            ->userMenuItems([ 
+                MenuItem::make()
+                    ->label('Change Password')
+                    ->url(fn () => ChangePassword::getUrl())
+                    ->icon('heroicon-o-key'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

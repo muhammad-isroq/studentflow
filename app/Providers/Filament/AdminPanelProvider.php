@@ -29,6 +29,7 @@ use Filament\Notifications\Livewire\Notifications;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\VerticalAlignment;
 use App\Filament\Widgets\UpcomingMeetingsWidget; 
+use App\Http\Controllers\PrintReportController;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -62,6 +63,15 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
+            ->routes(function () { // <-- INI BENAR (CLOSURE)
+                \Illuminate\Support\Facades\Route::get('/print/inventory', [PrintReportController::class, 'printInventory'])
+                    ->name('print.inventory');
+                \Illuminate\Support\Facades\Route::get('/print/borrowings', [PrintReportController::class, 'printBorrowings'])
+                    ->name('print.borrowings');
+                
+                \Illuminate\Support\Facades\Route::get('/print/stock-report', [PrintReportController::class, 'printStockReport'])
+                    ->name('print.stock_report');
+            })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,

@@ -6,6 +6,7 @@ use App\Filament\Resources\Inventories\InventoryResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Widgets\InventoryStatsWidget;
+use Filament\Actions\Action;
 
 class ListInventories extends ListRecords
 {
@@ -15,6 +16,12 @@ class ListInventories extends ListRecords
     {
         return [
             CreateAction::make(),
+            Action::make('print')
+                ->label('Cetak Laporan')
+                ->icon('heroicon-o-printer')
+                ->color('gray')
+                ->url(route('filament.admin.print.inventory'))
+                ->openUrlInNewTab(),
         ];
     }
 

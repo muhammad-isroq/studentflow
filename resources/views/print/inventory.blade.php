@@ -69,6 +69,7 @@
             <tr>
                 <th>No.</th>
                 <th>Nama Barang</th>
+                <th>Tanggal Beli</th>
                 <th>Kode Aset</th>
                 <th>Kategori</th>
                 <th>Jumlah (Stok)</th>
@@ -81,6 +82,7 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->nama_barang }}</td>
+                    <td>{{ $item->tanggal_beli }}</td>
                     <td>{{ $item->kode_aset }}</td>
                     <td>{{ $item->kategori }}</td>
                     <td>{{ $item->jumlah }}</td>

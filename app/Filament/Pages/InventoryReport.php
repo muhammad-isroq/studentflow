@@ -17,6 +17,7 @@ use App\Models\User;
 use BackedEnum;
 use UnitEnum;
 use Filament\Actions\Action;
+use Filament\Tables\Columns\ImageColumn;
 
 class InventoryReport extends Page implements HasTable
 {
@@ -55,6 +56,11 @@ class InventoryReport extends Page implements HasTable
                 TextColumn::make('reason')
                     ->label('Alasan')
                     ->searchable(),
+                ImageColumn::make('proof')
+                    ->label('Bukti')
+                    ->width(100)
+                    ->height(100)
+                    ->circular(),
                 TextColumn::make('user.name') 
                     ->label('Dicatat oleh')
                     ->searchable()

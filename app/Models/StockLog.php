@@ -16,6 +16,7 @@ class StockLog extends Model
         'stock_after_change',
         'reason',
         'user_id',
+        'proof',
     ];
 
     public function inventory(): BelongsTo

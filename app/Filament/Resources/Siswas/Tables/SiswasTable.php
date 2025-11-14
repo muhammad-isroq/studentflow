@@ -38,6 +38,9 @@ class SiswasTable
                 // TextColumn::make('kelas_disekolah')
                 //     ->label('Grade')
                 //     ->searchable(),
+                TextColumn::make('status')
+                    ->label('status')
+                    ->searchable(),
                 TextColumn::make('no_wali')
                     ->label('Parents number')
                     ->searchable(),

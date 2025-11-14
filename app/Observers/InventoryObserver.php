@@ -3,7 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Inventory;
-use App\Models\StockMovement;
+use App\Models\StockLog;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryObserver
 {
@@ -12,12 +13,14 @@ class InventoryObserver
      */
     public function created(Inventory $inventory): void
     {
+        // Hanya catat jika stok awal lebih dari 0
         if ($inventory->jumlah > 0) {
-            StockMovement::create([
+            StockLog::create([
                 'inventory_id' => $inventory->id,
-                'user_id' => auth()->id(), // Ambil ID user yang sedang login
-                'quantity' => $inventory->jumlah, // Kuantitas awal adalah barang masuk
-                'notes' => 'Barang baru ditambahkan',
+                'change_amount' => $inventory->jumlah, // Positif karena stok awal
+                'stock_after_change' => $inventory->jumlah,
+                'reason' => 'Stok Awal (Barang Baru Dibuat)',
+                'user_id' => Auth::id(), // Mencatat siapa yang membuat barang ini
             ]);
         }
     }
@@ -27,27 +30,7 @@ class InventoryObserver
      */
     public function updated(Inventory $inventory): void
     {
-       if ($inventory->isDirty('jumlah')) {
-
-            // Ambil jumlah asli (sebelum diubah)
-            $originalQuantity = $inventory->getOriginal('jumlah') ?? 0;
-
-            // Ambil jumlah baru (dari form)
-            $newQuantity = $inventory->jumlah;
-
-            // Hitung perbedaannya
-            $difference = $newQuantity - $originalQuantity;
-
-            // Jika ada perbedaan, buat log
-            if ($difference != 0) {
-                StockMovement::create([
-                    'inventory_id' => $inventory->id,
-                    'user_id' => auth()->id(),
-                    'quantity' => $difference, // Bisa positif (masuk) atau negatif (keluar)
-                    'notes' => 'Stok diupdate manual',
-                ]);
-            }
-        }
+       //
     }
 
     /**

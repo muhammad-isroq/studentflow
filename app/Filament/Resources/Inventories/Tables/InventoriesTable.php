@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use App\Models\StockLog;
 use App\Models\Inventory;
+use Filament\Forms\Components\FileUpload;
 
 class InventoriesTable
 {
@@ -77,26 +78,29 @@ class InventoriesTable
                 ->label('Alasan')
                 ->placeholder('Contoh: Pembelian baru dari supplier')
                 ->required(),
+            FileUpload::make('proof')
+                ->label('Bukti Pembelian (Opsional)')
+                ->maxSize(10240)
+                    ->image()
+                    ->downloadable()
+                    ->openable()
+                    ->columnSpanFull(),
         ])
         ->action(function (Inventory $record, array $data): void {
             $quantity = (int)$data['quantity'];
 
-            // 1. Tambah stok di tabel inventory
             $record->increment('jumlah', $quantity);
 
-            // 2. Buat log
             StockLog::create([
                 'inventory_id' => $record->id,
                 'change_amount' => +$quantity,
-                'stock_after_change' => $record->jumlah, // Stok baru setelah increment
+                'stock_after_change' => $record->jumlah, 
                 'reason' => $data['reason'],
                 'user_id' => auth()->id(),
+                'proof' => $data['proof'] ?? null,
             ]);
         }),
 
-    // ===============================================
-    //       AKSI BARANG KELUAR (STOCK OUT)
-    // ===============================================
     Action::make('stockOut')
         ->label('Barang Keluar')
         ->icon('heroicon-o-minus-circle')
@@ -108,9 +112,8 @@ class InventoriesTable
                     ->required()
                     ->minValue(1)
                     ->default(1)
-                    // SEKARANG $record SUDAH TERDEFINISI DI SINI
                     ->maxValue($record->jumlah)
-                    ->helperText("Stok saat ini: {$record->jumlah}"), // Bonus: tampilkan sisa stok
+                    ->helperText("Stok saat ini: {$record->jumlah}"), 
                 Textarea::make('reason')
                     ->label('Alasan')
                     ->placeholder('Contoh: Barang rusak, hilang, dll.')
@@ -119,14 +122,12 @@ class InventoriesTable
         ->action(function (Inventory $record, array $data): void {
             $quantity = (int)$data['quantity'];
 
-            // 1. Kurangi stok di tabel inventory
             $record->decrement('jumlah', $quantity);
 
-            // 2. Buat log
             StockLog::create([
                 'inventory_id' => $record->id,
-                'change_amount' => -$quantity, // Negatif
-                'stock_after_change' => $record->jumlah, // Stok baru setelah decrement
+                'change_amount' => -$quantity, 
+                'stock_after_change' => $record->jumlah, 
                 'reason' => $data['reason'],
                 'user_id' => auth()->id(),
             ]);

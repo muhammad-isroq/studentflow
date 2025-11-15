@@ -17,13 +17,19 @@ class BillsRelationManager extends RelationManager
     protected static ?string $title = 'Riwayat Tagihan';
     protected string $view = 'filament.relation-managers.bills-grouped';
 
-    
+    public $selectedYear;
 
     // Tambahkan listener untuk event dari child component
     protected $listeners = [
         'bill-updated' => 'refreshAfterUpdate',
         'open-edit-bill-modal' => '$refresh'
     ];
+
+    public function mount(): void
+    {
+        // Atur tahun default ke tahun saat ini
+        $this->selectedYear = date('Y');
+    }
 
     public function table(Table $table): Table
     {
@@ -71,7 +77,7 @@ class BillsRelationManager extends RelationManager
 
         // Generate 12 bulan untuk tahun ini
         $months = [];
-        $currentYear = date('Y');
+        $currentYear = $this->selectedYear;
         
         for ($i = 1; $i <= 12; $i++) {
             $monthName = date('F', mktime(0, 0, 0, $i, 1));

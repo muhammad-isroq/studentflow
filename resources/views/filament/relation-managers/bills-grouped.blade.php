@@ -1,9 +1,33 @@
 <div class="space-y-6">
+
+<div class="max-w-xs mb-4">
+    <label for="selectedYear" class="fi-fo-field-wrp-label text-sm font-medium leading-6 text-gray-950 dark:text-white">
+        Tampilkan Tahun
+    </label>
+    
+    <select
+        wire:model.live="selectedYear"
+        id="selectedYear"
+        class="fi-input-wrapper block w-full border-none bg-white py-1.5 pe-3 ps-3 text-base text-gray-950 shadow-sm ring-1 transition duration-75 focus:ring-2 disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 dark:disabled:ring-gray-700 fi-select-input rounded-lg ring-gray-950/10 focus:ring-primary-600 dark:ring-gray-700 dark:focus:ring-primary-500"
+    >
+        @php
+            // Ambil tahun dari tagihan tertua siswa ini
+            $firstBillYear = $this->getOwnerRecord()->bills()->min(DB::raw('YEAR(due_date)'));
+            $startYear = $firstBillYear ? (int)$firstBillYear : (int)date('Y') - 1;
+            $endYear = (int)date('Y') + 1; // Tampilkan satu tahun ke depan
+        @endphp
+        
+        @for ($year = $endYear; $year >= $startYear; $year--)
+            <option value="{{ $year }}">{{ $year }}</option>
+        @endfor
+    </select>
+</div>
+
     {{-- SPP Bulanan --}}
     <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                SPP Bulanan - {{ date('Y') }}
+                SPP Bulanan - {{ $selectedYear }}
             </h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
                 Riwayat pembayaran SPP per bulan

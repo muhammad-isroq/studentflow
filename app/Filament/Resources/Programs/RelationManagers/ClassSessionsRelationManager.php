@@ -36,17 +36,16 @@ class ClassSessionsRelationManager extends RelationManager
                 ->required(),
             Select::make('guru_id')
                 ->relationship('guru', 'nama_guru')
-                ->label('Teacher in Charge')
+                ->label('Replacement Teacher')
                 ->required(),
         ];
 
         // Tambahkan field replacement untuk SEMUA user (bisa disesuaikan nanti)
         $components[] = Select::make('replacement_guru_id')
             ->relationship('replacementGuru', 'nama_guru')
-            ->label('Replacement Teacher (if any)')
-            ->placeholder('Pilih guru pengganti jika ada')
-            ->searchable()
-            ->helperText('Pilih guru pengganti jika guru utama tidak bisa hadir');
+            ->label('Replacement User')
+            ->placeholder('Pilih user')
+            ->searchable();
 
         $components[] = TextInput::make('topic')
             ->label('Topic')
@@ -69,11 +68,11 @@ class ClassSessionsRelationManager extends RelationManager
                     ->label('Teacher')
                     ->badge()
                     ->color(fn ($record) => $record->replacement_guru_id ? 'gray' : 'success'),
-                TextColumn::make('replacementGuru.nama_guru')
-                    ->label('Replacement')
-                    ->badge()
-                    ->color('warning')
-                    ->placeholder('-'),
+                // TextColumn::make('replacementGuru.nama_guru')
+                //     ->label('Replacement')
+                //     ->badge()
+                //     ->color('warning')
+                //     ->placeholder('-'),
                 TextColumn::make('topic')
                     ->placeholder('-'),
             ])
@@ -89,7 +88,14 @@ class ClassSessionsRelationManager extends RelationManager
                     ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->getOwnerRecord()->id])),
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                ->modalHeading(function ($record) {
+                    if (empty($record?->session_date)) {
+                        return 'Edit Sesi';
+                    }
+                    $date = $record->session_date->format('d-m-Y');
+                    return 'Edit Session Date ' . $date;
+                }),
                 Action::make('view_attendance')
                     ->label('Lihat Absensi')
                     ->icon('heroicon-o-eye')

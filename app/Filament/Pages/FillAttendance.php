@@ -57,7 +57,7 @@ class FillAttendance extends Page implements HasForms, HasTable
     
     public function getSubheading(): string
     {
-        return 'Tanggal: ' . $this->record->session_date->format('l, d M Y');
+        return 'Session: ' . $this->record->session_date->format('l, d M Y');
     }
 
     public function table(Table $table): Table

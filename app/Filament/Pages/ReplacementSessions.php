@@ -79,6 +79,8 @@ class ReplacementSessions extends Page implements HasTable
                     ->label('Program'),
                 TextColumn::make('program.nama_ruangan')
                     ->label('Ruangan'),
+                TextColumn::make('program.jadwal_program')
+                    ->label('Program schedule'),
                 TextInputColumn::make('topic')
                     ->label('Topik')
                     ->placeholder('-'),

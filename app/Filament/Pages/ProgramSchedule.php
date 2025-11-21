@@ -74,7 +74,7 @@ class ProgramSchedule extends Page implements HasTable
                 TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),
                 TextColumn::make('guru.nama_guru')->label('Teacher'),
                 TextColumn::make('program.nama_ruangan')->label('Room Name'),
-                TextColumn::make('program.jadwal_program')->label('Program schedule'),
+                // TextColumn::make('program.jadwal_program')->label('Program schedule'),
                 TextColumn::make('program.lesson_time')->label('Lesson Time'),
                 TextInputColumn::make('topic')->label('Topic'),
             ])

@@ -48,10 +48,12 @@ class UpcomingMeetingsWidget extends BaseWidget
 
                 Tables\Columns\TextColumn::make('program.nama_program')
                     ->label('Program')
-                    ->description(fn (ClassSession $record): string => "Ruangan: {$record->program->nama_ruangan}")
+                    ->description(fn (ClassSession $record): string => "Room Name: {$record->program->nama_ruangan}")
                     ->url(fn (ClassSession $record): string => ProgramSchedule::getUrl(['program' => $record->program_id]))
                     ->openUrlInNewTab(),
-
+                Tables\Columns\TextColumn::make('program.lesson_time')
+                ->label('Lesson Time')
+                ->icon('heroicon-o-clock'),
                 Tables\Columns\TextColumn::make('topic')
                     ->label('topic')
                     ->placeholder('no topics yet'),

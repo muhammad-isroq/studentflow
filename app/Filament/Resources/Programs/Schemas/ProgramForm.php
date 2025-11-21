@@ -22,6 +22,9 @@ class ProgramForm
                 TextInput::make('jadwal_program')
                     ->label('Program schedule')
                     ->required(),
+                TextInput::make('lesson_time')
+                    ->label('Lesson Time')
+                    ->placeholder('Example: 14.00 - 15.30'),
                 Select::make('guru_id')
                     ->relationship('guru', 'nama_guru')
                     ->label('Teachers name')
@@ -29,7 +32,7 @@ class ProgramForm
                     ->preload()
                     ->required(),
                     TextInput::make('jam_pelajaran')
-                    ->label('Durasi per Pertemuan (menit)')
+                    ->label('Meeting Duration (minutes)')
                     ->numeric()
                     ->required()
                     ->default(90)

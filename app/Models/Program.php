@@ -17,6 +17,7 @@ class Program extends Model
         'nama_program',
         'nama_ruangan',
         'jadwal_program',
+        'lesson_time',
         'guru_id',
         'jam_pelajaran',
     ];
@@ -40,7 +41,7 @@ class Program extends Model
     {
         return LogOptions::defaults()
             ->useLogName('program') 
-            ->logOnly(['nama_program', 'nama_ruangan', 'jadwal_program', 'guru_id']) 
+            ->logOnly(['nama_program', 'nama_ruangan', 'jadwal_program', 'guru_id','lesson_time']) 
             ->logOnlyDirty() 
             ->dontSubmitEmptyLogs(); 
     }

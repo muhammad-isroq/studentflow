@@ -64,7 +64,7 @@ class ReplacementSessions extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('session_date')
-                    ->label('Tanggal Meeting')
+                    ->label('Session Date')
                     ->date('l, d M Y')
                     ->sortable(),
                 // TextColumn::make('guru.nama_guru')
@@ -78,9 +78,11 @@ class ReplacementSessions extends Page implements HasTable
                 TextColumn::make('program.nama_program')
                     ->label('Program'),
                 TextColumn::make('program.nama_ruangan')
-                    ->label('Ruangan'),
+                    ->label('Room Name'),
                 TextColumn::make('program.jadwal_program')
                     ->label('Program schedule'),
+                TextColumn::make('program.lesson_time')
+                    ->label('Lesson Time'),
                 TextInputColumn::make('topic')
                     ->label('Topik')
                     ->placeholder('-'),

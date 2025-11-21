@@ -35,6 +35,10 @@ class ProgramsTable
                 TextColumn::make('jadwal_program')
                     ->label('Program schedule')
                     ->searchable(),
+                TextColumn::make('lesson_time')
+                    ->label('Lesson Time')
+                    ->icon('heroicon-o-clock')
+                    ->searchable(),
                 
                 // Ini sudah benar (menggunakan relasi dari Program.php)
                 TextColumn::make('guru.nama_guru') 

@@ -53,7 +53,9 @@ class UpcomingMeetingsWidget extends BaseWidget
                     ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('program.lesson_time')
                 ->label('Lesson Time')
-                ->icon('heroicon-o-clock'),
+                ->icon('heroicon-o-clock')
+                ->badge()
+                ->color('success'),
                 Tables\Columns\TextColumn::make('topic')
                     ->label('topic')
                     ->placeholder('no topics yet'),

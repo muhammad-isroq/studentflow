@@ -70,7 +70,7 @@ class ReplacementSessions extends Page implements HasTable
                 // TextColumn::make('guru.nama_guru')
                 //     ->label('Guru Asli')
                 //     ->badge()
-                //     ->color('gray'),
+                //     ->color('success'),
                 // TextColumn::make('replacementGuru.nama_guru')
                 //     ->label('Guru Pengganti (Anda)')
                 //     ->badge()
@@ -82,7 +82,10 @@ class ReplacementSessions extends Page implements HasTable
                 // TextColumn::make('program.jadwal_program')
                 //     ->label('Program schedule'),
                 TextColumn::make('program.lesson_time')
-                    ->label('Lesson Time'),
+                    ->label('Lesson Time')
+                    ->icon('heroicon-o-clock')
+                    ->badge()
+                    ->color('success'),
                 TextInputColumn::make('topic')
                     ->label('Topik')
                     ->placeholder('-'),

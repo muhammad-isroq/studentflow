@@ -6,8 +6,8 @@
             <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 ">Daftar Kehadiran</h1>
-                        <p class="text-sm text-gray-600 mt-1">Klik pada kolom status untuk mengubah kehadiran siswa</p>
+                        <h1 class="text-xl font-bold text-gray-900 ">Attendance list</h1>
+                        <p class="text-sm text-gray-600 mt-1">Click on the status column to change student attendance.</p>
                     </div>
                     
                     <!-- Session Info dalam bentuk badges -->
@@ -40,7 +40,7 @@
             <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <span class="text-sm text-gray-600 font-medium">Aksi Cepat:</span>
+                        <span class="text-sm text-gray-600 font-medium">Quick action:</span>
                         <x-filament::button
                             color="success"
                             size="sm"
@@ -50,7 +50,7 @@
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            Semua Hadir
+                            All Present
                         </x-filament::button>
                         
                         {{-- <x-filament::button
@@ -71,15 +71,15 @@
                         @php $stats = $this->getAttendanceStats(); @endphp
                         <div class="flex items-center">
                             <div class="w-4 h-4 bg-green-400 rounded-full mr-2"></div>
-                            <span class="text-gray-600">Hadir: <span class="font-semibold text-green-700">{{ $stats['hadir'] }}</span></span>
+                            <span class="text-gray-600">Present: <span class="font-semibold text-green-700">{{ $stats['hadir'] }}</span></span>
                         </div>
                         <div class="flex items-center">
                             <div class="w-4 h-4 bg-red-400 rounded-full mr-2"></div>
-                            <span class="text-gray-600">Absen: <span class="font-semibold text-red-700">{{ $stats['absen'] }}</span></span>
+                            <span class="text-gray-600">Alpha: <span class="font-semibold text-red-700">{{ $stats['absen'] }}</span></span>
                         </div>
                         <div class="flex items-center">
                             <div class="w-4 h-4 bg-yellow-400 rounded-full mr-2"></div>
-                            <span class="text-gray-600">Izin/Sakit: <span class="font-semibold text-yellow-700">{{ $stats['izin'] + $stats['sakit'] }}</span></span>
+                            <span class="text-gray-600">Permission/Sick Leave: <span class="font-semibold text-yellow-700">{{ $stats['izin'] + $stats['sakit'] }}</span></span>
                         </div>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                Perubahan status otomatis tersimpan
+                Status changes are automatically saved
             </div>
             
             <div class="flex space-x-3">
@@ -108,7 +108,7 @@
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Kembali
+                    Return
                 </x-filament::button>
                 
                 <x-filament::button 
@@ -118,7 +118,7 @@
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    Selesai
+                    Finished
                 </x-filament::button>
             </div>
         </div>

@@ -33,18 +33,18 @@ class ChangePassword extends Page implements HasForms
         return $schema
             ->schema([
                 TextInput::make('current_password')
-                    ->label('Password Saat Ini')
+                    ->label('Current password')
                     ->password()
                     ->required()
                     ->currentPassword(),
                 TextInput::make('new_password')
-                    ->label('Password Baru')
+                    ->label('New password')
                     ->password()
                     ->required()
                     ->confirmed()
                     ->different('current_password'),
                 TextInput::make('new_password_confirmation')
-                    ->label('Konfirmasi Password Baru')
+                    ->label('New password confirmation')
                     ->password()
                     ->required(),
             ])
@@ -62,7 +62,7 @@ class ChangePassword extends Page implements HasForms
         ]);
 
         Notification::make()
-            ->title('Password berhasil diubah')
+            ->title('Password changed successfully')
             ->success()
             ->send();
 
@@ -73,7 +73,7 @@ class ChangePassword extends Page implements HasForms
     {
         return [
             Action::make('save')
-                ->label('Simpan Perubahan')
+                ->label('Save')
                 ->submit('submit'),
         ];
     }

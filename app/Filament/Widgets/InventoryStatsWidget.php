@@ -29,12 +29,12 @@ class InventoryStatsWidget extends StatsOverviewWidget
             Stat::make('Barang Habis', $barangHabis)
                 ->description('Item dengan stok 0')
                 ->icon('heroicon-o-x-circle')
-                ->color('warning'), // Beri warna kuning
+                ->color('warning'), 
 
             Stat::make('Barang Rusak', $barangRusak)
                 ->description('Item dengan kondisi rusak')
                 ->icon('heroicon-o-exclamation-triangle')
-                ->color('danger'), // Beri warna merah
+                ->color('danger'), 
         ];
     }
 }

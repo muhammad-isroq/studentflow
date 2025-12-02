@@ -37,13 +37,13 @@ class AppServiceProvider extends ServiceProvider
 
                 // Bangun grup navigasi baru secara dinamis
                 Filament::registerNavigationGroups([
-                    NavigationGroup::make('Jadwal Program Saya'),
+                    NavigationGroup::make('My Schedule'),
                 ]);
 
                 // Bangun item navigasi baru untuk setiap program guru
                 $navItems = $programs->map(function (Program $program) {
                     return NavigationItem::make($program->nama_program)
-                        ->group('Jadwal Program Saya')
+                        ->group('My Schedule')
                         ->icon('heroicon-o-calendar-days')
                         ->url(ProgramSchedule::getUrl(['program' => $program->id]))
                         ->isActiveWhen(fn () => request()->route('program')?->id === $program->id);

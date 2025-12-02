@@ -70,25 +70,25 @@ class FillAttendance extends Page implements HasForms, HasTable
             )
             ->columns([
                 TextColumn::make('siswa.nama')
-                    ->label('Nama Siswa')
+                    ->label('Student Name')
                     ->searchable()
                     ->sortable(),
                     
                 SelectColumn::make('status')
-                    ->label('Status Kehadiran')
+                    ->label('Attendance Status')
                     ->options([
-                        'Hadir' => 'Hadir',
-                        'Absen' => 'Absen',
-                        'Izin' => 'Izin',
-                        'Sakit' => 'Sakit',
-                        'Belum Diisi' => 'Belum Diisi',
+                        'Hadir' => 'Present',
+                        'Absen' => 'Alpha',
+                        'Izin' => 'Permission',
+                        'Sakit' => 'Sick',
+                        'Belum Diisi' => 'Not Recorded',
                     ])
                     ->selectablePlaceholder(false)
                     ->updateStateUsing(function ($record, $state) {
                         $record->update(['status' => $state]);
                         
                         Notification::make()
-                            ->title('Status kehadiran berhasil diperbarui')
+                            ->title('Attendance status updated successfully')
                             ->success()
                             ->send();
                             
@@ -96,24 +96,24 @@ class FillAttendance extends Page implements HasForms, HasTable
                     })
                     ->beforeStateUpdated(function ($record) {
                         // Jika masih 'Belum Diisi', ubah ke 'Hadir' sebagai default
-                        if ($record->status === 'Belum Diisi') {
-                            $record->update(['status' => 'Hadir']);
+                        if ($record->status === 'Not Recorded') {
+                            $record->update(['status' => 'Present']);
                         }
                     }),
                 TextInputColumn::make('notes')
                 ->label('Notes')
-                ->disabled(fn ($record) => $record->status === 'Hadir')
+                ->disabled(fn ($record) => $record->status === 'Present')
                 ->updateStateUsing(function ($record, $state) {
                     $record->update(['notes' => $state]);
                     return $state;
                 }),
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label('Recorded At')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
                     
                 TextColumn::make('updated_at')
-                    ->label('Diperbarui')
+                    ->label('Last Updated')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])
@@ -124,17 +124,17 @@ class FillAttendance extends Page implements HasForms, HasTable
     public function saveAll()
     {
         Notification::make()
-            ->title('Semua perubahan telah disimpan otomatis!')
+            ->title('All changes have been saved automatically!')
             ->success()
             ->send();
     }
     
     public function setAllPresent()
     {
-        $this->record->attendances()->update(['status' => 'Hadir']);
+        $this->record->attendances()->update(['status' => 'Present']);
         
         Notification::make()
-            ->title('Semua siswa berhasil diubah menjadi "Hadir"!')
+            ->title('All students successfully changed to "Present"!')
             ->success()
             ->send();
             
@@ -144,10 +144,10 @@ class FillAttendance extends Page implements HasForms, HasTable
     
     public function resetAttendance()
     {
-        $this->record->attendances()->update(['status' => 'Belum Diisi']);
+        $this->record->attendances()->update(['status' => 'Not Recorded']);
         
         Notification::make()
-            ->title('Status kehadiran berhasil direset!')
+            ->title('Attendance status successfully reset!')
             ->success()
             ->send();
             

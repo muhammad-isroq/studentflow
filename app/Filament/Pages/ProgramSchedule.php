@@ -95,7 +95,10 @@ class ProgramSchedule extends Page implements HasTable
                     ->label('Fill Attendance')
                     ->icon('heroicon-o-pencil-square')
                     
-                    ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record])),
+                    ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record]))
+                    ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
+                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
+                    ->extraAttributes(['class' => 'mr-7']),
                 Action::make('lessonPlan')
     ->label('Lesson Plan')
     ->icon('heroicon-o-book-open') 

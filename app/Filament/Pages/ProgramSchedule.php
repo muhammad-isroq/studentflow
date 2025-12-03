@@ -157,7 +157,7 @@ class ProgramSchedule extends Page implements HasTable
             ->columnSpanFull(),
 
         // Divider dengan judul
-        Placeholder::make('section1_title')
+        Placeholder::make('*')
             ->content(new HtmlString('
                 <div class="border-l-4 border-blue-500 pl-4 py-2 mb-2">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">📖 Main Learning Content</h3>
@@ -167,7 +167,7 @@ class ProgramSchedule extends Page implements HasTable
             ->columnSpanFull(),
 
         // Tips untuk Topic & Activity
-        Placeholder::make('tips_section1')
+        Placeholder::make('tips_main_learning')
             ->label('')
             ->content(new HtmlString('
                 <div class="grid grid-cols-2 gap-4">
@@ -193,7 +193,7 @@ class ProgramSchedule extends Page implements HasTable
         
         RichEditor::make('topic')
             ->label('📖 Topic')
-            ->helperText('Example: Present Continuous Tense - Daily Activities')
+            ->helperText('Example = Present Continuous Tense : Daily Activities')
             ->placeholder('The main topics that will be discussed in the lesson')
             ->required()
             ->columnSpanFull()
@@ -210,7 +210,7 @@ class ProgramSchedule extends Page implements HasTable
 
         RichEditor::make('activity')
             ->label('🎯 Activity')
-            ->helperText('Example: Warming up - Picture description (10 menit), Main activity - Role play in pairs (20 menit), Practice - Fill in the blanks worksheet (15 menit), Closing - Quick quiz (5 menit)')
+            ->helperText('Example = Warming up : Picture description (10 menit), Main activity : Role play in pairs (20 menit), Practice : Fill in the blanks worksheet (15 menit), Closing : Quick quiz (5 menit)')
             ->placeholder('Description of the learning activities to be carried out')
             ->columnSpanFull()
             ->toolbarButtons([
@@ -222,7 +222,7 @@ class ProgramSchedule extends Page implements HasTable
             ]),
 
         // Divider untuk section 2
-        Placeholder::make('section2_title')
+        Placeholder::make('*')
             ->content(new HtmlString('
                 <div class="border-l-4 border-emerald-500 pl-4 py-2 mb-2 mt-6">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">📝 Supporting Materials</h3>
@@ -232,7 +232,7 @@ class ProgramSchedule extends Page implements HasTable
             ->columnSpanFull(),
 
         // Tips untuk Vocabulary & Journal
-        Placeholder::make('tips_section2')
+        Placeholder::make('tips_supporting_materials')
             ->label('')
             ->content(new HtmlString('
                 <div class="grid grid-cols-2 gap-4">
@@ -258,7 +258,7 @@ class ProgramSchedule extends Page implements HasTable
 
         RichEditor::make('vocabulary_list') 
             ->label('📝 Vocabulary List')
-            ->helperText('Example: Running - Berlari (verb): The children are running in the park | Swimming - Berenang (verb): She is swimming in the pool')
+            ->helperText('Example = Running : Berlari (verb): The children are running in the park | Swimming : Berenang (verb): She is swimming in the pool')
             ->placeholder('List of new vocabulary learned with their meanings')
             ->columnSpanFull()
             ->toolbarButtons([
@@ -270,7 +270,7 @@ class ProgramSchedule extends Page implements HasTable
 
         RichEditor::make('class_journal')
             ->label('📔 Class Journal')
-            ->helperText('Example: Classroom Atmosphere - Students were very enthusiastic and actively participated. Challenges - Some students still had difficulty with pronunciation. Highlights - The role-play activity was very effective.')
+            ->helperText('Example = Classroom Atmosphere : Students were very enthusiastic and actively participated. Challenges : Some students still had difficulty with pronunciation. Highlights : The role-play activity was very effective.')
             ->placeholder('Observation notes during learning')
             ->columnSpanFull()
             ->toolbarButtons([

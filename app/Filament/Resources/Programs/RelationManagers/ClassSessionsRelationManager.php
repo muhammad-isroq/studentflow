@@ -104,7 +104,10 @@ class ClassSessionsRelationManager extends RelationManager
                     ->label('Lihat Absensi')
                     ->icon('heroicon-o-eye')
                     ->color('gray')
-                    ->url(fn (ClassSession $record): string => ViewAttendance::getUrl(['record' => $record])),
+                    ->url(fn (ClassSession $record): string => ViewAttendance::getUrl(['record' => $record]))
+                    ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
+                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
+                    ->extraAttributes(['class' => 'mr-7']),
                 DeleteAction::make(),
                 Action::make('viewLessonPlan')
     ->label('View Lesson Plan')

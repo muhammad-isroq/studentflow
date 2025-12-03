@@ -100,7 +100,8 @@ class ClassSessionsRelationManager extends RelationManager
                     $date = $record->session_date->format('d-m-Y');
                     return 'Edit Session Date ' . $date;
                 }),
-                                Action::make('view_attendance')
+                DeleteAction::make(),
+                Action::make('view_attendance')
                     ->label('Lihat Absensi')
                     ->icon('heroicon-o-eye')
                     ->color('gray')
@@ -108,7 +109,6 @@ class ClassSessionsRelationManager extends RelationManager
                     ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
                     ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
                     ->extraAttributes(['class' => 'mr-7']),
-                DeleteAction::make(),
                 Action::make('viewLessonPlan')
     ->label('View Lesson Plan')
     ->icon('heroicon-o-eye')

@@ -5,17 +5,18 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Bill;
 use App\Models\Transaction;
+use App\Models\User; // <--- TAMBAHAN 1
 use Illuminate\Support\Str;
 
 class ImportPaidBillsToTransactions extends Command
 {
     /**
-     * Nama perintah yang akan diketik di terminal
+     * The name and signature of the console command.
      */
     protected $signature = 'bills:import-paid';
 
     /**
-     * Deskripsi perintah
+     * The console command description.
      */
     protected $description = 'Menyalin data Bill status PAID ke tabel Transactions agar masuk Buku Kas';
 
@@ -23,8 +24,12 @@ class ImportPaidBillsToTransactions extends Command
     {
         $this->info('Memulai proses import data tagihan lunas ke buku kas...');
 
-        // 1. Ambil semua Bill yang statusnya 'paid'
-        // Kita gunakan with() agar query lebih cepat (Eager Loading)
+        // 1. Ambil User ID untuk mengisi kolom 'user_id'
+        // Kita ambil user pertama di database (biasanya Super Admin)
+        $admin = User::first();
+        $adminId = $admin ? $admin->id : 1; // Jika tidak ada user, paksa ID 1
+
+        // 2. Ambil semua Bill yang statusnya 'paid'
         $paidBills = Bill::where('status', 'paid')
             ->with(['siswa', 'paymentType'])
             ->get();
@@ -36,14 +41,12 @@ class ImportPaidBillsToTransactions extends Command
         $bar->start();
 
         foreach ($paidBills as $bill) {
-            // 2. Buat Deskripsi Unik untuk mencegah Duplikat
-            // Kita akan menandai transaksi ini berasal dari ID Bill sekian
+            // Buat Deskripsi Unik
             $description = "Pembayaran " . ($bill->paymentType->name ?? 'Tagihan') . 
                            " - " . ($bill->siswa->nama ?? 'Siswa') . 
                            " (Ref Bill #{$bill->id})";
 
-            // 3. Cek apakah transaksi ini sudah pernah di-import sebelumnya?
-            // Kita cek berdasarkan deskripsi yang mengandung ID unik tadi
+            // Cek duplikat
             $exists = Transaction::where('description', $description)->exists();
 
             if ($exists) {
@@ -52,19 +55,17 @@ class ImportPaidBillsToTransactions extends Command
                 continue;
             }
 
-            // 4. Tentukan Tanggal Transaksi
-            // Idealnya pakai 'updated_at' (waktu saat status berubah jadi paid)
-            // Jika Anda punya kolom 'paid_at' di tabel bills, ganti '$bill->updated_at' dengan '$bill->paid_at'
             $transactionDate = $bill->updated_at; 
 
-            // 5. Buat Data Transaksi Baru
+            // Simpan Transaksi
             Transaction::create([
-                'type'        => 'income', // Pasti pemasukan
+                'user_id'     => $adminId, // <--- TAMBAHAN 2 (Solusi Error Anda)
+                'type'        => 'income',
                 'amount'      => $bill->amount,
-                'category'    => Str::slug($bill->paymentType->name ?? 'general'), // Format kategori biar rapi (misal: monthly-spp)
+                'category'    => Str::slug($bill->paymentType->name ?? 'general'),
                 'date'        => $transactionDate,
                 'description' => $description,
-                'created_at'  => $transactionDate, // Samakan waktu buatnya
+                'created_at'  => $transactionDate,
                 'updated_at'  => $transactionDate,
             ]);
 

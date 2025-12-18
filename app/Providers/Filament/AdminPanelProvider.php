@@ -30,6 +30,7 @@ use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\VerticalAlignment;
 use App\Filament\Widgets\UpcomingMeetingsWidget; 
 use App\Http\Controllers\PrintReportController;
+use Illuminate\Support\Facades\Route;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -71,6 +72,8 @@ class AdminPanelProvider extends PanelProvider
                 
                 \Illuminate\Support\Facades\Route::get('/print/stock-report', [PrintReportController::class, 'printStockReport'])
                     ->name('print.stock_report');
+                \Illuminate\Support\Facades\Route::get('/print/finance', [PrintReportController::class, 'printFinance'])
+                     ->name('print.finance');
             })
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

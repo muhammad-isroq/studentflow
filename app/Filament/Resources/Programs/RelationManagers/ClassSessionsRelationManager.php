@@ -115,7 +115,7 @@ class ClassSessionsRelationManager extends RelationManager
     ->color('info')
     ->badge(fn (ClassSession $record) => $record->topic ? 'Filled' : 'Empty')
     ->badgeColor(fn (ClassSession $record) => $record->topic ? 'success' : 'gray')
-    ->visible(fn () => auth()->user()->hasRole(['admin', 'staff'])) // Hanya Admin & Staff
+    ->visible(fn () => auth()->user()->hasRole(['admin', 'staff', 'super_staff'])) 
     
     // Header modal yang menarik
     ->modalHeading(fn (ClassSession $record) => new HtmlString(

@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\Widget;
 use App\Models\Bill;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OverdueBillsAlert extends Widget
 {
@@ -17,7 +18,9 @@ class OverdueBillsAlert extends Widget
     // Method ini dijalankan saat widget dimuat
     public function mount(): void
     {
-        $this->overdueBills = Bill::where('status', 'unpaid')
+        $this->overdueBills = Bill::query()
+            // PERBAIKAN 1: Ambil status 'unpaid' ATAU 'overdue'
+            ->whereIn('status', ['unpaid', 'overdue'])
             ->where('due_date', '<', Carbon::now()) // Cari yang jatuh temponya sudah lewat
             ->whereHas('paymentType', function ($query) {
                 $query->where('name', 'Monthly spp'); // Khusus untuk Monthly spp
@@ -29,12 +32,13 @@ class OverdueBillsAlert extends Widget
     // Method ini untuk menyembunyikan widget jika tidak ada tagihan telat
     public static function canView(): bool
     {
-        if (! auth()->user()->hasAnyRole(['admin', 'staff'])) {
+        if (!Auth::check() || !Auth::user()->hasAnyRole(['admin', 'staff', 'super_staff'])) {
             return false;
         }
 
         // Hanya tampilkan widget jika ada tagihan SPP yang telat
-        return Bill::where('status', 'unpaid')
+        return Bill::query()
+            ->whereIn('status', ['unpaid', 'overdue'])
             ->where('due_date', '<', Carbon::now())
             ->whereHas('paymentType', function ($query) {
                 $query->where('name', 'Monthly spp');

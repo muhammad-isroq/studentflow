@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\PrintReportController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Home;
 use App\Livewire\ArticlePage;
@@ -71,4 +71,13 @@ Route::get('/generate-sitemap', function () {
     return '✅ Sitemap berhasil dibuat!';
 });
 
-
+Route::middleware('auth')->group(function () {
+    // Rute Cetak Laporan Keuangan
+    Route::get('/print/finance', [PrintReportController::class, 'printFinance'])
+        ->name('print.finance');
+    Route::get('/print/cash-book', [PrintReportController::class, 'printCashBook'])
+    ->name('print.cash_book');
+        
+    // (Opsional) Anda juga bisa memindahkan rute inventory ke sini agar kumpul jadi satu
+    // Route::get('/print/inventory', [PrintReportController::class, 'printInventory'])->name('print.inventory');
+});

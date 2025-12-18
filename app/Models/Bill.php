@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use App\Observers\BillObserver;
 
+#[ObservedBy([BillObserver::class])]
 class Bill extends Model
 {
     use HasFactory, LogsActivity;
@@ -166,6 +169,11 @@ class Bill extends Model
      */
     public static function createMonthlySpp($siswa, $month, $year)
     {
+
+        if ($siswa->status !== 'active') { 
+            return null; // Batalkan pembuatan tagihan jika tidak aktif
+        }
+
         // Cari atau buat payment type SPP
         $sppPaymentType = PaymentType::firstOrCreate([
             'name' => 'Monthly SPP'

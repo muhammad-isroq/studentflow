@@ -12,6 +12,8 @@ use App\Models\Program;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use App\Filament\Pages\ProgramSchedule;
+// use App\Models\Bill;
+// use App\Observers\BillObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Bill::observe(BillObserver::class);
         Siswa::observe(SiswaObserver::class);
         Filament::serving(function () {
             // Logika ini hanya akan berjalan jika user sudah login

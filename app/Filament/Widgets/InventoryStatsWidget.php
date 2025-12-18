@@ -12,7 +12,7 @@ class InventoryStatsWidget extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->hasRole(['admin', 'staff']);
+        return auth()->user()->hasRole(['admin', 'staff' , 'super_staff']);
     }
 
     protected function getStats(): array

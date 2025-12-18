@@ -15,7 +15,7 @@ class StudentRegistrationChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'staff']);
+        return auth()->user()->hasAnyRole(['admin', 'staff' , 'super_staff']);
     }
 
     protected function getData(): array

@@ -48,6 +48,7 @@ class AssessmentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $programRecord = $this->getOwnerRecord();
         return $table
             ->recordTitleAttribute('name')
             ->columns([
@@ -69,7 +70,8 @@ class AssessmentsRelationManager extends RelationManager
                     ->label('Summary / Average')
                     ->icon('heroicon-m-chart-bar')
                     ->color('success')
-                    ->record(fn ($livewire) => $livewire->getOwnerRecord())
+                    ->record($programRecord)
+                    // ->record(fn ($livewire) => $livewire->getOwnerRecord())
                     ->modalHeading('Rekapitulasi Nilai & Rata-rata Kelas')
                     ->modalWidth('7xl') // Agar popup lebar
                     ->modalSubmitAction(false)

@@ -70,8 +70,9 @@ class AssessmentsRelationManager extends RelationManager
                     ->label('Summary / Average')
                     ->icon('heroicon-m-chart-bar')
                     ->color('success')
-                    ->record($programRecord)
-                    // ->record(fn ($livewire) => $livewire->getOwnerRecord())
+                    ->mountUsing(function (Action $action, $livewire) {
+        $action->record($livewire->getOwnerRecord());
+    })
                     ->modalHeading('Rekapitulasi Nilai & Rata-rata Kelas')
                     ->modalWidth('7xl') // Agar popup lebar
                     ->modalSubmitAction(false)
@@ -81,97 +82,63 @@ class AssessmentsRelationManager extends RelationManager
                             ->schema([
                                 // Bagian Header Tabel (Label Kolom)
                                 Grid::make(7)
-                ->schema([
-                    TextEntry::make('header_nama')
-                        ->hiddenLabel() // Sembunyikan label otomatis
-                        ->default('NAMA SISWA')
-                        ->weight(FontWeight::Bold),
-                    
-                    TextEntry::make('header_l')
-                        ->hiddenLabel()
-                        ->default('AVG LISTENING')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter(), // Rata tengah agar sejajar dengan angka
-                    
-                    TextEntry::make('header_r')
-                        ->hiddenLabel()
-                        ->default('AVG READING')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter(),
-                    
-                    TextEntry::make('header_w')
-                        ->hiddenLabel()
-                        ->default('AVG WRITING')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter(),
-                    
-                    TextEntry::make('header_s')
-                        ->hiddenLabel()
-                        ->default('AVG SPEAKING')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter(),
-                    
-                    TextEntry::make('header_g')
-                        ->hiddenLabel()
-                        ->default('AVG GRAMMAR')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter(),
-                    
-                    TextEntry::make('header_final')
-                        ->hiddenLabel()
-                        ->default('FINAL SCORE')
-                        ->weight(FontWeight::Bold)
-                        ->alignCenter()
-                        ->color('success'),
-                ]),
+                                ->schema([
+                                    TextEntry::make('h_nama')->default('NAMA SISWA')->hiddenLabel()->weight(FontWeight::Bold),
+                                    TextEntry::make('h_l')->default('AVG LISTENING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_r')->default('AVG READING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_w')->default('AVG WRITING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_s')->default('AVG SPEAKING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_g')->default('AVG GRAMMAR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_f')->default('FINAL SCORE')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
+                                ]),
 
                                 // Bagian Data (Looping Siswa)
                                RepeatableEntry::make('summary_data')
                                         ->label('') 
                                         ->state(function ($livewire) {
+                        // 1. Ambil Program (Owner) dengan aman
+                        $program = $livewire->getOwnerRecord();
+                        if (!$program) return [];
 
-                                            $program = $livewire->getOwnerRecord();
-                                            
+                        // 2. Ambil Assessment IDs
+                        $assessmentIds = $program->assessments->pluck('id');
+                        if ($assessmentIds->isEmpty()) return [];
 
-                                            $assessmentIds = $program->assessments->pluck('id');
+                        // 3. Ambil Siswa
+                        $students = $program->siswas; 
+                        if (!$students) return [];
 
-                                            $students = $program->siswas; 
+                        // 4. Map Data dengan Null Safety (?? 0)
+                        return $students->map(function ($student) use ($assessmentIds) {
+                            $grades = Grade::where('student_id', $student->id)
+                                ->whereIn('assessment_id', $assessmentIds)
+                                ->get();
 
-                                            if (!$students) {
-                                                return collect([]);
-                                            }
-
-
-                                            return $students->map(function ($student) use ($assessmentIds) {
-                                            $grades = Grade::where('student_id', $student->id)
-                                                ->whereIn('assessment_id', $assessmentIds)
-                                                ->get();
-
-                                            return [
-                                                'nama' => $student->nama, 
-                                                'avg_l' => number_format($grades->avg('listening') ?? 0, 1),
-                                                'avg_r' => number_format($grades->avg('reading') ?? 0, 1),
-                                                'avg_w' => number_format($grades->avg('writing') ?? 0, 1),
-                                                'avg_s' => number_format($grades->avg('speaking') ?? 0, 1),
-                                                'avg_g' => number_format($grades->avg('grammar') ?? 0, 1),
-                                                'final' => number_format($grades->avg('average') ?? 0, 1),
-                                            ];
-                                            });
-                                        })
+                            return [
+                                'nama' => $student->nama ?? '-',
+                                'avg_l' => number_format((float)($grades->avg('listening') ?? 0), 1),
+                                'avg_r' => number_format((float)($grades->avg('reading') ?? 0), 1),
+                                'avg_w' => number_format((float)($grades->avg('writing') ?? 0), 1),
+                                'avg_s' => number_format((float)($grades->avg('speaking') ?? 0), 1),
+                                'avg_g' => number_format((float)($grades->avg('grammar') ?? 0), 1),
+                                'final' => number_format((float)($grades->avg('average') ?? 0), 1),
+                            ];
+                        });
+                    })
                                     ->schema([
-                                        Grid::make(7)
-                                            ->schema([
-                                                TextEntry::make('nama')->hiddenLabel(),
-                                                TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
-                                                TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
-                                                TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),
-                                                TextEntry::make('avg_s')->hiddenLabel()->alignCenter(),
-                                                TextEntry::make('avg_g')->hiddenLabel()->alignCenter(),
-                                                TextEntry::make('final')->hiddenLabel()->alignCenter()
-                                                    ->badge()
-                                                    ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
-                                            ]),
-                                    ])
+                        Grid::make(7)
+                            ->schema([
+                                TextEntry::make('nama')->hiddenLabel()->weight(FontWeight::Medium),
+                                TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
+                                TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
+                                TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),
+                                TextEntry::make('avg_s')->hiddenLabel()->alignCenter(),
+                                TextEntry::make('avg_g')->hiddenLabel()->alignCenter(),
+                                TextEntry::make('final')->hiddenLabel()->alignCenter()
+                                    ->badge()
+                                    ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
+                            ]),
+                    ])
                             ])
                             ]),
             ])

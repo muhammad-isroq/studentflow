@@ -141,22 +141,19 @@ class AssessmentsRelationManager extends RelationManager
 
 
                                             return $students->map(function ($student) use ($assessmentIds) {
-                                                
+                                            $grades = Grade::where('student_id', $student->id)
+                                                ->whereIn('assessment_id', $assessmentIds)
+                                                ->get();
 
-                                                $grades = \App\Models\Grade::where('student_id', $student->id)
-                                                    ->whereIn('assessment_id', $assessmentIds)
-                                                    ->get();
-
-
-                                                return [
-                                                    'nama' => $student->nama, 
-                                                    'avg_l' => number_format($grades->avg('listening'), 1),
-                                                    'avg_r' => number_format($grades->avg('reading'), 1),
-                                                    'avg_w' => number_format($grades->avg('writing'), 1),
-                                                    'avg_s' => number_format($grades->avg('speaking'), 1),
-                                                    'avg_g' => number_format($grades->avg('grammar'), 1),
-                                                    'final' => number_format($grades->avg('average'), 1),
-                                                ];
+                                            return [
+                                                'nama' => $student->nama, 
+                                                'avg_l' => number_format($grades->avg('listening') ?? 0, 1),
+                                                'avg_r' => number_format($grades->avg('reading') ?? 0, 1),
+                                                'avg_w' => number_format($grades->avg('writing') ?? 0, 1),
+                                                'avg_s' => number_format($grades->avg('speaking') ?? 0, 1),
+                                                'avg_g' => number_format($grades->avg('grammar') ?? 0, 1),
+                                                'final' => number_format($grades->avg('average') ?? 0, 1),
+                                            ];
                                             });
                                         })
                                     ->schema([

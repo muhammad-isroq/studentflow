@@ -89,4 +89,9 @@ class Siswa extends Model
               ->where('status', '!=', 'paid');
         });
     }
+
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class, 'student_id');
+    }
 }

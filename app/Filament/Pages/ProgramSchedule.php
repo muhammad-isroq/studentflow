@@ -21,6 +21,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Notifications\Notification;
 use Illuminate\Support\HtmlString;
+use App\Filament\Pages\GradingPage;
 
 
 class ProgramSchedule extends Page implements HasTable
@@ -33,7 +34,7 @@ class ProgramSchedule extends Page implements HasTable
     {
         return 'My Schedule';
     }
-    
+
     protected static ?string $slug = 'program-schedule/{program}';
 
     protected string $view = 'filament.pages.program-schedule';
@@ -44,8 +45,14 @@ class ProgramSchedule extends Page implements HasTable
             Action::make('Rekap Absen')
             ->label('Absence Recap')
             ->icon('heroicon-o-document-chart-bar')
-            
             ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->program->id])),
+
+            Action::make('unit_test')
+            ->label('Unit Test & Grades')
+            ->icon('heroicon-o-academic-cap')
+            ->color('success')
+            ->url(fn () => GradingPage::getUrl(['program_id' => $this->program->id]))
+            ->openUrlInNewTab(),
         ];
     }
 
@@ -125,7 +132,7 @@ class ProgramSchedule extends Page implements HasTable
     
     ->modalDescription('Complete the lesson plan for this session. Ensure all components are filled out completely for proper documentation.')
     ->modalWidth('5xl')
-    ->slideOver() // Modal slide dari samping, lebih modern!
+    ->slideOver() 
     
     ->mountUsing(fn (ClassSession $record, \Filament\Schemas\Schema $form) => $form->fill([
         'topic' => $record->topic,
@@ -323,6 +330,8 @@ class ProgramSchedule extends Page implements HasTable
             ->duration(5000)
             ->send();
     }),
+
+
                     
             ])
             ->defaultSort('session_date', 'asc');

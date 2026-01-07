@@ -14,7 +14,7 @@ class Staff extends Component
     public function mount()
     {
         
-        $this->staffs = User::role('staff')
+        $this->staffs = User::role(['staff', 'super_staff'])
             ->orderByRaw("
                 CASE 
                     WHEN name LIKE '%Mr. Acca Manurung, S.IP%' THEN 1  

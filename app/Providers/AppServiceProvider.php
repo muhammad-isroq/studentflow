@@ -49,7 +49,17 @@ class AppServiceProvider extends ServiceProvider
                         ->group('My Schedule')
                         ->icon('heroicon-o-calendar-days')
                         ->url(ProgramSchedule::getUrl(['program' => $program->id]))
-                        ->isActiveWhen(fn () => request()->route('program')?->id === $program->id);
+                        
+                        
+                        ->isActiveWhen(function () use ($program) {
+
+                            $isSchedulePage = request()->route('program')?->id == $program->id;
+                            $isGradingPage = request()->routeIs('*.pages.grading') && 
+                                             request()->query('program_id') == $program->id;
+
+                            return $isSchedulePage || $isGradingPage;
+                        });
+
                 })->all();
 
                 Filament::registerNavigationItems($navItems);

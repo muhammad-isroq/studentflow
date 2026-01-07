@@ -27,8 +27,6 @@ class ProgramResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_program';
 
-    
-
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->oldest();
@@ -59,6 +57,7 @@ class ProgramResource extends Resource
         return [
             RelationManagers\SiswasRelationManager::class,
             RelationManagers\ClassSessionsRelationManager::class,
+            RelationManagers\AssessmentsRelationManager::class,
         ];
     }
 

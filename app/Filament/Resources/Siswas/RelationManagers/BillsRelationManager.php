@@ -131,6 +131,8 @@ class BillsRelationManager extends RelationManager
                 ->title('Tagihan berhasil ditandai sebagai lunas')
                 ->success()
                 ->send();
+
+            $this->dispatch('bill-updated');
         }
     }
 
@@ -160,6 +162,8 @@ class BillsRelationManager extends RelationManager
             ->body("Tagihan untuk bulan " . date('F', mktime(0, 0, 0, $month, 1)) . " $year")
             ->success()
             ->send();
+        
+            $this->dispatch('bill-updated');
     }
 
     public function editBill($billId)
@@ -195,6 +199,7 @@ class BillsRelationManager extends RelationManager
                 ->title('Tagihan berhasil dihapus')
                 ->success()
                 ->send();
+            $this->dispatch('bill-updated');
         }
     }
 
@@ -218,5 +223,13 @@ class BillsRelationManager extends RelationManager
     public function refreshBills(): void
     {
         // Method untuk refresh data
+    }
+
+    public function getTotalArrearsProperty()
+    {
+        return $this->getOwnerRecord()->bills()
+            ->where('status', ['overdue', 'unpaid']) 
+            ->whereDate('due_date', '>=', '2025-07-01') 
+            ->sum('amount'); 
     }
 }

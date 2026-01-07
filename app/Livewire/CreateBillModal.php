@@ -73,9 +73,9 @@ class CreateBillModal extends Component
             ->title('Tagihan berhasil dibuat')
             ->success()
             ->send();
-
+        $this->dispatch('bill-updated');
         $this->closeModal();
-        $this->dispatch('bill-created');
+        // $this->dispatch('bill-created');
     }
 
     public function closeModal()

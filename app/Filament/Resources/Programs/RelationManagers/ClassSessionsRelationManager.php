@@ -84,7 +84,8 @@ class ClassSessionsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                ->icon('heroicon-o-plus'),
                 Action::make('Rekap Absen')
                     ->color('success')
                     ->icon('heroicon-o-document-chart-bar')

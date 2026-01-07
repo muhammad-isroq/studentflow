@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+
 class Program extends Model
 {
     use HasFactory, LogsActivity; 
@@ -44,5 +45,10 @@ class Program extends Model
             ->logOnly(['nama_program', 'nama_ruangan', 'jadwal_program', 'guru_id','lesson_time']) 
             ->logOnlyDirty() 
             ->dontSubmitEmptyLogs(); 
+    }
+
+    public function assessments(): HasMany
+    {
+        return $this->hasMany(Assessment::class)->orderBy('order');
     }
 }

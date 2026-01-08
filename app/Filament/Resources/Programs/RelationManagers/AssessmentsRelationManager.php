@@ -19,7 +19,7 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
 use Filament\Support\Enums\FontWeight;
-
+use Illuminate\Support\Str;
 
 
 class AssessmentsRelationManager extends RelationManager
@@ -48,6 +48,32 @@ class AssessmentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $calcClassAvg = function ($livewire, $column) {
+            $program = $livewire->getOwnerRecord();
+            if (!$program) return 0;
+
+            // Pisahkan Review vs Semester
+            $assessments = $program->assessments;
+            $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
+            $semesterTestId = $semesterTest ? $semesterTest->id : null;
+            $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
+
+            // Hitung Rata-rata Review (Semua Siswa)
+            $avgReviews = \App\Models\Grade::whereIn('student_id', $program->siswas->pluck('id'))
+                ->whereIn('assessment_id', $reviewIds)
+                ->avg($column) ?? 0;
+
+            // Hitung Rata-rata Semester (Semua Siswa)
+            $avgSemester = 0;
+            if ($semesterTestId) {
+                $avgSemester = \App\Models\Grade::whereIn('student_id', $program->siswas->pluck('id'))
+                    ->where('assessment_id', $semesterTestId)
+                    ->avg($column) ?? 0;
+            }
+
+            // Rumus: (AvgReview + AvgSemester) / 2
+            return ($avgReviews + $avgSemester) / 2;
+        };
         $programRecord = $this->getOwnerRecord();
         return $table
             ->recordTitleAttribute('name')
@@ -67,80 +93,151 @@ class AssessmentsRelationManager extends RelationManager
                 CreateAction::make()
                     ->label('Tambah Ujian'),
                 Action::make('summary_average')
-                    ->label('Summary / Average')
-                    ->icon('heroicon-m-chart-bar')
+                    ->label('Report Scoring Sheet')
+                    ->icon('heroicon-m-document-chart-bar')
                     ->color('success')
-                    ->mountUsing(function (Action $action, $livewire) {
-        $action->record($livewire->getOwnerRecord());
-    })
-                    ->modalHeading('Rekapitulasi Nilai & Rata-rata Kelas')
-                    ->modalWidth('7xl') // Agar popup lebar
+                    
+                    // Mount Record
+                    ->mountUsing(fn (Action $action, $livewire) => $action->record($livewire->getOwnerRecord()))
+                    
+                    ->modalHeading('Report Scoring Sheet (Rumus: [Avg Review + Semester] / 2)')
+                    ->modalWidth('full')
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup')
+                    
                     ->infolist([
-                        Section::make()
-                            ->schema([
-                                // Bagian Header Tabel (Label Kolom)
-                                Grid::make(7)
+                        Section::make()->schema([
+                            // A. HEADER (9 Kolom)
+                            Grid::make(9)
+                                ->extraAttributes(['class' => 'border-b pb-2 mb-2'])
                                 ->schema([
-                                    TextEntry::make('h_nama')->default('NAMA SISWA')->hiddenLabel()->weight(FontWeight::Bold),
-                                    TextEntry::make('h_l')->default('AVG LISTENING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_r')->default('AVG READING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_w')->default('AVG WRITING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_s')->default('AVG SPEAKING')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_g')->default('AVG GRAMMAR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_f')->default('FINAL SCORE')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
+                                    TextEntry::make('h_nama')->default('NAMA')->hiddenLabel()->weight(FontWeight::Bold),
+                                    TextEntry::make('h_l')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_r')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_w')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_s')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_g')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_total')->default('TL (Total)')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('primary'),
+                                    TextEntry::make('h_f')->default('AV (Final)')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
+                                    TextEntry::make('h_rank')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                 ]),
 
-                                // Bagian Data (Looping Siswa)
-                               RepeatableEntry::make('summary_data')
-                                        ->label('') 
-                                        ->state(function ($livewire) {
-                        // 1. Ambil Program (Owner) dengan aman
-                        $program = $livewire->getOwnerRecord();
-                        if (!$program) return [];
+                            // B. ISI DATA SISWA
+                            RepeatableEntry::make('summary_data')
+                                ->label('')
+                                ->state(function ($livewire) {
+                                    $program = $livewire->getOwnerRecord();
+                                    if (!$program) return [];
 
-                        // 2. Ambil Assessment IDs
-                        $assessmentIds = $program->assessments->pluck('id');
-                        if ($assessmentIds->isEmpty()) return [];
+                                    $assessments = $program->assessments;
+                                    $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
+                                    $semesterTestId = $semesterTest ? $semesterTest->id : null;
+                                    $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
 
-                        // 3. Ambil Siswa
-                        $students = $program->siswas; 
-                        if (!$students) return [];
+                                    $students = $program->siswas;
+                                    if (!$students) return [];
 
-                        // 4. Map Data dengan Null Safety (?? 0)
-                        return $students->map(function ($student) use ($assessmentIds) {
-                            $grades = Grade::where('student_id', $student->id)
-                                ->whereIn('assessment_id', $assessmentIds)
-                                ->get();
+                                    $data = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
+                                        $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
+                                        $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
+                                        $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
 
-                            return [
-                                'nama' => $student->nama ?? '-',
-                                'avg_l' => number_format((float)($grades->avg('listening') ?? 0), 1),
-                                'avg_r' => number_format((float)($grades->avg('reading') ?? 0), 1),
-                                'avg_w' => number_format((float)($grades->avg('writing') ?? 0), 1),
-                                'avg_s' => number_format((float)($grades->avg('speaking') ?? 0), 1),
-                                'avg_g' => number_format((float)($grades->avg('grammar') ?? 0), 1),
-                                'final' => number_format((float)($grades->avg('average') ?? 0), 1),
-                            ];
-                        });
-                    })
-                                    ->schema([
-                        Grid::make(7)
-                            ->schema([
-                                TextEntry::make('nama')->hiddenLabel()->weight(FontWeight::Medium),
-                                TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
-                                TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
-                                TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),
-                                TextEntry::make('avg_s')->hiddenLabel()->alignCenter(),
-                                TextEntry::make('avg_g')->hiddenLabel()->alignCenter(),
-                                TextEntry::make('final')->hiddenLabel()->alignCenter()
-                                    ->badge()
-                                    ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
-                            ]),
-                    ])
-                            ])
-                            ]),
+                                        $calc = function($col) use ($reviewGrades, $semesterGrade) {
+                                            $avgReview = (float)($reviewGrades->avg($col) ?? 0);
+                                            $scoreSem  = (float)($semesterGrade->$col ?? 0);
+                                            return ($avgReview + $scoreSem) / 2;
+                                        };
+
+                                        $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
+                                        $s = $calc('speaking'); $g = $calc('grammar');
+                                        
+                                        $total = $l + $r + $w + $s + $g;
+                                        $final = $total / 5;
+
+                                        return [
+                                            'raw_final' => $final,
+                                            'display' => [
+                                                'nama' => $student->nama ?? '-',
+                                                'avg_l' => number_format($l, 1),
+                                                'avg_r' => number_format($r, 1),
+                                                'avg_w' => number_format($w, 1),
+                                                'avg_s' => number_format($s, 1),
+                                                'avg_g' => number_format($g, 1),
+                                                'total' => number_format($total, 1),
+                                                'final' => number_format($final, 1),
+                                            ]
+                                        ];
+                                    });
+
+                                    return $data->sortByDesc('raw_final')->values()->map(function ($item, $index) {
+                                        $d = $item['display'];
+                                        $d['rank'] = $index + 1;
+                                        return $d;
+                                    });
+                                })
+                                ->schema([
+                                    Grid::make(9)
+                                        ->schema([
+                                            TextEntry::make('nama')->hiddenLabel()->weight(FontWeight::Medium),
+                                            TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('avg_s')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('avg_g')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('total')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->color('primary'),
+                                            TextEntry::make('final')->hiddenLabel()->alignCenter()->badge()->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
+                                            TextEntry::make('rank')->hiddenLabel()->alignCenter()->weight(FontWeight::Black),
+                                        ]),
+                                ]),
+
+                            // C. FOOTER (CLASS AVERAGE) - MENGGUNAKAN VARIABEL $calcClassAvg
+                            Grid::make(9)
+                                ->extraAttributes(['class' => 'border-t-2 border-gray-200 pt-4 mt-2 bg-gray-50 rounded-lg'])
+                                ->schema([
+                                    TextEntry::make('footer_label')->default('CLASS AVG')->hiddenLabel()->weight(FontWeight::Black)->color('primary'),
+                                    
+                                    // Panggil variabel $calcClassAvg menggunakan 'use'
+                                    TextEntry::make('c_l')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
+                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'listening'), 1)),
+
+                                    TextEntry::make('c_r')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
+                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'reading'), 1)),
+
+                                    TextEntry::make('c_w')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
+                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'writing'), 1)),
+
+                                    TextEntry::make('c_s')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
+                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'speaking'), 1)),
+
+                                    TextEntry::make('c_g')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
+                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'grammar'), 1)),
+
+                                    // Total Class Avg
+                                    TextEntry::make('c_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('primary')
+                                        ->state(function ($livewire) use ($calcClassAvg) {
+                                            $total = $calcClassAvg($livewire, 'listening') + 
+                                                     $calcClassAvg($livewire, 'reading') +
+                                                     $calcClassAvg($livewire, 'writing') +
+                                                     $calcClassAvg($livewire, 'speaking') +
+                                                     $calcClassAvg($livewire, 'grammar');
+                                            return number_format($total, 1);
+                                        }),
+
+                                    // Final Class Avg
+                                    TextEntry::make('c_f')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('success')
+                                        ->state(function ($livewire) use ($calcClassAvg) {
+                                            $total = $calcClassAvg($livewire, 'listening') + 
+                                                     $calcClassAvg($livewire, 'reading') +
+                                                     $calcClassAvg($livewire, 'writing') +
+                                                     $calcClassAvg($livewire, 'speaking') +
+                                                     $calcClassAvg($livewire, 'grammar');
+                                            return number_format($total / 5, 1);
+                                        }),
+
+                                    TextEntry::make('c_rank')->default('')->hiddenLabel(),
+                                ])
+                        ])
+                    ]),
             ])
             ->actions([
                 EditAction::make(),
@@ -197,6 +294,8 @@ class AssessmentsRelationManager extends RelationManager
                                     ->grid(2) 
                                     ->columnSpanFull()
                             ])
+                            
+                        
                     ]),
             ])
             ->bulkActions([

@@ -30,7 +30,7 @@
             <div class="h-6 w-px bg-gray-300 mx-2"></div>
 
             {{-- 2. Tombol SUMMARY --}}
-            <button 
+            {{-- <button 
                 wire:click="$set('activeAssessmentId', 'summary')"
                 type="button"
                 class="px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200 border flex items-center gap-2
@@ -41,7 +41,7 @@
             >
                 <x-heroicon-m-chart-bar class="w-4 h-4"/>
                 SUMMARY / AVERAGE
-            </button>
+            </button> --}}
         </div>
     </div>
 

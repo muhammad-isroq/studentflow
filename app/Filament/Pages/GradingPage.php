@@ -69,7 +69,7 @@ class GradingPage extends Page implements HasTable
                             Grid::make(9)
                                 ->extraAttributes(['class' => 'border-b pb-2 mb-2'])
                                 ->schema([
-                                    TextEntry::make('h_nama')->default('NAMA')->hiddenLabel()->weight(FontWeight::Bold),
+                                    TextEntry::make('h_nama')->default('NAME')->hiddenLabel()->weight(FontWeight::Bold),
                                     TextEntry::make('h_l')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_r')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_w')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),

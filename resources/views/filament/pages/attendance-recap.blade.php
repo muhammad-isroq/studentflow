@@ -4,7 +4,7 @@
             <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
                     <th scope="col" class="sticky left-0 z-10 w-48 bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                        Nama Siswa
+                        Student Name
                     </th>
 
                     @foreach ($sessions as $session)
@@ -14,7 +14,7 @@
                     @endforeach
 
                     <th scope="col" class="sticky right-0 z-10 bg-gray-50 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                        Persentase
+                        Percentage
                     </th>
                 </tr>
             </thead>
@@ -27,16 +27,31 @@
 
                         @foreach ($sessions as $session)
                             @php
+                                // Ambil status asli dari database (Hadir, Absen, Izin, Sakit)
                                 $status = $attendanceData[$siswa->id][$session->id] ?? '-';
+
+                                // 1. Tentukan Warna (Tetap pakai status Indonesia untuk logika)
                                 $colorClass = match($status) {
                                     'Hadir' => 'text-green-500',
-                                    'Absen' => 'text-red-500',
-                                    'Izin' => 'text-yellow-500',
+                                    'Absen', 'Alpha' => 'text-red-500', // Menangani Absen/Alpha
+                                    'Izin', 'Sakit' => 'text-yellow-500',
                                     default => 'text-gray-400',
                                 };
+
+                                // 2. Translate ke Bahasa Inggris untuk Tampilan
+                                $englishStatus = match($status) {
+                                    'Hadir' => 'Present',
+                                    'Absen' => 'Absent',
+                                    'Alpha' => 'Absent',
+                                    'Izin'  => 'Permit', // Atau 'Excused'
+                                    'Sakit' => 'Sick',
+                                    '-'     => '-',
+                                    default => $status, // Jika ada status lain, tampilkan aslinya
+                                };
                             @endphp
+                            
                             <td class="whitespace-nowrap px-6 py-4 text-center text-sm font-medium {{ $colorClass }}">
-                                {{ $status }}
+                                {{ $englishStatus }}
                             </td>
                         @endforeach
 
@@ -47,7 +62,7 @@
                 @empty
                     <tr>
                         <td colspan="{{ $sessions->count() + 2 }}" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                            Tidak ada siswa di program ini.
+                            There are no students in this program.
                         </td>
                     </tr>
                 @endforelse

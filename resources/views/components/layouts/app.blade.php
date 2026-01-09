@@ -17,25 +17,7 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="{{ asset('images/logo1.png') }}">
-    <script type="application/ld+json">
-        {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "The Master of Dumai",
-        "url": "https://www.themasterofdumai.com",
-        "logo": "https://www.themasterofdumai.com/images/logo1.png", 
-        "image": [
-            "https://www.themasterofdumai.com/images/logo1.png"
-        ],
-        "description": "Kursus Bahasa Inggris terbaik di Dumai.",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Dumai",
-            "addressRegion": "Riau",
-            "addressCountry": "ID"
-        }
-        }
-    </script>
+    
     @vite('resources/css/app.css')
   </head>
   <body class="pt-7 scroll-smooth">

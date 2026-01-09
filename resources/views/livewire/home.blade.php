@@ -460,7 +460,7 @@
 
       <div class="rounded-lg bg-white p-8 shadow-lg">
         <div class="flex items-center gap-4 sm:p-3">
-          <img class="h-16 w-16 rounded-full object-cover" src="https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Foto Karina Aulia">
+          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/logo1.png') }}" alt="Foto Iqbal Ramadhan">
           <div>
             <p class="font-bold text-slate-800">Iqbal Ramadhan</p>
             <p class="text-sm text-gray-500">Marketing Specialist</p>
@@ -483,7 +483,7 @@
 
       <div class="rounded-lg bg-white p-8 shadow-lg">
         <div class="flex items-center gap-4 sm:p-3">
-          <img class="h-16 w-16 rounded-full object-cover" src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Foto M Oqbal Sutomo">
+          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/logo1.png') }}" alt="Foto Bintang Saputra">
           <div>
             <p class="font-bold text-slate-800">Bintang Saputra</p>
             <p class="text-sm text-gray-500">Mahasiswa Teknik Informatika</p>

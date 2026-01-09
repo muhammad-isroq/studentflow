@@ -6,6 +6,36 @@
     <link rel="icon" href="{{ asset('images/logo2.png') }}" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Belajar bahasa Inggris mudah, menyenangkan, dan efektif di Dumai. Program Preschool, Kids, Conversation, TOEFL Preparation, hingga kelas privat bersama tutor berpengalaman.">
+    <meta property="og:image" content="{{ asset('images/logo1.png') }}" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:title" content="The Master of Dumai - Kursus Bahasa Inggris" />
+    <meta property="og:description" content="Belajar bahasa Inggris mudah, menyenangkan, dan efektif di Dumai." />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ asset('images/logo1.png') }}">
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "The Master of Dumai",
+        "url": "https://www.themasterofdumai.com",
+        "logo": "https://www.themasterofdumai.com/images/logo1.png", 
+        "image": [
+            "https://www.themasterofdumai.com/images/logo1.png"
+        ],
+        "description": "Kursus Bahasa Inggris terbaik di Dumai.",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Dumai",
+            "addressRegion": "Riau",
+            "addressCountry": "ID"
+        }
+        }
+    </script>
     @vite('resources/css/app.css')
   </head>
   <body class="pt-7 scroll-smooth">

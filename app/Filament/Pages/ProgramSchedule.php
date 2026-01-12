@@ -199,7 +199,7 @@ class ProgramSchedule extends Page implements HasTable
             ->columnSpanFull(),
         
         RichEditor::make('topic')
-            ->label('📖 Topic')
+            ->label('📖 Topic (Unit and Page)')
             ->helperText('Example = Present Continuous Tense : Daily Activities')
             ->placeholder('The main topics that will be discussed in the lesson')
             ->required()

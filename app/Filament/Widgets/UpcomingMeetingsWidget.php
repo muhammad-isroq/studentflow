@@ -58,6 +58,8 @@ class UpcomingMeetingsWidget extends BaseWidget
                 ->color('success'),
                 Tables\Columns\TextColumn::make('topic')
                     ->label('topic')
+                    ->html() 
+                    ->wrap()
                     ->placeholder('no topics yet'),
             ])
             ->paginated(false) // Nonaktifkan paginasi untuk widget

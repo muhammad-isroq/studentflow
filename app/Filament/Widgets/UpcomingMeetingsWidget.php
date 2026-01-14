@@ -51,6 +51,11 @@ class UpcomingMeetingsWidget extends BaseWidget
                     ->description(fn (ClassSession $record): string => "Room Name: {$record->program->nama_ruangan}")
                     ->url(fn (ClassSession $record): string => ProgramSchedule::getUrl(['program' => $record->program_id]))
                     ->openUrlInNewTab(),
+                Tables\Columns\TextColumn::make('unit')
+                    ->label('Unit')
+                    ->badge()
+                    ->color('info') // Warna biru muda
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('program.lesson_time')
                 ->label('Lesson Time')
                 ->icon('heroicon-o-clock')

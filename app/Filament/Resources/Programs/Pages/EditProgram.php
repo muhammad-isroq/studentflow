@@ -65,7 +65,8 @@ class EditProgram extends EditRecord
                                     'session_date' => $date,
                                 ],
                                 [
-                                    'guru_id' => $program->guru_id 
+                                    'guru_id' => $program->guru_id,
+                                    'unit' => null,
                                 ]
                             );
                             $count++;

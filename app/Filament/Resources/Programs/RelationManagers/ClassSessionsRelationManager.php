@@ -26,6 +26,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
+use Filament\Tables\Columns\TextInputColumn;
 
 class ClassSessionsRelationManager extends RelationManager
 {
@@ -38,6 +39,11 @@ class ClassSessionsRelationManager extends RelationManager
             DatePicker::make('session_date')
                 ->label('Session Date')
                 ->required(),
+            TextInput::make('unit')
+                ->label('Unit / Materi')
+                ->placeholder('Contoh: Unit 1, Review Unit')
+                ->required() // Atau nullable() jika tidak wajib
+                ->maxLength(255),
             Select::make('guru_id')
                 ->relationship('guru', 'nama_guru')
                 ->label('Replacement Teacher')
@@ -68,6 +74,10 @@ class ClassSessionsRelationManager extends RelationManager
                     ->date('d M Y')
                     ->sortable()
                     ->searchable(),
+                TextInputColumn::make('unit') 
+                ->label('Unit / Materi')
+                ->placeholder('Isi Unit...') // Admin tinggal klik & ketik disini
+                ->sortable(),
                 TextColumn::make('guru.nama_guru')
                     ->label('Teacher')
                     ->badge()

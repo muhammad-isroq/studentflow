@@ -33,28 +33,17 @@ class UnpaidStudents extends Page implements HasTable
 
     public function getTotalTunggakanProperty()
     {
-        // 1. Ambil state filter dari tabel (Livewire Property)
         $filters = $this->tableFilters;
 
-        // 2. Mulai Query Dasar (Unpaid & Overdue)
         $query = Bill::whereIn('status', ['unpaid', 'overdue']);
 
-        // 3. Cek Filter Bulan
-        // (Jika user memilih bulan, kita filter. Jika tidak, ambil semua)
         if (isset($filters['due_month']['value']) && $filters['due_month']['value']) {
             $query->whereMonth('due_date', $filters['due_month']['value']);
         }
-
-        // 4. Cek Filter Tahun
-        // (Jika user memilih tahun, kita filter. Jika null, kita pakai default tahun ini sesuai settingan tabel)
         if (isset($filters['due_year']['value']) && $filters['due_year']['value']) {
             $query->whereYear('due_date', $filters['due_year']['value']);
-        } else {
-            // Fallback: Jika filter tahun belum disentuh, asumsikan tahun ini (sesuai default di tabel)
-            $query->whereYear('due_date', date('Y'));
-        }
-
-        // 5. Kembalikan total nominalnya
+        } 
+        
         return $query->sum('amount');
     }
 

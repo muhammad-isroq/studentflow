@@ -67,6 +67,7 @@ class ProgramResource extends Resource
             'index' => ListPrograms::route('/'),
             'create' => CreateProgram::route('/create'),
             'edit' => EditProgram::route('/{record}/edit'),
+            'monitoring' => Pages\MonitoringSessions::route('/monitoring'),
         ];
     }
 

@@ -1,6 +1,7 @@
-<x-filament-panels::page>
-    
-    {{-- Tabel Informasi Dasar (Header) --}}
+{{-- File: resources/views/filament/components/lesson-plan-modal.blade.php --}}
+
+<div>
+    {{-- Tabel Informasi Dasar --}}
     <div class="overflow-hidden bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-900 dark:border-gray-800">
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
@@ -86,5 +87,4 @@
             </tbody>
         </table>
     </div>
-
-</x-filament-panels::page>
+</div>

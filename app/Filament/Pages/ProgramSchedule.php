@@ -341,13 +341,13 @@ class ProgramSchedule extends Page implements HasTable
                             ->duration(5000)
                             ->send();
                         }),
-                    // Action::make('viewLessonPlan')
-                    // ->label('View')
-                    // ->icon('heroicon-o-eye')
-                    // ->color('gray')
-                    // ->visible(fn (ClassSession $record) => !empty($record->topic))
-                    // ->url(fn (ClassSession $record) => ViewLessonPlan::getUrl(['record' => $record->id]))
-                    // ->openUrlInNewTab(),
+                    Action::make('viewLessonPlan')
+                    ->label('View')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->visible(fn (ClassSession $record) => !empty($record->topic))
+                    ->url(fn (ClassSession $record) => ViewLessonPlan::getUrl(['record' => $record->id]))
+                    ->openUrlInNewTab(),
 
 
                     

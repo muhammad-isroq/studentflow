@@ -31,22 +31,21 @@ class FillAttendance extends Page implements HasForms, HasTable
     {
         $this->record = $record;
         
-        // Buat attendance record untuk semua siswa jika belum ada
         $students = $this->record->program->siswas;
         
         foreach ($students as $student) {
             $this->record->attendances()->firstOrCreate(
                 ['siswa_id' => $student->id],
-                ['status' => 'Hadir'] // Default untuk record baru
+                // DB: Simpan 'Hadir' (Indonesia)
+                ['status' => 'Hadir'] 
             );
         }
         
-        // Update existing records yang masih 'Belum Diisi' menjadi 'Hadir'
+        // Update default jika masih 'Belum Diisi' (Indonesia)
         $this->record->attendances()
             ->where('status', 'Belum Diisi')
             ->update(['status' => 'Hadir']);
         
-        // Load attendances
         $this->attendances = $this->record->attendances()->with('siswa')->get();
     }
 
@@ -77,36 +76,36 @@ class FillAttendance extends Page implements HasForms, HasTable
                 SelectColumn::make('status')
                     ->label('Attendance Status')
                     ->options([
-                        'Hadir' => 'Present',
-                        'Absen' => 'Alpha',
-                        'Izin' => 'Permission',
-                        'Sakit' => 'Sick',
+                        // Format: 'VALUE_DI_DATABASE' => 'LABEL_TAMPILAN'
+                        // Database (Indonesia) => Tampilan (Inggris)
+                        'Hadir'       => 'Present',
+                        'Absen'       => 'Alpha',
+                        'Izin'        => 'Permission',
+                        'Sakit'       => 'Sick',
                         'Belum Diisi' => 'Not Recorded',
                     ])
                     ->selectablePlaceholder(false)
                     ->updateStateUsing(function ($record, $state) {
+                        // $state yang masuk di sini adalah KEY (Bahasa Indonesia: 'Hadir', 'Sakit', dll)
                         $record->update(['status' => $state]);
                         
                         Notification::make()
-                            ->title('Attendance status updated successfully')
+                            ->title('Attendance status updated')
                             ->success()
                             ->send();
                             
                         return $state;
-                    })
-                    ->beforeStateUpdated(function ($record) {
-                        // Jika masih 'Belum Diisi', ubah ke 'Hadir' sebagai default
-                        if ($record->status === 'Not Recorded') {
-                            $record->update(['status' => 'Present']);
-                        }
                     }),
+
                 TextInputColumn::make('notes')
-                ->label('Notes')
-                ->disabled(fn ($record) => $record->status === 'Present')
-                ->updateStateUsing(function ($record, $state) {
-                    $record->update(['notes' => $state]);
-                    return $state;
-                }),
+                    ->label('Notes')
+                    // Cek kondisi pakai Bahasa Indonesia ('Hadir')
+                    ->disabled(fn ($record) => $record->status === 'Hadir') 
+                    ->updateStateUsing(function ($record, $state) {
+                        $record->update(['notes' => $state]);
+                        return $state;
+                    }),
+
                 TextColumn::make('created_at')
                     ->label('Recorded At')
                     ->dateTime('d/m/Y H:i')
@@ -121,37 +120,31 @@ class FillAttendance extends Page implements HasForms, HasTable
             ->paginated(false);
     }
     
-    public function saveAll()
-    {
-        Notification::make()
-            ->title('All changes have been saved automatically!')
-            ->success()
-            ->send();
-    }
-    
     public function setAllPresent()
     {
-        $this->record->attendances()->update(['status' => 'Present']);
+        // PERBAIKAN UTAMA:
+        // Update database menggunakan Bahasa Indonesia ('Hadir')
+        // Meskipun tampilannya 'Present', database WAJIB 'Hadir' agar valid
+        $this->record->attendances()->update(['status' => 'Hadir']);
         
         Notification::make()
-            ->title('All students successfully changed to "Present"!')
+            ->title('All students marked as Present')
             ->success()
             ->send();
             
-        // Refresh table
         return redirect(static::getUrl(['record' => $this->record]));
     }
     
     public function resetAttendance()
     {
-        $this->record->attendances()->update(['status' => 'Not Recorded']);
+        // PERBAIKAN: Gunakan 'Belum Diisi' (Indonesia)
+        $this->record->attendances()->update(['status' => 'Belum Diisi']);
         
         Notification::make()
-            ->title('Attendance status successfully reset!')
+            ->title('Attendance reset successfully')
             ->success()
             ->send();
             
-        // Refresh table
         return redirect(static::getUrl(['record' => $this->record]));
     }
     
@@ -159,26 +152,18 @@ class FillAttendance extends Page implements HasForms, HasTable
     {
         $attendances = $this->record->attendances;
         
+        // Perhitungan Statistik tetap menggunakan Key Database (Indonesia)
         return [
             'hadir' => $attendances->where('status', 'Hadir')->count(),
             'absen' => $attendances->where('status', 'Absen')->count(),
-            'izin' => $attendances->where('status', 'Izin')->count(),
+            'izin'  => $attendances->where('status', 'Izin')->count(),
             'sakit' => $attendances->where('status', 'Sakit')->count(),
             'belum_diisi' => $attendances->where('status', 'Belum Diisi')->count(),
         ];
     }
-
+    
     public function backToList()
     {
-        // Pilih salah satu dari opsi ini:
-        
-        // Opsi 1: Redirect ke dashboard
         return redirect()->route('filament.admin.pages.dashboard');
-        
-        // Opsi 2: Redirect ke halaman lain yang ada
-        // return redirect()->to('/admin');
-        
-        // Opsi 3: Jika Anda punya page untuk list class sessions
-        // return redirect()->route('filament.admin.pages.class-sessions-list');
     }
 }

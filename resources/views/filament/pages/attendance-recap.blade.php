@@ -35,7 +35,7 @@
                                     'Hadir' => 'text-green-500',
                                     'Absen', 'Alpha' => 'text-red-500', // Menangani Absen/Alpha
                                     'Izin', 'Sakit' => 'text-yellow-500',
-                                    default => 'text-gray-400',
+                                    default => 'text-green-500',
                                 };
 
                                 // 2. Translate ke Bahasa Inggris untuk Tampilan

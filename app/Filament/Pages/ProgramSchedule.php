@@ -113,8 +113,8 @@ class ProgramSchedule extends Page implements HasTable
                     ->icon('heroicon-o-pencil-square')
                     
                     ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record]))
-                    ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
-                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
+                    ->badge(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? '✓ Filled' : '! Empty')
+                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? 'success' : 'warning')
                     ->extraAttributes(['class' => 'mr-7']),
                 Action::make('lessonPlan')
                     ->label('Lesson Plan Form')

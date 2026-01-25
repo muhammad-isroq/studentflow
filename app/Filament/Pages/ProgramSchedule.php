@@ -61,6 +61,26 @@ class ProgramSchedule extends Page implements HasTable
         ];
     }
 
+    public function getSubheading(): string | HtmlString | null
+    {
+        return new HtmlString('
+            <div class="mt-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600 rounded-r-lg shadow-sm">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Important Attendance Info</h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                            "If you are unable to attend a meeting, please inform the staff who the substitute teacher will be at that meeting."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        ');
+    }
     
     protected static bool $shouldRegisterNavigation = false;
 

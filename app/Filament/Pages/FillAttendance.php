@@ -36,6 +36,7 @@ class FillAttendance extends Page implements HasForms, HasTable
         foreach ($students as $student) {
             $this->record->attendances()->firstOrCreate(
                 ['siswa_id' => $student->id],
+                // UBAH DISINI: Default status awal adalah 'Belum Diisi'
                 ['status' => 'Belum Diisi'] 
             );
         }

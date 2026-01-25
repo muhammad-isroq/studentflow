@@ -36,12 +36,12 @@ class FillAttendance extends Page implements HasForms, HasTable
         foreach ($students as $student) {
             $this->record->attendances()->firstOrCreate(
                 ['siswa_id' => $student->id],
-                // DB: Simpan 'Hadir' (Indonesia)
+                
                 ['status' => 'Hadir'] 
             );
         }
         
-        // Update default jika masih 'Belum Diisi' (Indonesia)
+        
         $this->record->attendances()
             ->where('status', 'Belum Diisi')
             ->update(['status' => 'Hadir']);
@@ -76,8 +76,7 @@ class FillAttendance extends Page implements HasForms, HasTable
                 SelectColumn::make('status')
                     ->label('Attendance Status')
                     ->options([
-                        // Format: 'VALUE_DI_DATABASE' => 'LABEL_TAMPILAN'
-                        // Database (Indonesia) => Tampilan (Inggris)
+                        
                         'Hadir'       => 'Present',
                         'Absen'       => 'Alpha',
                         'Izin'        => 'Permission',
@@ -86,7 +85,7 @@ class FillAttendance extends Page implements HasForms, HasTable
                     ])
                     ->selectablePlaceholder(false)
                     ->updateStateUsing(function ($record, $state) {
-                        // $state yang masuk di sini adalah KEY (Bahasa Indonesia: 'Hadir', 'Sakit', dll)
+                        
                         $record->update(['status' => $state]);
                         
                         Notification::make()
@@ -122,9 +121,6 @@ class FillAttendance extends Page implements HasForms, HasTable
     
     public function setAllPresent()
     {
-        // PERBAIKAN UTAMA:
-        // Update database menggunakan Bahasa Indonesia ('Hadir')
-        // Meskipun tampilannya 'Present', database WAJIB 'Hadir' agar valid
         $this->record->attendances()->update(['status' => 'Hadir']);
         
         Notification::make()
@@ -137,7 +133,7 @@ class FillAttendance extends Page implements HasForms, HasTable
     
     public function resetAttendance()
     {
-        // PERBAIKAN: Gunakan 'Belum Diisi' (Indonesia)
+        
         $this->record->attendances()->update(['status' => 'Belum Diisi']);
         
         Notification::make()
@@ -152,7 +148,7 @@ class FillAttendance extends Page implements HasForms, HasTable
     {
         $attendances = $this->record->attendances;
         
-        // Perhitungan Statistik tetap menggunakan Key Database (Indonesia)
+        
         return [
             'hadir' => $attendances->where('status', 'Hadir')->count(),
             'absen' => $attendances->where('status', 'Absen')->count(),

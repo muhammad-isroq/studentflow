@@ -36,15 +36,11 @@ class FillAttendance extends Page implements HasForms, HasTable
         foreach ($students as $student) {
             $this->record->attendances()->firstOrCreate(
                 ['siswa_id' => $student->id],
-                
-                ['status' => 'Hadir'] 
+                ['status' => 'Belum Diisi'] 
             );
         }
         
         
-        $this->record->attendances()
-            ->where('status', 'Belum Diisi')
-            ->update(['status' => 'Hadir']);
         
         $this->attendances = $this->record->attendances()->with('siswa')->get();
     }

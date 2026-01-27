@@ -54,7 +54,7 @@
                         </x-filament::button>
                         
                         <x-filament::button
-                            color="gray"
+                            color="danger"
                             size="sm"
                             wire:click="resetAttendance"
                             wire:confirm="Are you sure you want to reset all statuses?"

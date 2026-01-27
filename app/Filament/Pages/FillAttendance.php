@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Siswa;
+use App\Filament\Pages\ProgramSchedule;
 use Filament\Pages\Page;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -15,6 +16,7 @@ use App\Models\ClassSession;
 use App\Models\Attendance;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextInputColumn;
+
 
 class FillAttendance extends Page implements HasForms, HasTable
 {
@@ -141,6 +143,18 @@ class FillAttendance extends Page implements HasForms, HasTable
         return redirect(static::getUrl(['record' => $this->record]));
     }
     
+    public function saveAll()
+    {
+            Notification::make()
+                ->title('Attendance Saved Successfully')
+                ->body('All attendance data has been recorded ')
+                ->success()
+                ->send();
+
+            return redirect(ProgramSchedule::getUrl(['program' => $this->record->program_id]));
+    
+    }
+
     public function getAttendanceStats()
     {
         $attendances = $this->record->attendances;

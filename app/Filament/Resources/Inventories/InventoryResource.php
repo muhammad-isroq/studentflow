@@ -21,7 +21,7 @@ class InventoryResource extends Resource
     protected static ?string $pluralModelLabel = 'Inventory';
     protected static ?string $navigationLabel = 'Inventory';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCube;
 
     protected static ?string $recordTitleAttribute = 'Inventory';
 

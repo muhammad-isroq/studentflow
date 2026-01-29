@@ -19,7 +19,7 @@ class VideoTestimoniResource extends Resource
 {
     protected static ?string $model = VideoTestimoni::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedVideoCamera;
 
     protected static ?string $recordTitleAttribute = 'VideoTestimoni';
 

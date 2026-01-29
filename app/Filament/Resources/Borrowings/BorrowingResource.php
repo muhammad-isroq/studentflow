@@ -19,7 +19,7 @@ class BorrowingResource extends Resource
 {
     protected static ?string $model = Borrowing::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPath;
 
     protected static ?string $recordTitleAttribute = 'Borrowing';
 

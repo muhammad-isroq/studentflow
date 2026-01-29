@@ -42,7 +42,7 @@ class ClassSessionsRelationManager extends RelationManager
             TextInput::make('unit')
                 ->label('Unit / Materi')
                 ->placeholder('Contoh: Unit 1, Review Unit')
-                ->required() // Atau nullable() jika tidak wajib
+                ->required()
                 ->maxLength(255),
             Select::make('guru_id')
                 ->relationship('guru', 'nama_guru')
@@ -50,7 +50,7 @@ class ClassSessionsRelationManager extends RelationManager
                 ->required(),
         ];
 
-        // Tambahkan field replacement untuk SEMUA user (bisa disesuaikan nanti)
+        
         $components[] = Select::make('replacement_guru_id')
             ->relationship('replacementGuru', 'nama_guru')
             ->label('Replacement User')
@@ -76,19 +76,12 @@ class ClassSessionsRelationManager extends RelationManager
                     ->searchable(),
                 TextInputColumn::make('unit') 
                 ->label('Unit / Materi')
-                ->placeholder('Isi Unit...') // Admin tinggal klik & ketik disini
+                ->placeholder('Isi Unit...') 
                 ->sortable(),
                 TextColumn::make('guru.nama_guru')
                     ->label('Teacher')
                     ->badge()
                     ->color(fn ($record) => $record->replacement_guru_id ? 'gray' : 'success'),
-                // TextColumn::make('replacementGuru.nama_guru')
-                //     ->label('Replacement')
-                //     ->badge()
-                //     ->color('warning')
-                //     ->placeholder('-'),
-                // TextColumn::make('topic')
-                //     ->placeholder('-'),
             ])
             ->filters([
                 //
@@ -99,8 +92,9 @@ class ClassSessionsRelationManager extends RelationManager
                 Action::make('Rekap Absen')
                     ->color('success')
                     ->icon('heroicon-o-document-chart-bar')
-                    // Arahkan ke halaman rekap dengan membawa ID Program saat ini
-                    ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->getOwnerRecord()->id])),
+                    
+                    ->url(fn (): string => AttendanceRecap::getUrl(['program' => $this->getOwnerRecord()->id]))
+                    ->extraAttributes(['class' => 'mr-7']),
             ])
             ->actions([
                 EditAction::make()
@@ -110,7 +104,14 @@ class ClassSessionsRelationManager extends RelationManager
                     }
                     $date = $record->session_date->format('d-m-Y');
                     return 'Edit Session Date ' . $date;
-                }),
+                })
+                ->mutateFormDataUsing(function (array $data): array {
+                        if (isset($data['replacement_guru_id']) && $data['replacement_guru_id'] === $data['guru_id']) {
+                            $data['replacement_guru_id'] = null;
+                        }
+                        
+                        return $data;
+                    }),
                 DeleteAction::make(),
                 Action::make('view_attendance')
                     ->label('Lihat Absensi')

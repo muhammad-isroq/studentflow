@@ -23,7 +23,7 @@ class ArticleResource extends Resource
         return auth()->user()->hasRole(['admin', 'editor']);
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
     protected static ?string $recordTitleAttribute = 'Article';
 

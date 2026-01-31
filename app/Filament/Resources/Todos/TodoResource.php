@@ -13,13 +13,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TodoResource extends Resource
 {
     protected static ?string $model = Todo::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static string | \UnitEnum | null $navigationGroup = 'Collaboration';
+    protected static string | \UnitEnum | null $navigationGroup = 'Work Management';
+    protected static ?string $navigationLabel = 'My Todo';
 
     protected static ?string $recordTitleAttribute = 'task';
 
@@ -52,5 +54,10 @@ class TodoResource extends Resource
             'create' => CreateTodo::route('/create'),
             'edit' => EditTodo::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }

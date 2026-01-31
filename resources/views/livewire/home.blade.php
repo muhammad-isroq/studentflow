@@ -198,7 +198,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="{{ asset('images/7.jpg') }}" 
+          <img src="{{ asset('images/poltak.jpeg') }}" 
                alt="Master Kids" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
@@ -217,7 +217,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop" 
+          <img src="{{ asset('images/cindy.jpeg') }}" 
                alt="Master Conversation" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>
@@ -294,7 +294,7 @@
 
       <div class="w-full mx-auto py-6 sm:px-6 lg:px-8">
         <div class="overflow-hidden rounded-lg p-6 mb-5">
-          <h3 class="text-3xl font-medium text-gray-800 text-left ps-5 pb-6">
+          <h3 class="text-3xl font-medium text-gray-800 text-center ps-5 pb-6 ">
             Pembelajaran Sesuai Tingkat Kemampuan
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -311,7 +311,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/7.jpg') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/poltak.jpeg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Kids
                   <br>
@@ -321,7 +321,7 @@
             </div>
             <div class="flex flex-col items-center text-center">
               <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/8.jpg') }}" class="w-full h-auto rounded-lg block">
+                <img src="{{ asset('images/cindy.jpeg') }}" class="w-full h-auto rounded-lg block">
                 <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
                   Master Conversation
                   <br>

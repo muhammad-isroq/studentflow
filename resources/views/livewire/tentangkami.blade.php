@@ -45,10 +45,14 @@ pilih THE MASTER OF DUMAI (tempat lursusnya orangorang Dumai). Dengan hadirnya l
 Inggris ini kiranya dapat menciptakan master-master
 Bahasa Inggris di kota Dumai.</p>
                 <div class="flex justify-center p-6">
-                    <a href="" class="rounded bg-sky-600 p-3 text-white transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <a href="" class="rounded bg-sky-600 p-3 m-3 text-white transition duration-300 hover:-translate-y-1 hover:shadow-lg">
                         Download Company Profile
                     </a>
+                    <a href="https://drive.google.com/file/d/1ydGJg4ZdM_80yGVJc0rJ7cMLqULAzIVp/view?usp=drive_link" class="rounded bg-orange-600 p-3 m-3 text-white transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                        Download Brosur Pendaftaran
+                    </a>
                 </div>
+                
             </div>
             <div class="rounded-lg p-6">
                 <img src="{{ asset('images/4.jpg') }}" alt="" class="rounded border shadow-xl">
@@ -62,17 +66,17 @@ Bahasa Inggris di kota Dumai.</p>
             <div id="slider" class="flex transition-transform duration-500 ease-in-out">
                 
                 <div class="w-full flex-shrink-0">
-                    <img src="{{ asset('images/1.jpg') }}" alt="Image 1" class="w-full h-96 object-cover">
+                    <img src="{{ asset('images/cindy.jpeg') }}" alt="Image 1" class="w-full h-125 object-cover">
                 </div>
                 <div class="w-full flex-shrink-0">
-                    <img src="{{ asset('images/2.jpg') }}" alt="Image 2" class="w-full h-96 object-cover">
+                    <img src="{{ asset('images/poltak.jpeg') }}" alt="Image 2" class="w-full h-125 object-cover">
                 </div>
                 <div class="w-full flex-shrink-0">
-                    <img src="{{ asset('images/3.jpg') }}" alt="Image 3" class="w-full h-96 object-cover">
+                    <img src="{{ asset('images/preeschool.jpg') }}" alt="Image 3" class="w-full h-125 object-cover">
                 </div>
-                <div class="w-full flex-shrink-0">
-                    <img src="{{ asset('images/5.jpg') }}" alt="Image 4" class="w-full h-96 object-cover">
-                </div>
+                {{-- <div class="w-full flex-shrink-0">
+                    <img src="{{ asset('images/5.jpg') }}" alt="Image 4" class="w-full h-125 object-cover">
+                </div> --}}
 
             </div>
             

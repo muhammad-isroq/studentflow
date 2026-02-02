@@ -2,13 +2,13 @@
 
 <div
   class="hero min-h-screen"
-  style="background-image: url({{ asset('images/3.jpg') }});"
+  style="background-image: url({{ asset('images/preeschool.jpg') }});"
 >
   <div class="hero-overlay"></div>
   <div class="hero-content text-neutral-content text-center">
     <div class="max-w-md">
       <h1 class="mb-5 text-5xl font-bold">Master PRE-school</h1>
-      <button class="btn btn-primary">Ambil Kursus Ini</button>
+      <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="btn btn-primary">Ambil Kursus Ini</a>
     </div>
   </div>
 </div>

@@ -8,7 +8,7 @@
   <div class="hero-content text-neutral-content text-center">
     <div class="max-w-md">
       <h1 class="mb-5 text-5xl font-bold">Master Kids</h1>
-      <button class="btn btn-primary">Mulai Belajar Hari Ini</button>
+      <a href="https://wa.me/6281277704026?text=Hallo%20admin%20The%20Master%20of%20Dumai,%20saya%20berminat%20kursus%20bahasa%20inggris" class="btn btn-primary">Mulai Belajar Hari Ini</a>
     </div>
   </div>
 </div>

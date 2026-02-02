@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Todos\Widgets;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use App\Filament\Resources\Todos\TodoResource;
+use App\Models\Todo; // <--- UBAH INI: Import Model Todo Langsung
 use Filament\Tables\Columns\CheckboxColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -22,19 +22,14 @@ class TopUrgentTodos extends BaseWidget
     public function table(Table $table): Table
     {
         return $table
-            ->heading('🔥 High Priority Tasks')
-            // Tambahkan Tombol "Assign Task" di Pojok Kanan Atas Widget
+            ->heading('🔥 High Priority Tasks (All Staff)')
             ->headerActions([
                 CreateAction::make()
                     ->label('Assign Urgent Task')
                     ->icon('heroicon-m-plus')
                     ->modalHeading('Assign Urgent Task to Staff')
-                    
-                    // 1. Validasi: Hanya Super Staff yang bisa lihat tombol ini
                     ->visible(fn () => auth()->user()->hasRole(['super_staff', 'admin']))
-                    
                     ->form([
-
                         TextInput::make('task')
                             ->required()
                             ->label('Task Title')
@@ -45,7 +40,6 @@ class TopUrgentTodos extends BaseWidget
                             ->relationship(
                                 name: 'user', 
                                 titleAttribute: 'name',
-                                
                                 modifyQueryUsing: fn (Builder $query) => $query->whereHas('roles', function ($q) {
                                     $q->whereIn('name', ['staff', 'super_staff','admin']);
                                 })
@@ -61,23 +55,33 @@ class TopUrgentTodos extends BaseWidget
                             ->native(false) 
                             ->required(),
                         
-  
+                        // Pastikan task ini public agar bisa dilihat semua orang di Team Todo
                         Hidden::make('is_public')->default(true),
                     ])
-
                     ->successNotificationTitle('Urgent task assigned successfully'),
             ])
+            // --- PERBAIKAN DI SINI ---
             ->query(
-                TodoResource::getEloquentQuery()
-                    ->where('category', 'urgent')
-                    ->where('is_completed', false)
-                    ->limit(5)
+                Todo::query() // Gunakan Model langsung, BUKAN Resource
+                    ->with('user') // Eager load user agar lebih cepat
+                    ->where('category', 'urgent') // Filter Urgent
+                    ->where('is_completed', false) // Filter Belum Selesai
+                    ->orderBy('due_date', 'asc') // Urutkan deadline terdekat
+                    ->limit(10)
             )
+            // -------------------------
             ->columns([
                 Tables\Columns\TextColumn::make('task')
                     ->weight('bold')
                     ->searchable()
-                    ->description(fn ($record) => 'Assigned to: ' . $record->user->name), // Info tambahan
+                    // Tampilkan avatar atau nama pemilik tugas
+                    ->description(fn ($record) => 'Owner: ' . $record->user->name)
+                    ->wrap(),
+
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Assigned To')
+                    ->badge()
+                    ->color('gray'),
 
                 Tables\Columns\TextColumn::make('due_date')
                     ->date('d M')
@@ -85,7 +89,10 @@ class TopUrgentTodos extends BaseWidget
                     ->alignRight(),
 
                 CheckboxColumn::make('is_completed')
-                    ->label('Done'),
+                    ->label('Done')
+                    ->disabled(fn ($record) => 
+                        $record->user_id !== auth()->id() && !auth()->user()->hasRole('admin')
+                    ),
             ])
             ->paginated(false);
     }

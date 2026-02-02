@@ -19,15 +19,15 @@ class TodoResource extends Resource
 {
     protected static ?string $model = Todo::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
     protected static string | \UnitEnum | null $navigationGroup = 'Work Management';
     protected static ?string $navigationLabel = 'My Todo';
 
     protected static ?string $recordTitleAttribute = 'task';
 
-    public static function canViewAny(): bool
+    public static function canAccess(): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'staff','editor' , 'super_staff']);
+        return auth()->user()->hasRole(['admin', 'super_staff', 'staff']);
     }
 
     public static function form(Schema $schema): Schema

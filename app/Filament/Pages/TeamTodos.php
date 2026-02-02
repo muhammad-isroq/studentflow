@@ -20,13 +20,18 @@ class TeamTodos extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
     protected static string | \UnitEnum | null $navigationGroup = 'Work Management';
     protected static ?string $navigationLabel = 'Team Todo';
     protected static ?string $title = 'Team Public Tasks';
     protected static ?int $navigationSort = 2;
 
     protected string $view = 'filament.pages.team-todos';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole(['admin', 'super_staff', 'staff']);
+    }
 
     protected function getHeaderWidgets(): array
     {
@@ -41,6 +46,11 @@ class TeamTodos extends Page implements HasTable
             ->query(
                 Todo::query()
                     ->where('is_public', true) 
+                    ->whereBetween('due_date', [
+                            now()->startOfWeek(), 
+                            now()->endOfWeek()
+                        ])
+                    ->orWhere('category', 'urgent')
                     ->orderBy('created_at', 'desc')
             )
             ->columns([

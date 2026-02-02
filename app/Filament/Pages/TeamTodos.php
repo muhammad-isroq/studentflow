@@ -86,7 +86,13 @@ class TeamTodos extends Page implements HasTable
 
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('user')
-                    ->relationship('user', 'name')
+                    ->relationship(
+                        name: 'user', 
+                        titleAttribute: 'name', 
+                        modifyQueryUsing: fn (Builder $query) => $query->whereHas('roles', function ($q) {
+                            $q->whereIn('name', ['admin', 'staff', 'super_staff']);
+                        })
+                    )
                     ->label('Filter by User'),
                 \Filament\Tables\Filters\SelectFilter::make('category')
                     ->options([

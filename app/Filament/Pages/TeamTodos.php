@@ -15,6 +15,7 @@ use UnitEnum;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Todos\Widgets\TopUrgentTodos;
 use Illuminate\Support\Str;
+use Filament\Tables\Filters\SelectFilter;
 
 class TeamTodos extends Page implements HasTable
 {
@@ -44,13 +45,16 @@ class TeamTodos extends Page implements HasTable
     {
         return $table
             ->query(
-                Todo::query()
+                Todo::query()                    
                     ->where('is_public', true) 
-                    ->whereBetween('due_date', [
-                            now()->startOfWeek(), 
-                            now()->endOfWeek()
-                        ])
-                    ->orWhere('category', 'urgent')
+                    ->where(function (Builder $query) {
+                        $query->whereBetween('due_date', [
+                                now()->startOfWeek(), 
+                                now()->endOfWeek()
+                            ])
+                            ->orWhere('category', 'urgent');
+                    })
+                    
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
@@ -72,7 +76,8 @@ class TeamTodos extends Page implements HasTable
                         'important' => 'warning',
                         'general' => 'gray',
                         default => 'info',
-                    }),
+                    })
+                    ->searchable(),
 
                 TextColumn::make('due_date')
                     ->date('d M')
@@ -82,10 +87,11 @@ class TeamTodos extends Page implements HasTable
                 IconColumn::make('is_completed')
                     ->label('Done')
                     ->boolean(),
+                    
             ])
 
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('user')
+                SelectFilter::make('user')
                     ->relationship(
                         name: 'user', 
                         titleAttribute: 'name', 
@@ -94,7 +100,7 @@ class TeamTodos extends Page implements HasTable
                         })
                     )
                     ->label('Filter by User'),
-                \Filament\Tables\Filters\SelectFilter::make('category')
+                SelectFilter::make('category')
                     ->options([
                         'important' => 'Important',
                         'urgent' => 'Urgent',

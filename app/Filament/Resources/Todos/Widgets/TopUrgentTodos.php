@@ -91,7 +91,7 @@ class TopUrgentTodos extends BaseWidget
                 CheckboxColumn::make('is_completed')
                     ->label('Done')
                     ->disabled(fn ($record) => 
-                        $record->user_id !== auth()->id() && !auth()->user()->hasRole('admin')
+                        $record->user_id !== auth()->id() && !auth()->user()->hasRole(['admin', 'super_staff'])
                     ),
             ])
             ->paginated(false);

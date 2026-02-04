@@ -58,6 +58,9 @@ class TeamTodos extends Page implements HasTable
                     ->orderBy('created_at', 'desc')
             )
             ->columns([
+                TextColumn::make('index')
+                    ->label('#')
+                    ->rowIndex(),
                 TextColumn::make('user.name')
                     ->label('Owner')
                     ->icon('heroicon-o-user-circle')

@@ -77,6 +77,9 @@ class TeamWorkload extends Page implements HasForms, HasTable
                     )
             )
             ->columns([
+                TextColumn::make('index')
+                    ->label('#')
+                    ->rowIndex(),
                 TextColumn::make('task')
                     ->weight('bold')
                     ->searchable(), // Opsional: Tambah search agar lebih mudah

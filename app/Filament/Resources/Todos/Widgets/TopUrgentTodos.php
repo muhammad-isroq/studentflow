@@ -71,6 +71,9 @@ class TopUrgentTodos extends BaseWidget
             )
             // -------------------------
             ->columns([
+                Tables\Columns\TextColumn::make('index')
+                    ->label('#')
+                    ->rowIndex(),
                 Tables\Columns\TextColumn::make('task')
                     ->weight('bold')
                     ->searchable()

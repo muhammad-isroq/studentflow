@@ -236,7 +236,7 @@
     <div class="card p-4">
       <div class="card-inner">
         <div class="card-front">
-          <img src="{{ asset('images/5.jpg') }}" 
+          <img src="{{ asset('images/privatelogo.jpeg') }}" 
                alt="Master Private" 
                class="absolute inset-0 w-full h-full object-cover">
           <div class="absolute inset-0 bg-black/20"></div>

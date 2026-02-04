@@ -16,6 +16,7 @@ class TodoProgressWidget extends Widget
     {
         $user = Auth::user();
 
+        // --- 1. HITUNGAN OVERALL (SEMUA WAKTU) ---
         $totalTasks = Todo::where('user_id', $user->id)->count();
         
         $completedTasks = Todo::where('user_id', $user->id)
@@ -24,9 +25,9 @@ class TodoProgressWidget extends Widget
 
         $percentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
 
-
+        // --- 2. HITUNGAN HARI INI (TARGET HARIAN) ---
         $totalToday = Todo::where('user_id', $user->id)
-            ->whereDate('due_date', now()->today())
+            ->whereDate('due_date', now()->today()) // Filter Deadline Hari Ini
             ->count();
 
         $completedToday = Todo::where('user_id', $user->id)
@@ -37,10 +38,12 @@ class TodoProgressWidget extends Widget
         $percentageToday = $totalToday > 0 ? round(($completedToday / $totalToday) * 100) : 0;
 
         return [
+            // Data Overall
             'total' => $totalTasks,
             'completed' => $completedTasks,
             'percentage' => $percentage,
             
+            // Data Hari Ini
             'totalToday' => $totalToday,
             'completedToday' => $completedToday,
             'percentageToday' => $percentageToday,

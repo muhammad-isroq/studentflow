@@ -41,29 +41,27 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <span class="text-sm text-gray-600 font-medium">Quick action:</span>
-                        <x-filament::button
-                            color="success"
-                            size="sm"
-                            wire:click="setAllPresent"
-                            wire:confirm="Are you sure you want to change all statuses to 'Present'?"
+                        <button
+                            type="button"
+                            onclick="confirmSetAllPresent()"
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150"
                         >
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
                             All Present
-                        </x-filament::button>
+                        </button>
                         
-                        <x-filament::button
-                            color="danger"
-                            size="sm"
-                            wire:click="resetAttendance"
-                            wire:confirm="Are you sure you want to reset all statuses?"
+                        <button
+                            type="button"
+                            onclick="confirmResetAttendance()"
+                            class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-danger-600 hover:bg-danger-700 rounded-lg transition-colors duration-150"
                         >
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                             </svg>
                             Reset
-                        </x-filament::button>
+                        </button>
                     </div>
                     
                     <!-- Status Summary -->
@@ -101,26 +99,74 @@
             </div>
             
             <div class="flex space-x-3">
-                {{-- <x-filament::button
-                    color="gray"
-                    wire:click="backToList"
-                >
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Return
-                </x-filament::button> --}}
-                
-                <x-filament::button 
-                    wire:click="saveAll"
-                    color="success"
+                <button
+                    type="button"
+                    onclick="confirmSaveAll()"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150"
                 >
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     Finished
-                </x-filament::button>
+                </button>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmSetAllPresent() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "All students will be marked as Present!",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, mark all present!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gunakan @this atau Livewire
+                @this.call('setAllPresent');
+            }
+        });
+    }
+
+    function confirmResetAttendance() {
+        Swal.fire({
+            title: 'Reset Attendance?',
+            text: "All attendance status will be reset to 'Not Recorded'!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, reset!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('resetAttendance');
+            }
+        });
+    }
+
+    function confirmSaveAll() {
+        Swal.fire({
+            title: 'Save Attendance?',
+            text: "All attendance data will be saved and finalized.",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, save!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                @this.call('saveAll');
+            }
+        });
+    }
+</script>
+@endpush
 </x-filament-panels::page>

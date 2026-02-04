@@ -38,19 +38,16 @@ class FillAttendance extends Page implements HasForms, HasTable
         foreach ($students as $student) {
             $this->record->attendances()->firstOrCreate(
                 ['siswa_id' => $student->id],
-                // UBAH DISINI: Default status awal adalah 'Belum Diisi'
                 ['status' => 'Belum Diisi'] 
             );
         }
-        
-        
         
         $this->attendances = $this->record->attendances()->with('siswa')->get();
     }
 
     public function getTitle(): string
     {
-        return 'Absensi untuk ' . ($this->record->program->nama_program ?? 'Unknown Program');
+        return 'Attendance for ' . ($this->record->program->nama_program ?? 'Unknown Program');
     }
     
     public function getSubheading(): string
@@ -75,7 +72,6 @@ class FillAttendance extends Page implements HasForms, HasTable
                 SelectColumn::make('status')
                     ->label('Attendance Status')
                     ->options([
-                        
                         'Hadir'       => 'Present',
                         'Absen'       => 'Alpha',
                         'Izin'        => 'Permission',
@@ -84,7 +80,6 @@ class FillAttendance extends Page implements HasForms, HasTable
                     ])
                     ->selectablePlaceholder(false)
                     ->updateStateUsing(function ($record, $state) {
-                        
                         $record->update(['status' => $state]);
                         
                         Notification::make()
@@ -97,7 +92,6 @@ class FillAttendance extends Page implements HasForms, HasTable
 
                 TextInputColumn::make('notes')
                     ->label('Notes')
-                    // Cek kondisi pakai Bahasa Indonesia ('Hadir')
                     ->disabled(fn ($record) => $record->status === 'Hadir') 
                     ->updateStateUsing(function ($record, $state) {
                         $record->update(['notes' => $state]);
@@ -122,43 +116,43 @@ class FillAttendance extends Page implements HasForms, HasTable
     {
         $this->record->attendances()->update(['status' => 'Hadir']);
         
+        $this->dispatch('attendance-updated');
+        
         Notification::make()
-            ->title('All students marked as Present')
+            ->title('Success!')
+            ->body('All students have been marked as Present')
             ->success()
             ->send();
-            
-        return redirect(static::getUrl(['record' => $this->record]));
     }
     
     public function resetAttendance()
     {
+        $this->record->attendances()->update(['status' => 'Belum Diisi', 'notes' => null]);
         
-        $this->record->attendances()->update(['status' => 'Belum Diisi']);
+        $this->dispatch('attendance-updated');
         
         Notification::make()
-            ->title('Attendance reset successfully')
+            ->title('Reset Complete!')
+            ->body('All attendance has been reset to "Not Recorded"')
             ->success()
             ->send();
-            
-        return redirect(static::getUrl(['record' => $this->record]));
     }
     
     public function saveAll()
     {
-            Notification::make()
-                ->title('Attendance Saved Successfully')
-                ->body('All attendance data has been recorded ')
-                ->success()
-                ->send();
+        Notification::make()
+            ->title('Attendance Saved Successfully!')
+            ->body('All attendance data has been recorded')
+            ->success()
+            ->duration(3000)
+            ->send();
 
-            return redirect(ProgramSchedule::getUrl(['program' => $this->record->program_id]));
-    
+        return redirect(ProgramSchedule::getUrl(['program' => $this->record->program_id]));
     }
 
     public function getAttendanceStats()
     {
         $attendances = $this->record->attendances;
-        
         
         return [
             'hadir' => $attendances->where('status', 'Hadir')->count(),

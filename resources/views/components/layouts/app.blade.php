@@ -50,7 +50,7 @@
                     </li>
                     <li><a href="/testimoni" wire:navigate class="{{ request()->is('testimoni') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Testimoni</a></li>
                     <li><a href="/tentang-kami" wire:navigate class="{{ request()->is('tentang-kami') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Tentang Kami</a></li>
-                    <li><a href="/instruktur" wire:navigate class="{{ request()->is('/') ? 'textinstrukturprimary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Instruktur</a></li>
+                    <li><a href="/instruktur" wire:navigate class="{{ request()->is('/instruktur') ? 'textinstrukturprimary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Instruktur</a></li>
                     <li><a href="/staff" wire:navigate class="{{ request()->is('staff') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Staff</a></li>
                     <li><a href="/kontak" wire:navigate class="{{ request()->is('kontak') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Kontak</a></li>
                 </ul>

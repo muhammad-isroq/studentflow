@@ -694,7 +694,7 @@
                             @endif
                 </a>
                 <div class="p-6">
-                  <div class="p-6 flex flex-col flex-grow">
+                  <div class="p-1 flex flex-col flex-grow">
                             @php
                             $badgeColor = match ($article->type) {
                                 'article' => 'bg-emerald-100 text-emerald-800', 
@@ -709,7 +709,7 @@
                             };
                         @endphp
                     <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">{{ $badgeLabel }}</span>
-                    <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
+                    <h2 class="mt-3 text-lg font-bold text-slate-800 hover:text-indigo-600 transition-colors">
                         <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
                     </h2>
                     <p class="mt-2 text-base text-slate-600 line-clamp-3">

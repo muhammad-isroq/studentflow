@@ -19,7 +19,9 @@
                         
                         {{-- GAMBAR UTAMA ARTIKEL --}}
                         <a href="{{ route('articles.show', $article->slug) }}" class="block relative h-48 bg-slate-200">
+                            
                             @if ($article->image)
+                            
                                 <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
@@ -44,7 +46,7 @@
                         @endphp
 
                
-                        <span class="inline-block {{ $badgeColor }} text-xs font-semibold px-2.5 py-1 rounded-full w-fit uppercase tracking-wide">
+                        <span class="inline-block {{ $badgeColor }} bg-indigo-800 text-white text-xs font-semibold px-2.5 py-1 rounded-full w-fit uppercase tracking-wide">
                             {{ $badgeLabel }}
                         </span>
                             
@@ -61,15 +63,14 @@
                             {{-- BAGIAN AVATAR USER (YANG BARU) --}}
                             <div class="mt-6 flex items-center">
                                 <div class="flex-shrink-0">
-                                    @if ($article->user && $article->user->avatar)
-                                        {{-- Jika user punya foto --}}
-                                        <img class="h-10 w-10 rounded-full object-cover" 
-                                             src="{{ Storage::url($article->user->avatar) }}" 
+                                    @if ($article->user && $article->user->photo)
+                                        <img class="h-10 w-10 rounded-full object-cover border border-slate-200" 
+                                             src="{{ Storage::url($article->user->photo) }}" 
                                              alt="{{ $article->user->name }}">
                                     @else
-                                        {{-- Fallback ke inisial nama jika tidak ada foto --}}
-                                        <img class="h-10 w-10 rounded-full object-cover" 
-                                             src="https://ui-avatars.com/api/?name={{ urlencode($article->user->name ?? 'Admin') }}&color=7F9CF5&background=EBF4FF" 
+                                        
+                                        <img class="h-10 w-10 rounded-full object-cover border border-slate-200" 
+                                             src="{{ asset('images/isroq.jpg') }}" 
                                              alt="{{ $article->user->name ?? 'Admin' }}">
                                     @endif
                                 </div>

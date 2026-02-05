@@ -13,6 +13,7 @@ class Article extends Model
         'excerpt',
         'body',
         'published_at',
+        'type',
     ];
     
 

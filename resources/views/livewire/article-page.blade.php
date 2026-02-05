@@ -60,7 +60,7 @@
                                 {{ $article->excerpt }}
                             </p>
                             
-                            {{-- BAGIAN AVATAR USER (YANG BARU) --}}
+                            
                             <div class="mt-6 flex items-center">
                                 <div class="flex-shrink-0">
                                     @if ($article->user && $article->user->photo)

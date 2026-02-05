@@ -15,4 +15,18 @@ class Article extends Model
         'published_at',
     ];
     
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getTypeLabelAttribute()
+    {
+        return match($this->type) {     
+            'news' => 'Berita',
+            'article' => 'Artikel',
+            default => ucfirst($this->type),
+        };
+    }
 }

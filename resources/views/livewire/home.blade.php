@@ -684,78 +684,31 @@
     <div class="py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
+          @forelse ($articles as $article)
             <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <a href="#" class="block relative h-48 bg-slate-200">
-                  <img src="{{ asset('images/1.jpg')}} " alt="">
-                    <svg class="absolute bottom-0 left-0 w-full h-auto text-white" fill="currentColor" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1440,100H0V60c0,0,240-40,480,0s480,40,720,0s240-40,240-40V100z"></path>
-                    </svg>
+                   @if ($article->image)
+                                <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-slate-200"></div>
+                            @endif
                 </a>
                 <div class="p-6">
                     <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">Artikel</span>
                     <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
-                        <a href="#">5 Alasan Mengapa Kursus Bahasa Inggris Bisa Mengubah Karier Anda</a>
+                        <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
                     </h2>
-                    <p class="mt-2 text-base text-slate-600">
-                        Bahasa Inggris bukan hanya sekadar keterampilan, tapi juga investasi. Pelajari bagaimana kemampuan bahasa Inggris dapat membuka peluang kerja baru, meningkatkan gaji, dan memperluas jaringan profesional Anda.
+                    <p class="mt-2 text-base text-slate-600 line-clamp-3">
+                        {{ $article->excerpt }}
                     </p>
                 </div>
             </article>
-
-            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <a href="#" class="block relative h-48 bg-slate-200">
-                  <img src="{{ asset('images/2.jpg')}} " alt="">
-                    <svg class="absolute bottom-0 left-0 w-full h-auto text-white" fill="currentColor" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1440,100H0V60c0,0,240-40,480,0s480,40,720,0s240-40,240-40V100z"></path>
-                    </svg>
-                </a>
-                <div class="p-6">
-                    <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">Artikel</span>
-                    <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
-                        <a href="#">Tips Efektif Belajar Bahasa Inggris untuk Pemula</a>
-                    </h2>
-                    <p class="mt-2 text-base text-slate-600">
-                        Banyak orang merasa belajar bahasa Inggris itu sulit. Artikel ini membahas cara belajar yang menyenangkan dan mudah dipahami, mulai dari latihan sehari-hari hingga penggunaan aplikasi pendukung.
-                    </p>
-                </div>
-            </article>
-
-            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <a href="#" class="block relative h-48 bg-slate-200">
-                  <img src="{{ asset('images/3.jpg')}} " alt="">
-                    <svg class="absolute bottom-0 left-0 w-full h-auto text-white" fill="currentColor" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1440,100H0V60c0,0,240-40,480,0s480,40,720,0s240-40,240-40V100z"></path>
-                    </svg>
-                </a>
-                <div class="p-6">
-                    <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">Artikel</span>
-                    <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
-                        <a href="#">Perbedaan Belajar Bahasa Inggris di Kelas dan Belajar Mandiri</a>
-                    </h2>
-                    <p class="mt-2 text-base text-slate-600">
-                        Apakah lebih baik ikut kursus atau belajar sendiri? Artikel ini mengulas kelebihan dan kekurangan keduanya, sehingga Anda bisa memilih metode belajar yang sesuai dengan kebutuhan.
-                    </p>
-                </div>
-            </article>
-
-            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <a href="#" class="block relative h-48 bg-slate-200">
-                  <img src="{{ asset('images/1.jpg')}} " alt="">
-                    <svg class="absolute bottom-0 left-0 w-full h-auto text-white" fill="currentColor" viewBox="0 0 1440 100" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1440,100H0V60c0,0,240-40,480,0s480,40,720,0s240-40,240-40V100z"></path>
-                    </svg>
-                </a>
-                <div class="p-6">
-                    <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">Artikel</span>
-                    <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
-                        <a href="#">Mengapa Sertifikat Bahasa Inggris Penting untuk Masa Depan Anda</a>
-                    </h2>
-                    <p class="mt-2 text-base text-slate-600">
-                        Bukan hanya untuk melamar pekerjaan, sertifikat bahasa Inggris juga bisa menjadi bukti kemampuan yang diakui secara internasional. Cari tahu manfaat dan jenis sertifikat yang bisa Anda dapatkan.
-                    </p>
-                </div>
-            </article>
+            @empty
+                    
+            <div class="col-span-full text-center py-12">
+                <p class="text-slate-500">Belum ada artikel yang dipublikasikan.</p>
+            </div>
+            @endforelse        
 
         </div>
     </div>

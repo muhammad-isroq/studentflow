@@ -8,12 +8,12 @@ use Livewire\WithPagination;
 
 class ArticlePage extends Component
 {
-    use WithPagination; //paginasi
+    use WithPagination; 
 
     public function render()
     {
-        // Ambil artikel yang sudah dipublikasi, urutkan dari yang terbaru, dan tampilkan 6 per halaman
-        $articles = Article::whereNotNull('published_at')
+        $articles = Article::with('user') 
+                            ->whereNotNull('published_at')
                             ->latest('published_at')
                             ->paginate(6);
 

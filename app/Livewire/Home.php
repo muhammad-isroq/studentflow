@@ -5,10 +5,14 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\User; 
+use App\Models\Article; 
+use Livewire\WithPagination;
 
 class Home extends Component
 {
-    public $teachers;
+    public $teachers, $article;
+
+    use WithPagination;
 
     public function mount()
     {
@@ -17,6 +21,11 @@ class Home extends Component
 
     public function render()
     {
-        return view('livewire.home');
+        $articles = Article::whereNotNull('published_at')
+                            ->latest('published_at')
+                            ->paginate(4);
+        return view('livewire.home', [
+            'articles' => $articles
+        ]);
     }
 }

@@ -9,7 +9,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Schemas\Components\Utilities\Set; // <- import yang benar untuk Schema $set
+use Filament\Schemas\Components\Utilities\Set; 
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Str;
 
 class ArticleForm
@@ -30,6 +31,14 @@ class ArticleForm
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                Select::make('type')
+                ->label('Jenis Konten')
+                ->options([
+                    'news' => 'Berita',
+                    'article' => 'Artikel',
+                ])
+                ->required()
+                ->default('news'),
                 FileUpload::make('image')
                     ->label('Gambar Utama')
                     ->image()

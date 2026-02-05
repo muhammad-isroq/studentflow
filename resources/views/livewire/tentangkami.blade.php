@@ -1,7 +1,7 @@
 <div class="">
     <div
     class="hero min-h-screen"
-    style="background-image: url({{ asset('images/1.jpg') }});"
+    style="background-image: url({{ asset('images/11.jpg') }});"
     >
     <div class="hero-overlay"></div>
         <div class="hero-content text-neutral-content text-center">
@@ -55,7 +55,7 @@ Bahasa Inggris di kota Dumai.</p>
                 
             </div>
             <div class="rounded-lg p-6">
-                <img src="{{ asset('images/4.jpg') }}" alt="" class="rounded border shadow-xl">
+                <img src="{{ asset('images/logo1.png') }}" alt="" class="rounded shadow-3xl">
             </div>
         </div>
        <div class="max-w-7xl mx-auto py-12 px-4 text-center">

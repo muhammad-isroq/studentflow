@@ -694,7 +694,21 @@
                             @endif
                 </a>
                 <div class="p-6">
-                    <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">Artikel</span>
+                  <div class="p-6 flex flex-col flex-grow">
+                            @php
+                            $badgeColor = match ($article->type) {
+                                'article' => 'bg-emerald-100 text-emerald-800', 
+                                'news' => 'bg-indigo-100 text-indigo-800',       
+                                default => 'bg-gray-100 text-gray-800',
+                            };
+
+                            $badgeLabel = match ($article->type) {
+                                'article' => 'Artikel',
+                                'news' => 'Berita',
+                                default => 'Info',
+                            };
+                        @endphp
+                    <span class="inline-block bg-indigo-800 text-white text-xs font-bold uppercase px-3 py-1 rounded">{{ $badgeLabel }}</span>
                     <h2 class="mt-4 text-xl font-bold text-slate-800 hover:text-indigo-600 transition-colors">
                         <a href="{{ route('articles.show', $article->slug) }}">{{ $article->title }}</a>
                     </h2>

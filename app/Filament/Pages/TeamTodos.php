@@ -54,7 +54,7 @@ class TeamTodos extends Page implements HasTable
                             ])
                             ->orWhere('category', 'urgent');
                     })
-                    
+                    ->orderBy('is_completed', 'asc')
                     ->orderBy('created_at', 'desc')
             )
             ->columns([

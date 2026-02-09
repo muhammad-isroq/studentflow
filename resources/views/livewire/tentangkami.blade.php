@@ -54,7 +54,7 @@ Bahasa Inggris di kota Dumai.</p>
                 </div>
                 
             </div>
-            <div class="rounded-lg p-6">
+            <div class="rounded-lg px-12 text-center">
                 <img src="{{ asset('images/logo1.png') }}" alt="" class="rounded shadow-3xl">
             </div>
         </div>

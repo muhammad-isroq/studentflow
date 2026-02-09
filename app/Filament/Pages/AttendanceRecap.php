@@ -48,7 +48,7 @@ class AttendanceRecap extends Page
 
         foreach ($this->siswas as $siswa) {
 
-            $tanggalMasuk = $siswa->created_at; 
+            $tanggalMasuk = $siswa->created_at; // tanggal masuk diambail dari data siswa berdasarkan tanggal data dibuat
 
             $sesiEfektifSiswa = $this->sessions->filter(function ($session) use ($tanggalMasuk) {
 
@@ -57,7 +57,6 @@ class AttendanceRecap extends Page
 
             $totalSesiSiswa = $sesiEfektifSiswa->count();
 
-            
 
             $hadirCount = 0;
             if (isset($this->attendanceData[$siswa->id])) {

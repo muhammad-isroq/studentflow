@@ -2,25 +2,25 @@
     <div class="w-full mx-auto py-6 sm:px-6 lg:px-8">
         <div class="overflow-hidden rounded-lg p-6 mb-5">
             <p class="mt-2 text-3xl text-center mb-3">
-            Apa Kata Alumni Kami?
+            Kisah Mereka di The Master Of Dumai
             </p>
             <p class="text-1xl text-center italic">
-                Kami bangga membagikan kisah sukses dari para lulusan terbaik kami.
+                Intip perjalanan para siswa dalam menguasai bahasa Inggris dengan cara yang menyenangkan dan mudah.
             </p>
         </div>
         <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8">
             <div class="rounded-lg bg-white p-8 shadow-lg">
                 <div class="flex items-center gap-4 sm:p-3">
-                <img class="h-16 w-16 rounded-full object-cover" src="https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Foto Karina Aulia">
+                <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/sinclaire.jpeg') }}" alt="Foto Sinclaire">
                 <div>
-                    <p class="font-bold text-slate-800">Karina Aulia</p>
-                    <p class="text-sm text-gray-500">Marketing Specialist</p>
+                    <p class="font-bold text-slate-800">Sinclaire Harper Sato</p>
+                    <p class="text-sm text-gray-500">Siswa Master Kids</p>
                 </div>
                 </div>
 
-                <h3 class="mt-6 text-xl font-bold text-slate-900">Mudah Dipahami</h3>
+                <h3 class="mt-6 text-xl font-bold text-slate-900">Sangat Mengasyikkan</h3>
                 <p class="mt-4 leading-relaxed text-gray-600">
-                Awalnya saya ragu untuk ikut kursus lagi karena jadwal kerja yang padat. Tapi di sini, jadwalnya sangat fleksibel dan materi yang diajarkan benar-benar relevan dengan dunia kerja. Kemampuan presentasi dan menulis email dalam bahasa Inggris saya meningkat drastis. Para pengajar sangat profesional dan tahu apa yang kami butuhkan untuk karir. Sangat direkomendasikan untuk para profesional yang ingin upgrade skill!
+                Belajarnya seru, kalau di tempat yang dulu kadang kan banyak PR nya jadi tidak asyik. Nah kalau disini tuh ada lembaran latihannya, dan aku seneng sih. aku suka sekali belajar disini karena belajarnya gak bosenin, seperti ada games, dan movie gitu.
                 </p>
 
                 <div class="mt-6 flex items-center gap-1">
@@ -33,16 +33,16 @@
             </div>
             <div class="rounded-lg bg-white p-8 shadow-lg">
                 <div class="flex items-center gap-4 sm:p-3">
-                <img class="h-16 w-16 rounded-full object-cover" src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bWFsZSUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D" alt="Foto M Oqbal Sutomo">
+                <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/testi1.png') }}" alt="Foto M Oqbal Sutomo">
                 <div>
-                    <p class="font-bold text-slate-800">Bintang Saputra</p>
-                    <p class="text-sm text-gray-500">Mahasiswa Teknik Informatika</p>
+                    <p class="font-bold text-slate-800">Challyandra Lyffania Lubis</p>
+                    <p class="text-sm text-gray-500">Siswa Master Kids</p>
                 </div>
                 </div>
 
-                <h3 class="mt-6 text-xl font-bold text-slate-900">Sangat Mengasyikkan</h3>
+                <h3 class="mt-6 text-xl font-bold text-slate-900">Mudah Dipahami</h3>
                 <p class="mt-4 leading-relaxed text-gray-600">
-                Sebagai mahasiswa, bahasa Inggris itu wajib untuk memahami jurnal internasional dan materi kuliah. Kursus ini benar-benar 'membuka mata' saya. Cara mengajarnya seru, tidak monoton, dan banyak sekali sesi diskusi kelompok yang melatih keberanian untuk berbicara. Dulu saya paling takut kalau disuruh presentasi dalam bahasa Inggris, sekarang malah jadi lebih percaya diri. Nilai plusnya, biayanya sangat ramah di kantong mahasiswa!
+                Disini memberikan cara termudah bagi kita untuk belajar bahasa Inggris, dan selama di sini, saya berkesempatan untuk memperbaiki tata bahasa (grammar) saya. Saya bisa melihat perubahannya saat mengerjakan tugas di sekolah. Saya merasa ada kemajuan yang sangat baik karena saat guru baru menulis pertanyaan di papan tulis, saya sudah tahu jawabannya di dalam kepala. Dan guru-guru di sini selalu memberikan kosakata baru dan bahkan mengajarkan bahasa gaul untuk digunakan dalam percakapan sehari-hari. Dan itu sangat menyenangkan.
                 </p>
 
                 <div class="mt-6 flex items-center gap-1">
@@ -71,7 +71,7 @@
             <div class="mx-auto max-w-5xl mt-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-lg shadow-2xl overflow-hidden">
                     
-                    <div class="h-full">
+                    <div class="h-full object-cover">
                         <iframe 
                             class="w-full h-full" 
                             src="https://www.youtube.com/embed/{{ $testimoni->link_video }}" 

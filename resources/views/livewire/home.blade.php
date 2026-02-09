@@ -298,38 +298,42 @@
             Pembelajaran Sesuai Tingkat Kemampuan
           </h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div class="flex flex-col items-center text-center">
-              <div class="relative w-full max-w-lg mx-auto text-center">
-              <img src="{{ asset('images/preeschool.jpg') }}" class="w-full h-auto rounded-lg block">
+    <div class="flex flex-col items-center text-center">
+        <div class="relative w-full max-w-lg mx-auto text-center">
+            <img src="{{ asset('images/preeschool.jpg') }}" class="w-full h-72 object-cover rounded-lg block">
 
-              <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
+            <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md text-left">
                 Master Pre-School
                 <br>
-                (4-6 tahun)
-              </h4>
-            </div>
-            </div>
-            <div class="flex flex-col items-center text-center">
-              <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/poltak.jpeg') }}" class="w-full h-auto rounded-lg block">
-                <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
-                  Master Kids
-                  <br>
-                  (Anak-anak dan remaja)
-                </h4>
-              </div>
-            </div>
-            <div class="flex flex-col items-center text-center">
-              <div class="relative w-full max-w-lg mx-auto text-center">
-                <img src="{{ asset('images/cindy.jpeg') }}" class="w-full h-auto rounded-lg block">
-                <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md">
-                  Master Conversation
-                  <br>
-                  
-                </h4>
-              </div>
-            </div>
-          </div>
+                <span class="text-lg font-normal">(4-6 tahun)</span>
+            </h4>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center text-center">
+        <div class="relative w-full max-w-lg mx-auto text-center">
+            <img src="{{ asset('images/poltak.jpeg') }}" class="w-full h-72 object-cover rounded-lg block">
+            
+            <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md text-left">
+                Master Kids
+                <br>
+                <span class="text-lg font-normal">(Anak-anak)</span>
+            </h4>
+        </div>
+    </div>
+
+    <div class="flex flex-col items-center text-center">
+        <div class="relative w-full max-w-lg mx-auto text-center">
+            <img src="{{ asset('images/cindy.jpeg') }}" class="w-full h-72 object-cover rounded-lg block">
+            
+            <h4 class="absolute bottom-5 left-5 text-white font-bold text-2xl drop-shadow-md text-left">
+                Master Conversation
+                <br>
+                <span class="text-lg font-normal">(Remaja)</span>
+            </h4>
+        </div>
+    </div>
+</div>
         </div>
       </div>  
         
@@ -346,7 +350,7 @@
                   <div class="avatar">
                     <div class="w-28 sm:w-40 rounded-full">
                       <img class="transition-transform duration-300 hover:scale-110"
-                        src="{{ Storage::url($teacher->photo) }}"  alt="Foto {{ $teacher->name }}"/>
+                        src="{{ $teacher->photo ? Storage::url($teacher->photo) : asset('images/man.png') }}"/>
                     </div>
                   </div>
                   <p class="pt-3 font-bold">{{ $teacher->name }}</p>
@@ -460,16 +464,16 @@
 
       <div class="rounded-lg bg-white p-8 shadow-lg">
         <div class="flex items-center gap-4 sm:p-3">
-          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/logo1.png') }}" alt="Foto Iqbal Ramadhan">
+          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/sinclaire.jpeg') }}" alt="Foto Sinclaire">
           <div>
-            <p class="font-bold text-slate-800">Iqbal Ramadhan</p>
-            <p class="text-sm text-gray-500">Marketing Specialist</p>
+            <p class="font-bold text-slate-800">Sinclaire harper sato</p>
+            <p class="text-sm text-gray-500">Siswa Master KIds</p>
           </div>
         </div>
 
-        <h3 class="mt-6 text-xl font-bold text-slate-900">Mudah Dipahami</h3>
+        <h3 class="mt-6 text-xl font-bold text-slate-900">Sangat Mengasyikkan</h3>
         <p class="mt-4 leading-relaxed text-gray-600">
-          Awalnya saya ragu untuk ikut kursus lagi karena jadwal kerja yang padat. Tapi di sini, jadwalnya sangat fleksibel dan materi yang diajarkan benar-benar relevan dengan dunia kerja. Kemampuan presentasi dan menulis email dalam bahasa Inggris saya meningkat drastis. Para pengajar sangat profesional dan tahu apa yang kami butuhkan untuk karir. Sangat direkomendasikan untuk para profesional yang ingin upgrade skill!
+          Belajarnya seru, kalau di tempat yang dulu kadang kan banyak PR nya jadi tidak asyik. Nah kalau disini tuh ada lembaran latihannya, dan aku seneng sih. aku suka sekali belajar disini karena belajarnya gak bosenin, seperti ada games, dan movie gitu.
         </p>
 
         <div class="mt-6 flex items-center gap-1">
@@ -483,16 +487,16 @@
 
       <div class="rounded-lg bg-white p-8 shadow-lg">
         <div class="flex items-center gap-4 sm:p-3">
-          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/logo1.png') }}" alt="Foto Bintang Saputra">
+          <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('images/testi1.png') }}" alt="Foto Challyandra Lyffania Lubis">
           <div>
-            <p class="font-bold text-slate-800">Bintang Saputra</p>
-            <p class="text-sm text-gray-500">Mahasiswa Teknik Informatika</p>
+            <p class="font-bold text-slate-800">Challyandra Lyffania Lubis</p>
+            <p class="text-sm text-gray-500">Siswa Master Kids 4B</p>
           </div>
         </div>
 
-        <h3 class="mt-6 text-xl font-bold text-slate-900">Sangat Mengasyikkan</h3>
+        <h3 class="mt-6 text-xl font-bold text-slate-900">Mudah Dipahami</h3>
         <p class="mt-4 leading-relaxed text-gray-600">
-          Sebagai mahasiswa, bahasa Inggris itu wajib untuk memahami jurnal internasional dan materi kuliah. Kursus ini benar-benar 'membuka mata' saya. Cara mengajarnya seru, tidak monoton, dan banyak sekali sesi diskusi kelompok yang melatih keberanian untuk berbicara. Dulu saya paling takut kalau disuruh presentasi dalam bahasa Inggris, sekarang malah jadi lebih percaya diri. Nilai plusnya, biayanya sangat ramah di kantong mahasiswa!
+          Disini memberikan cara termudah bagi kita untuk belajar bahasa Inggris, dan selama di sini, saya berkesempatan untuk memperbaiki tata bahasa (grammar) saya. Saya bisa melihat perubahannya saat mengerjakan tugas di sekolah. Saya merasa ada kemajuan yang sangat baik karena saat guru baru menulis pertanyaan di papan tulis, saya sudah tahu jawabannya di dalam kepala. Dan guru-guru di sini selalu memberikan kosakata baru dan bahkan mengajarkan bahasa gaul untuk digunakan dalam percakapan sehari-hari. Dan itu sangat menyenangkan.
         </p>
 
         <div class="mt-6 flex items-center gap-1">

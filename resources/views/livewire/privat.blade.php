@@ -2,7 +2,7 @@
 
 <div
   class="hero min-h-screen"
-  style="background-image: url({{ asset('images/3.jpg') }});"
+  style="background-image: url({{ asset('images/privatelogo.jpeg') }});"
 >
   <div class="hero-overlay"></div>
   <div class="hero-content text-neutral-content text-center">

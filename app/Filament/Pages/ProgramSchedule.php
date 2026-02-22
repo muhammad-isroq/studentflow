@@ -27,6 +27,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Grid as InfoGrid;
 use Filament\Infolists\Infolist;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\Action as TableAction;
 
 
 class ProgramSchedule extends Page implements HasTable
@@ -62,25 +63,48 @@ class ProgramSchedule extends Page implements HasTable
     }
 
     public function getSubheading(): string | HtmlString | null
-    {
-        return new HtmlString('
-            <div class="mt-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600 rounded-r-lg shadow-sm">
-                <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Important Attendance Info</h3>
-                        <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                            "If you are unable to attend a meeting, please inform the staff who the substitute teacher will be at that meeting."
-                        </p>
-                    </div>
+{
+    
+    $hasLockedSessions = ClassSession::where('program_id', $this->program->id)
+        ->where('guru_id', Auth::user()->guru_id)
+        ->whereDate('session_date', '<=', now()->subDays(7)->startOfDay()) 
+        ->where('is_forced_enabled', false)
+        ->exists();
+
+    // 2. Siapkan pesan peringatan jika ada yang terkunci
+    $warningBanner = '';
+    if ($hasLockedSessions) {
+        $warningBanner = '
+            <div class="mt-3 flex items-center gap-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg animate-pulse">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-4h.01M12 9a9 9 0 110 18 9 9 0 010-18z"></path>
+                </svg>
+                <p class="text-xs font-bold text-red-700 dark:text-red-300">
+                    ATTENTION: Some sessions are locked (over 7 days). Please contact Staff to re-enable them.
+                </p>
+            </div>';
+    }
+
+    // 3. Gabungkan dengan info absensi yang sudah ada sebelumnya
+    return new HtmlString('
+        <div class="mt-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600 rounded-r-lg shadow-sm">
+            <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Important Attendance Info</h3>
+                    <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
+                        "If you are unable to attend a meeting, please inform the staff who the substitute teacher will be at that meeting."
+                    </p>
+                    ' . $warningBanner . '
                 </div>
             </div>
-        ');
-    }
+        </div>
+    ');
+}
     
     protected static bool $shouldRegisterNavigation = false;
 
@@ -133,33 +157,48 @@ class ProgramSchedule extends Page implements HasTable
                     ->icon('heroicon-o-pencil-square')
                     
                     ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record]))
+                    // ->disabled(fn (ClassSession $record) => $record->isAccessExpired())
                     ->badge(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? '✓ Filled' : '! Empty')
                     ->badgeColor(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? 'success' : 'warning')
                     ->extraAttributes(['class' => 'mr-7']),
                 Action::make('lessonPlan')
-                    ->label('Lesson Plan Form')
-                    ->icon('heroicon-o-book-open') 
-                    ->color('info')
+                    ->label(fn (ClassSession $record) => $record->isAccessExpired() ? 'View Lesson Plan' : 'Lesson Plan Form')
+                    ->icon(fn (ClassSession $record) => $record->isAccessExpired() ? 'heroicon-o-eye' : 'heroicon-o-book-open') 
+                    ->color(fn (ClassSession $record) => $record->isAccessExpired() ? 'gray' : 'info')
                     ->extraAttributes(['class' => 'mr-7'])
                     ->badge(fn (ClassSession $record) => $record->topic ? '✓ Filled' : '! Empty')
                     ->badgeColor(fn (ClassSession $record) => $record->topic ? 'success' : 'warning')
                     
-                    // Header modal yang menarik
-                    ->modalHeading(fn (ClassSession $record) => new HtmlString(
-                        '<div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-xl font-bold text-gray-900 dark:text-white">Edit Lesson Plan</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                                    📅 ' . $record->session_date->format('l, d F Y') . '
+                    ->modalHeading(fn (ClassSession $record) => new HtmlString('
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-xl font-bold text-gray-900 dark:text-white">' . ($record->isAccessExpired() ? 'View Lesson Plan' : 'Edit Lesson Plan') . '</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                        📅 ' . $record->session_date->format('l, d F Y') . '
+                                    </div>
                                 </div>
                             </div>
-                        </div>'
-                    ))
+
+                            ' . ($record->isAccessExpired() ? '
+                            <div class="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg shadow-sm">
+                                <span class="flex-shrink-0 text-amber-500">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </span>
+                                <div class="text-xs text-amber-700 leading-tight">
+                                    <p class="font-bold uppercase">Read Only Mode</p>
+                                    <p>The deadline has passed (over 7 days) 😱. Contact staff to edit this content.</p>
+                                </div>
+                            </div>' : '') . '
+                        </div>
+                    '))
                     
                     ->modalDescription('Complete the lesson plan for this session. Ensure all components are filled out completely for proper documentation.')
                     ->modalWidth('5xl')
@@ -171,6 +210,7 @@ class ProgramSchedule extends Page implements HasTable
                         'vocabulary_list' => $record->vocabulary_list,
                         'class_journal' => $record->class_journal,
                     ]))
+                    
 
                     ->form([
                         // Info Banner
@@ -244,7 +284,8 @@ class ProgramSchedule extends Page implements HasTable
                                 'h2',
                                 'h3',
                             ])
-                            ->maxLength(1000),
+                            ->maxLength(1000)
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired()),
 
                         RichEditor::make('activity')
                             ->label('🎯 Activity')
@@ -257,7 +298,8 @@ class ProgramSchedule extends Page implements HasTable
                                 'underline',
                                 'bulletList',
                                 'orderedList',
-                            ]),
+                            ])
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired()),
 
                         // Divider untuk section 2
                         Placeholder::make('*')
@@ -304,7 +346,8 @@ class ProgramSchedule extends Page implements HasTable
                                 'italic',
                                 'bulletList',
                                 'orderedList',
-                            ]),
+                            ])
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired()),
 
                         RichEditor::make('class_journal')
                             ->label('📔 Class Journal')
@@ -317,7 +360,8 @@ class ProgramSchedule extends Page implements HasTable
                                 'underline',
                                 'bulletList',
                                 'orderedList',
-                            ]),
+                            ])
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired()),
 
                         // Summary/Quick Stats
                         Placeholder::make('completion_reminder')
@@ -343,6 +387,29 @@ class ProgramSchedule extends Page implements HasTable
                             '))
                             ->columnSpanFull(),
                     ])
+                    
+                    ->extraModalActions([
+                        Action::make('resetOwnLessonPlan')
+                            ->label('Reset Data')
+                            ->color('danger')
+                            ->icon('heroicon-m-trash')
+                            ->requiresConfirmation()
+                            ->visible(fn (ClassSession $record) => !$record->isAccessExpired() && !empty($record->topic))
+                            ->action(function (ClassSession $record) {
+                                $record->update([
+                                    'topic' => null,
+                                    'activity' => null,
+                                    'vocabulary_list' => null,
+                                    'class_journal' => null,
+                                ]);
+
+                                Notification::make()->title('Lesson plan telah dikosongkan')->success()->send();
+                            }),
+                    ])
+
+                    ->modalSubmitAction(fn ($action, ClassSession $record) => 
+        $record->isAccessExpired() ? false : $action
+    )
                     
                     ->modalSubmitActionLabel('💾 Save Lesson Plan')
                     ->modalCancelActionLabel('❌ Cancel')

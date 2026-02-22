@@ -34,5 +34,15 @@ class ClassSession extends Model
         return $this->belongsTo(Guru::class, 'replacement_guru_id');
     }
 
+    public function isAccessExpired(): bool
+    {
+        return false;
+        
+        // if ($this->is_forced_enabled) {
+        //     return false;
+        // }
+
+        // return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
+    }
     
 }

@@ -94,4 +94,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Grade::class, 'student_id');
     }
+
+    public function attendances()
+{
+    return $this->hasMany(Attendance::class, 'siswa_id');
+}
 }

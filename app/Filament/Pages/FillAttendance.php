@@ -71,6 +71,7 @@ class FillAttendance extends Page implements HasForms, HasTable
                     
                 SelectColumn::make('status')
                     ->label('Attendance Status')
+                    ->disabled(fn () => $this->record->isAccessExpired())
                     ->options([
                         'Hadir'       => 'Present',
                         'Absen'       => 'Alpha',
@@ -80,6 +81,9 @@ class FillAttendance extends Page implements HasForms, HasTable
                     ])
                     ->selectablePlaceholder(false)
                     ->updateStateUsing(function ($record, $state) {
+                        
+                        if ($this->record->isAccessExpired()) return $state;
+
                         $record->update(['status' => $state]);
                         
                         Notification::make()
@@ -92,9 +96,19 @@ class FillAttendance extends Page implements HasForms, HasTable
 
                 TextInputColumn::make('notes')
                     ->label('Notes')
-                    ->disabled(fn ($record) => $record->status === 'Hadir') 
+                    ->disabled(fn ($record) => $record->status === 'Hadir' || $this->record->isAccessExpired()) 
                     ->updateStateUsing(function ($record, $state) {
+                        if ($this->record->isAccessExpired()) {
+                            return $record->notes; 
+                        }
+
                         $record->update(['notes' => $state]);
+                        
+                        Notification::make()
+                            ->title('Notes updated')
+                            ->success()
+                            ->send();
+
                         return $state;
                     }),
 
@@ -114,13 +128,13 @@ class FillAttendance extends Page implements HasForms, HasTable
     
     public function setAllPresent()
     {
+        if ($this->record->isAccessExpired()) return;
+
         $this->record->attendances()->update(['status' => 'Hadir']);
-        
         $this->dispatch('attendance-updated');
         
         Notification::make()
             ->title('Success!')
-            ->body('All students have been marked as Present')
             ->success()
             ->send();
     }

@@ -27,6 +27,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Columns\TextInputColumn;
+use Filament\Notifications\Notification;
 
 class ClassSessionsRelationManager extends RelationManager
 {
@@ -82,6 +83,12 @@ class ClassSessionsRelationManager extends RelationManager
                     ->label('Teacher')
                     ->badge()
                     ->color(fn ($record) => $record->replacement_guru_id ? 'gray' : 'success'),
+                TextColumn::make('is_forced_enabled')
+    ->label('Status')
+    ->formatStateUsing(fn ($state) => $state ? 'Unlocked' : 'Normal')
+    ->badge()
+    ->color(fn ($state) => $state ? 'warning' : 'gray')
+    ->tooltip('Staff has manually unlocked this session'),
             ])
             ->filters([
                 //
@@ -152,6 +159,49 @@ class ClassSessionsRelationManager extends RelationManager
                     ->slideOver()
                     ->modalSubmitAction(false) // Hilangkan tombol Save
                     ->modalCancelActionLabel('✖️ Tutup'),
+                    Action::make('re_enable_access')
+        ->label('Unlock Access')
+        ->icon('heroicon-m-lock-open')
+        ->color('warning')
+        ->requiresConfirmation()
+        ->modalHeading('Unlock Teacher Access')
+        ->modalDescription('This will allow the teacher to fill in attendance and lesson plans for this session again, even if it has passed the 7-day limit.')
+        // Tampilkan hanya jika sudah expired dan belum di-unlock
+        ->visible(fn (ClassSession $record) => $record->isAccessExpired() && !$record->is_forced_enabled)
+        ->action(function (ClassSession $record) {
+            $record->update([
+                'is_forced_enabled' => true,
+                'manual_open_at' => now(), // Opsional: untuk log kapan diaktifkan
+            ]);
+
+            Notification::make()
+                ->title('Access Unlocked')
+                ->body('Teacher can now edit this session.')
+                ->success()
+                ->send();
+        }),
+        // Action::make('resetLessonPlan')
+        // ->label('Reset Lesson Plan')
+        // ->icon('heroicon-m-arrow-path')
+        // ->color('danger')
+        // ->requiresConfirmation()
+        // ->modalHeading('Reset Lesson Plan Data?')
+        // ->modalDescription('This action will permanently delete all Lesson Plan content (topic, activity, vocabulary, and journal) for this session.')
+        // ->modalSubmitActionLabel('Yes, Reset Everything')
+        // ->visible(fn (ClassSession $record) => !empty($record->topic))
+        // ->action(function (ClassSession $record) {
+        //     $record->update([
+        //         'topic' => null,
+        //         'activity' => null,
+        //         'vocabulary_list' => null,
+        //         'class_journal' => null,
+        //     ]);
+
+        //     Notification::make()
+        //         ->title('Lesson Plan Reset Successfully')
+        //         ->danger() 
+        //         ->send();
+        // }),
                                 ])
                                 ->toolbarActions([
                                     BulkActionGroup::make([

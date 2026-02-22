@@ -55,6 +55,35 @@ class ReplacementSessions extends Page implements HasTable
         return auth()->check() && auth()->user()->hasRole('guru');
     }
 
+    public function getSubheading(): string | HtmlString | null
+{
+
+    $hasLockedReplacement = ClassSession::where('replacement_guru_id', Auth::user()->guru_id)
+        ->whereDate('session_date', '<=', now()->subDays(7)->startOfDay()) 
+        ->where('is_forced_enabled', false)
+        ->where(function ($query) {
+            $query->whereNull('topic')
+                  ->orWhere('topic', '')
+                  ->orWhere('topic', '<p></p>'); 
+        })
+        ->exists();
+
+    if (!$hasLockedReplacement) {
+        return null;
+    }
+
+    return new HtmlString('
+        <div class="mt-3 flex items-center gap-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg animate-pulse">
+            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-4h.01M12 9a9 9 0 110 18 9 9 0 010-18z"></path>
+            </svg>
+            <p class="text-xs font-bold text-red-700 dark:text-red-300">
+                ATTENTION: Some replacement sessions are locked (over 7 days and empty) 😞. Please contact Staff to re-enable them.
+            </p>
+        </div>
+    ');
+}
+
     public function table(Table $table): Table
     {
         // Dapatkan ID guru yang terhubung dengan user yang login
@@ -100,34 +129,46 @@ class ReplacementSessions extends Page implements HasTable
                 Action::make('fill_attendance')
                     ->label('Fill Attendance')
                     ->icon('heroicon-o-pencil-square')
-                    ->color('warning')
-                    ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
-                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
+                    
                     ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record]))
+                    // ->disabled(fn (ClassSession $record) => $record->isAccessExpired() && empty($record->topic))
+                    ->badge(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? '✓ Filled' : '! Empty')
+                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? 'success' : 'warning')
                     ->extraAttributes(['class' => 'mr-7']),
                 Action::make('lessonPlan')
-                    ->label('Lesson Plan')
-                    ->icon('heroicon-o-book-open') 
-                    ->color('info')
+                    ->label(fn (ClassSession $record) => $record->isAccessExpired() ? 'View Lesson Plan' : 'Lesson Plan Form')
+                    ->icon(fn (ClassSession $record) => $record->isAccessExpired() ? 'heroicon-o-eye' : 'heroicon-o-book-open') 
+                    ->color(fn (ClassSession $record) => $record->isAccessExpired() ? 'gray' : 'info')
+                    ->extraAttributes(['class' => 'mr-7'])
                     ->badge(fn (ClassSession $record) => $record->topic ? '✓ Filled' : '! Empty')
                     ->badgeColor(fn (ClassSession $record) => $record->topic ? 'success' : 'warning')
                     
-                    // Header modal yang menarik
-                    ->modalHeading(fn (ClassSession $record) => new HtmlString(
-                        '<div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="text-xl font-bold text-gray-900 dark:text-white">Edit Lesson Plan</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                                    📅 ' . $record->session_date->format('l, d F Y') . '
-                                </div>
-                            </div>
-                        </div>'
-                    ))
+                    ->modalHeading(fn (ClassSession $record) => new HtmlString('
+    <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            </div>
+            <div>
+                 
+                <div class="text-xl font-bold text-gray-900">
+                    ' . ($record->isAccessExpired() && empty($record->topic) ? 'View Lesson Plan' : 'Edit Lesson Plan') . '
+                </div>
+                <div class="text-sm text-gray-500 font-medium">📅 ' . $record->session_date->format('l, d F Y') . '</div>
+            </div>
+        </div>
+
+        
+        ' . ($record->isAccessExpired() && empty($record->topic) ? '
+        <div class="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg shadow-sm">
+            <span class="text-amber-500"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg></span>
+            <div class="text-xs text-amber-700">
+                <p class="font-bold">READ ONLY MODE</p>
+                <p>The deadline has passed 😫. Contact staff to edit.</p>
+            </div>
+        </div>' : '') . '
+    </div>
+'))
                     
                     ->modalDescription('Complete the lesson plan for this session. Ensure all components are filled out completely for proper documentation.')
                     ->modalWidth('5xl')
@@ -203,6 +244,7 @@ class ReplacementSessions extends Page implements HasTable
                             ->placeholder('The main topics that will be discussed in the lesson')
                             ->required()
                             ->columnSpanFull()
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired() && empty($record->topic))
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -219,6 +261,7 @@ class ReplacementSessions extends Page implements HasTable
                             ->helperText('Example: Warming up - Picture description (10 menit), Main activity - Role play in pairs (20 menit), Practice - Fill in the blanks worksheet (15 menit), Closing - Quick quiz (5 menit)')
                             ->placeholder('Description of the learning activities to be carried out')
                             ->columnSpanFull()
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired() && empty($record->topic))
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -267,6 +310,7 @@ class ReplacementSessions extends Page implements HasTable
                             ->helperText('Example: Running - Berlari (verb): The children are running in the park | Swimming - Berenang (verb): She is swimming in the pool')
                             ->placeholder('List of new vocabulary learned with their meanings')
                             ->columnSpanFull()
+                             ->disabled(fn (ClassSession $record) => $record->isAccessExpired() && empty($record->topic))
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -279,6 +323,7 @@ class ReplacementSessions extends Page implements HasTable
                             ->helperText('Example: Classroom Atmosphere - Students were very enthusiastic and actively participated. Challenges - Some students still had difficulty with pronunciation. Highlights - The role-play activity was very effective.')
                             ->placeholder('Observation notes during learning')
                             ->columnSpanFull()
+                            ->disabled(fn (ClassSession $record) => $record->isAccessExpired() && empty($record->topic))
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -311,9 +356,14 @@ class ReplacementSessions extends Page implements HasTable
                             '))
                             ->columnSpanFull(),
                     ])
-                    
+                    ->modalSubmitAction(function ($action, ClassSession $record) {
+        if ($record->isAccessExpired() && empty($record->topic)) {
+            return null;
+        }
+        return $action;
+    })
                     ->modalSubmitActionLabel('💾 Save Lesson Plan')
-                    ->modalCancelActionLabel('❌ Cancel')
+                    ->modalCancelActionLabel('❌ Back')
                     ->closeModalByClickingAway(false)
                     ->successNotificationTitle('✅ Lesson Plan successfully saved')
                     

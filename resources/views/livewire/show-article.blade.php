@@ -29,7 +29,7 @@
                         <img 
                             src="{{ Storage::url($article->image) }}" 
                             alt="{{ $article->title }}" 
-                            class="w-full h-auto max-h-[500px] object-cover hover:scale-105 transition-transform duration-500"
+                            class="w-full h-auto max-h-[500px] object-contain hover:scale-105 transition-transform duration-500"
                         >
                     </figure>
                 @endif

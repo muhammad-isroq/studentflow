@@ -39,12 +39,15 @@ class ProgramsTable
                     ->label('Lesson Time')
                     ->icon('heroicon-o-clock')
                     ->searchable(),
-                
-                // Ini sudah benar (menggunakan relasi dari Program.php)
                 TextColumn::make('guru.nama_guru') 
                     ->label('Teachers name')
                     ->searchable(),
-
+                TextColumn::make('siswas_count')
+                ->counts('siswas')
+                ->label('Total Students')
+                ->badge()
+                ->color('primary')
+                ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

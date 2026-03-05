@@ -31,10 +31,32 @@ class SiswaForm
                     ->openable(),
                 FileUpload::make('foto')
                     ->label('Photo')
+                    ->image()
+                    ->disk('public')
+                    ->directory('photos')
+                    ->visibility('public')
+                    ->openable() 
+                    ->downloadable() 
+                    ->previewable(true)
                     ->default(null),
                 TextInput::make('no_wali')
                     ->label('Parents number')
                     ->required(),
+                TextInput::make('agama')
+                    ->label('Agama'),
+                Select::make('jenis_kelamin')
+                    ->options(['Laki-laki' => 'Laki-laki',
+                                'Perempuan' => 'Perempuan']),
+                TextInput::make('asal_sekolah')
+                    ->label('Asal Sekolah'),
+                TextInput::make('nama_orang_tua')
+                    ->label('Nama Orang Tua'),
+                TextInput::make('pekerjaan_orang_tua')
+                    ->label('Pekerjaan Orang Tua'),
+                TextInput::make('sumber_info')
+                    ->label('Sumber Informasi'),
+                TextInput::make('alasan_kursus')
+                    ->label('Alasan Kursus'),
                 Textarea::make('alamat')
                     ->label('Address')
                     ->required()
@@ -95,8 +117,14 @@ class SiswaForm
                     ),
                     FileUpload::make('registration_proof')
                         ->label('Proof of payment')
-                        ->imagePreviewHeight('250')
-                        ->downloadable(),
+                        ->image()
+                    ->disk('public')
+                    ->directory('payments')
+                    ->label('Bukti Transfer Pendaftaran')
+                    ->visibility('public')
+                    ->openable() 
+                    ->downloadable() 
+                    ->previewable(true),
                 ])->columns(2)
                 ->columnSpanFull(), 
             ]);

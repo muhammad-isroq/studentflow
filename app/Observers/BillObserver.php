@@ -21,43 +21,38 @@ class BillObserver
      */
     public function updated(Bill $bill): void
     {
-        if ($bill->isDirty('status') && $bill->status === 'paid') {
+        
+        if ($bill->siswa && $bill->siswa->status === 'active') {
             
-            $namaKategori = $bill->paymentType?->name ?? 'Lainnya';
-
-
-
-            $kategoriSlug = strtolower(str_replace(' ', '_', $namaKategori));
             
+            if ($bill->isDirty('status') && $bill->status === 'paid') {
+                
+                $namaKategori = $bill->paymentType?->name ?? 'Lainnya';
+                $kategoriSlug = strtolower(str_replace(' ', '_', $namaKategori));
+                
+                if (empty($kategoriSlug)) {
+                    $kategoriSlug = 'Lainnya';
+                }
 
-            if (empty($kategoriSlug)) {
-                $kategoriSlug = 'Lainnya';
+                Transaction::create([
+                    'type'           => 'income',
+                    'amount'         => $bill->amount,
+                    'category'       => $kategoriSlug, 
+                    'date'           => now(),
+                    'description'    => "Tagihan: {$namaKategori} dari siswa " . ($bill->siswa->nama ?? 'Siswa'),
+                    'user_id'        => Auth::id() ?? 1,  
+                    'reference_type' => Bill::class,
+                    'reference_id'   => $bill->id,
+                    'proof_image'    => $bill->proof_of_payment,
+                ]);
             }
 
-            Transaction::create([
-                'type'          => 'income',
-                'amount'        => $bill->amount,
-                
-
-                'category'      => $kategoriSlug, 
-                
-                'date'          => now(),
-                
-
-                'description'   => "Tagihan: {$namaKategori} dari siswa " . ($bill->siswa->nama ?? 'Siswa'),
-                
-                'user_id'       => Auth::id() ?? 1,
-                'reference_type' => Bill::class,
-                'reference_id'   => $bill->id,
-                'proof_image'    => $bill->proof_of_payment,
-            ]);
-        }
-
-
-        if ($bill->isDirty('status') && $bill->getOriginal('status') === 'paid' && $bill->status !== 'paid') {
-            Transaction::where('reference_type', Bill::class)
-                ->where('reference_id', $bill->id)
-                ->delete();
+            
+            if ($bill->isDirty('status') && $bill->getOriginal('status') === 'paid' && $bill->status !== 'paid') {
+                Transaction::where('reference_type', Bill::class)
+                    ->where('reference_id', $bill->id)
+                    ->delete();
+            }
         }
     }
 

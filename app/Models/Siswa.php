@@ -15,9 +15,14 @@ class Siswa extends Model
 
     protected $fillable = [
         'nama',
+        'jenis_kelamin', 
+        'agama',
         'foto',
         'kelas_disekolah',
+        'asal_sekolah',
         'no_wali',
+        'nama_orang_tua',
+        'pekerjaan_orang_tua',
         'foto_formulir',
         'alamat',
         'tgl_lahir',
@@ -29,6 +34,8 @@ class Siswa extends Model
         'spp_amount',
         'registration_fee',
         'registration_proof',
+        'sumber_info',   
+        'alasan_kursus',
     ];
 
     public function program(): BelongsTo

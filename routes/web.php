@@ -16,10 +16,14 @@ use App\Livewire\Staff;
 use App\Livewire\Instruktur;
 use App\Livewire\Visimisi;
 use App\Livewire\ShowArticle;
-
+use App\Livewire\Pendaftaran;
+use App\Livewire\PendaftaranSiswa;
+use App\Livewire\StatusPendaftaran;
+use App\Livewire\LoginSiswa;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use App\Models\Article;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', Home::class);
 Route::get('/artikel', ArticlePage::class)->name('artikel');
@@ -81,3 +85,17 @@ Route::middleware('auth')->group(function () {
     // (Opsional) Anda juga bisa memindahkan rute inventory ke sini agar kumpul jadi satu
     // Route::get('/print/inventory', [PrintReportController::class, 'printInventory'])->name('print.inventory');
 });
+
+Route::get('/pendaftaran', Pendaftaran::class)->name('pendaftaran.home');
+Route::get('/pendaftaran/register', PendaftaranSiswa::class)->name('pendaftaran.register');
+Route::get('/pendaftaran/status', StatusPendaftaran::class)
+    ->middleware('auth:registration') // Hanya bisa dibuka jika sudah login/daftar
+    ->name('pendaftaran.status');
+Route::post('/pendaftaran/logout', function () {
+    Auth::guard('registration')->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/pendaftaran');
+})->name('logout');
+
+Route::get('/pendaftaran/login', LoginSiswa::class)->name('login');

@@ -48,6 +48,7 @@
                             </ul>
                         </details>
                     </li>
+                    <li><a href="/pendaftaran" wire:navigate class="{{ request()->is('pendaftaran*') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Pendaftaran</a></li>
                     <li><a href="/testimoni" wire:navigate class="{{ request()->is('testimoni') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Testimoni</a></li>
                     <li><a href="/tentang-kami" wire:navigate class="{{ request()->is('tentang-kami') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Tentang Kami</a></li>
                     <li><a href="/instruktur" wire:navigate class="{{ request()->is('/instruktur') ? 'textinstrukturprimary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Instruktur</a></li>
@@ -73,6 +74,11 @@
                         <li><a class="whitespace-nowrap" href="/master-onsite-training" wire:navigate class="{{ request()->is('master-onsite-training') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Master On-site Training</a></li>
                     </ul>
                 </details>
+            </li>
+            <li>
+                <a href="/pendaftaran" wire:navigate class="{{ request()->is('pendaftaran*') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">
+                    Pendaftaran
+                </a>
             </li>
             <li><a href="/testimoni" wire:navigate class="{{ request()->is('testimoni') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Testimoni</a></li>
             <li><a href="/tentang-kami" wire:navigate class="{{ request()->is('tentang-kami') ? 'text-primary border-b-2 border-primary font-semibold' : 'hover:text-primary' }}">Tentang Kami</a></li>
@@ -194,7 +200,18 @@ Bahasa Inggris semenyenangkan mungkin.
     </div>
 </div>
 
+@if (session()->has('success'))
+<script>
+    Swal.fire({
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        icon: 'success',
+        confirmButtonColor: '#d33', // Sesuaikan tema
+    });
+</script>
+@endif
 
-
+@livewireScripts
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>

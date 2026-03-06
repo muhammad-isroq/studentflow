@@ -66,7 +66,7 @@
                         Verifikasi <br><span class="text-xs opacity-50">Admin Checking</span>
                     </li>
                     
-                    {{-- Step 3: Seleksi (Aktif jika status selection atau announced) --}}
+                    {{-- Step 3: Penentuan Level (Aktif jika status selection atau announced) --}}
                     <li class="step {{ in_array($status, ['selection', 'announced']) ? 'step-primary' : '' }}">
                         Penentuan Level <br><span class="text-xs opacity-50">Tes Tertulis/Lisan</span>
                     </li>
@@ -86,8 +86,8 @@
                             <div class="text-xs">Data dan bukti transfer Anda sedang diperiksa oleh admin. Mohon cek berkala dalam 1x24 jam.</div>
                         
                         @elseif($status == 'selection')
-                            <h3 class="font-bold text-blue-700 text-left">Pembayaran Valid & Masuk Tahap Seleksi</h3>
-                            <div class="text-xs text-blue-600">Terima kasih! Pembayaran Anda telah dikonfirmasi. Saat ini Anda berada dalam antrean <strong>Proses Seleksi</strong>. Admin akan segera menghubungi Anda via WhatsApp untuk jadwal tes.</div>
+                            <h3 class="font-bold text-blue-700 text-left">Pembayaran Valid & Masuk Tahap Penentuan Level</h3>
+                            <div class="text-xs text-blue-600">Terima kasih! Pembayaran Anda telah dikonfirmasi. Saat ini Anda berada dalam antrean <strong>Proses Penentuan Level</strong>. Admin akan segera menghubungi Anda via WhatsApp untuk jadwal tes.</div>
 
                         @elseif($status == 'announced')
                             <div class="mt-6 p-6 md:mx-14 bg-green-50 border-2 border-green-500 rounded-2xl shadow-inner animate-pulse">

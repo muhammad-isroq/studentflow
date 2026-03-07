@@ -99,3 +99,12 @@ Route::post('/pendaftaran/logout', function () {
 })->name('logout');
 
 Route::get('/pendaftaran/login', LoginSiswa::class)->name('login');
+Route::impersonate();
+
+Route::get('/impersonate/leave-custom', function () {
+   
+    app(\Lab404\Impersonate\Services\ImpersonateManager::class)->leave();
+
+    
+    return redirect()->to('/studentflow/users'); 
+})->name('impersonate.leave.custom');

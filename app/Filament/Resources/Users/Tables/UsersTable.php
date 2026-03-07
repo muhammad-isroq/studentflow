@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 
 class UsersTable
 {
@@ -54,6 +55,26 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('impersonate')
+    ->label('Monitor')
+    ->icon('heroicon-o-finger-print')
+    ->color('warning')
+    ->requiresConfirmation()
+    ->action(function ($record) {
+        
+        app(\Lab404\Impersonate\Services\ImpersonateManager::class)->take(auth()->user(), $record);
+
+        
+        session()->forget(['password_hash_web', 'password_hash_guru']); 
+
+       
+        return redirect()->to('/studentflow'); 
+    })
+        
+        ->visible(fn ($record) => 
+    $record->id !== auth()->id() && 
+    $record->roles->contains('name', 'guru') 
+),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

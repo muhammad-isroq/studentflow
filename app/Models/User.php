@@ -10,10 +10,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Support\Facades\Storage;
+use Lab404\Impersonate\Models\Impersonate;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, Impersonate;
 
     protected $fillable = [
         'name',
@@ -59,5 +60,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         }
 
         return null;
+    }
+
+    public function canImpersonate()
+    {
+        return $this->role === 'admin' || $this->role === 'staff';
+    }
+
+    public function canBeImpersonated()
+    {
+        return $this->role === 'guru';
     }
 }

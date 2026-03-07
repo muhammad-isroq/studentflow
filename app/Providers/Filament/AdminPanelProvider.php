@@ -31,6 +31,8 @@ use Filament\Support\Enums\VerticalAlignment;
 use App\Filament\Widgets\UpcomingMeetingsWidget; 
 use App\Http\Controllers\PrintReportController;
 use Illuminate\Support\Facades\Route;
+use Filament\Support\Facades\FilamentView;
+use Illuminate\Support\Facades\Blade;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -39,6 +41,19 @@ class AdminPanelProvider extends PanelProvider
     {
         Notifications::alignment(Alignment::Center);
         Notifications::verticalAlignment(VerticalAlignment::Start);
+        FilamentView::registerRenderHook(
+            'panels::topbar.start',
+            fn (): string => Blade::render('
+                @if(app(\'Lab404\Impersonate\Services\ImpersonateManager\')->isImpersonating())
+                    <div class="flex items-center gap-3 px-4 py-1 text-sm font-bold text-white bg-orange-600 rounded-full shadow-lg ml-4 transition-all">
+                        <span>🔴 Memantau Akun: {{ auth()->user()->name }}</span>
+                        <a href="{{ route(\'impersonate.leave.custom\') }}" class="px-2 py-0.5 bg-white text-orange-600 rounded-md hover:bg-gray-100 font-extrabold shadow-sm">
+                            KEMBALI KE ADMIN
+                        </a>
+                    </div>
+                @endif
+            '),
+        );
     }
 
     public function panel(Panel $panel): Panel

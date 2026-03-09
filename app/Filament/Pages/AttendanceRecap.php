@@ -31,69 +31,75 @@ class AttendanceRecap extends Page
     {
         $this->program = $program;
 
-        // 1. Ambil semua sesi untuk program ini
+        // 1. Ambil semua sesi untuk program ini urut tanggal
         $this->sessions = ClassSession::where('program_id', $this->program->id)
             ->orderBy('session_date')
             ->get();
 
         $sessionIds = $this->sessions->pluck('id');
 
-        // 2. Ambil siswa yang saat ini di program ini ATAU yang pernah hadir di sesi program ini
-        $this->siswas = Siswa::query()
-            ->where('program_id', $this->program->id)
-            ->orWhereHas('attendances', function ($query) use ($sessionIds) {
-                $query->whereIn('class_session_id', $sessionIds);
-            })
-            ->orderBy('nama')
-            ->get();
-            
-        // 3. Ambil semua data kehadiran untuk sesi di program ini
+        // 2. Ambil data kehadiran (Eager Load untuk performa)
         $attendances = Attendance::whereIn('class_session_id', $sessionIds)->get();
 
-        foreach ($attendances as $attendance) {
-            $this->attendanceData[$attendance->siswa_id][$attendance->class_session_id] = $attendance->status;
-        }
+        // Map data agar mudah diakses: $this->attendanceData[siswa_id][session_id] = status
+        $this->attendanceData = $attendances->groupBy('siswa_id')
+            ->map(fn($item) => $item->pluck('status', 'class_session_id'))
+            ->toArray();
+
+        // 3. Ambil siswa (Aktif di program ini ATAU pernah punya record absen di sini)
+        $this->siswas = Siswa::query()
+            ->where('program_id', $this->program->id)
+            ->orWhereHas('attendances', fn($q) => $q->whereIn('class_session_id', $sessionIds))
+            ->orderBy('nama')
+            ->get();
 
         foreach ($this->siswas as $siswa) {
-            $tanggalMasuk = $siswa->created_at; 
+            $dataAbsenSiswa = $this->attendanceData[$siswa->id] ?? [];
+            $sessionIdsPernahAbsen = array_keys($dataAbsenSiswa);
 
-            // LOGIKA SESI EFEKTIF:
-            // Sesi dianggap efektif jika:
-            // - Tanggal sesi >= tanggal masuk siswa
-            // - DAN (Siswa masih di program ini ATAU siswa punya catatan kehadiran di sesi tersebut)
-            // Ini penting agar siswa yang pindah "keluar" saat Ramadan tidak dihitung Alpha di kelas aslinya.
-            $sesiEfektifSiswa = $this->sessions->filter(function ($session) use ($tanggalMasuk, $siswa) {
-                $hasAttendanceRecord = isset($this->attendanceData[$siswa->id][$session->id]);
-                $isStillInProgram = $siswa->program_id === $this->program->id;
+            // --- LOGIKA JENDELA WAKTU (START & END LIMIT) ---
 
-                return $session->session_date >= $tanggalMasuk && ($isStillInProgram || $hasAttendanceRecord);
+            // A. START LIMIT: Sesi pertama dia ikut ATAU tanggal akun dibuat
+            $tanggalSesiPertama = $this->sessions->whereIn('id', $sessionIdsPernahAbsen)->min('session_date');
+            $startLimit = $tanggalSesiPertama ?: $siswa->created_at->format('Y-m-d');
+
+            // B. END LIMIT: 
+            if ($siswa->program_id === $this->program->id) {
+                // Jika masih di kelas ini, batas akhirnya adalah sesi terakhir yang ada
+                $endLimit = $this->sessions->max('session_date') ?: now()->format('Y-m-d');
+            } else {
+                // Jika sudah pindah, batas akhirnya adalah tanggal sesi terakhir dia absen di kelas ini
+                $tanggalSesiTerakhir = $this->sessions->whereIn('id', $sessionIdsPernahAbsen)->max('session_date');
+                $endLimit = $tanggalSesiTerakhir ?: $startLimit;
+            }
+
+            // C. FILTER SESI EFEKTIF
+            $sesiEfektif = $this->sessions->filter(function ($session) use ($startLimit, $endLimit) {
+                return $session->session_date >= $startLimit && $session->session_date <= $endLimit;
             });
 
-            $totalSesiSiswa = $sesiEfektifSiswa->count();
+            $totalSesiEfektif = $sesiEfektif->count();
+            $sesiEfektifIds = $sesiEfektif->pluck('id');
 
-            $hadirCount = 0;
-            if (isset($this->attendanceData[$siswa->id])) {
-                $sesiEfektifIds = $sesiEfektifSiswa->pluck('id');
-                
-                $hadirCount = count(array_filter($this->attendanceData[$siswa->id], function($status, $sessionId) use ($sesiEfektifIds) {
-                    return $status === 'Hadir' && $sesiEfektifIds->contains($sessionId);
-                }, ARRAY_FILTER_USE_BOTH));
-            }
+            // D. HITUNG KEHADIRAN
+            $hadirCount = collect($dataAbsenSiswa)
+                ->filter(fn($status, $sessionId) => $status === 'Hadir' && $sesiEfektifIds->contains($sessionId))
+                ->count();
 
-            // Hitung Skor (Persentase Kehadiran)
-            if ($totalSesiSiswa > 0) {
-                $score = ($hadirCount / $totalSesiSiswa) * 100;
-                $score = min($score, 100);
-            } else {
-                $score = 0; 
-            }
-
-            $this->attendanceScores[$siswa->id] = round($score);
+            // E. SKOR AKHIR
+            $score = $totalSesiEfektif > 0 ? ($hadirCount / $totalSesiEfektif) * 100 : 0;
+            
+            $this->attendanceScores[$siswa->id] = [
+                'score' => round(min($score, 100)),
+                'total' => $totalSesiEfektif,
+                'hadir' => $hadirCount,
+                'is_moved' => $siswa->program_id !== $this->program->id // Label jika siswa sudah pindah
+            ];
         }
     }
-    
+
     public function getTitle(): string
     {
-        return 'Attendance Recap: ' . $this->program->nama_program;
+        return 'Rekap Absensi: ' . $this->program->nama_program;
     }
 }

@@ -41,6 +41,9 @@ class SiswasTable
                 TextColumn::make('status')
                     ->label('status')
                     ->searchable(),
+                TextColumn::make('tgl_masuk')
+                    ->label('Tanggal Masuk')
+                    ->searchable(),
                 TextColumn::make('no_wali')
                     ->label('Parents number')
                     ->searchable(),

@@ -106,14 +106,18 @@ class TodosTable
                     ->label('Fokus: Urgent & Baru Minggu Ini')
                     ->default() 
                     ->query(function (Builder $query) {
-                        return $query->where(function (Builder $subQuery) {
-                            $subQuery
-                                ->where('category', 'urgent') 
-                                ->orWhereBetween('created_at', [ 
-                                    now()->startOfWeek(),
-                                    now()->endOfWeek()
-                                ]);
-                        });
+                        return $query
+                            // 1. WAJIB belum selesai
+                            ->where('is_completed', false) 
+                            // 2. DAN (Urgent ATAU Minggu Ini)
+                            ->where(function (Builder $subQuery) {
+                                $subQuery
+                                    ->where('category', 'urgent') 
+                                    ->orWhereBetween('created_at', [ 
+                                        now()->startOfWeek(),
+                                        now()->endOfWeek()
+                                    ]);
+                            });
                     }),
 
                 TernaryFilter::make('is_completed')

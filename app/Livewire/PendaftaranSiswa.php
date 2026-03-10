@@ -81,7 +81,7 @@ class PendaftaranSiswa extends Component
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username';
             $rules['password'] = 'required|string|min:8';
             $rules['photo'] = 'required|image|mimes:jpeg,png,jpg|max:6048';
-            $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg|max:2048';
+            $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg|max:6048';
         } else {
             // Username tetap divalidasi tapi abaikan ID diri sendiri agar tidak error saat save
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username,' . auth()->guard('registration')->id();

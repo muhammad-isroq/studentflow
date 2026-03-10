@@ -86,7 +86,7 @@ class PendaftaranSiswa extends Component
             // Username tetap divalidasi tapi abaikan ID diri sendiri agar tidak error saat save
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username,' . auth()->guard('registration')->id();
             $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
-            $rules['bukti_pembayaran'] = 'nullable|image|mimes:jpeg,png,jpg|max:2048';
+            $rules['bukti_pembayaran'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
         }
 
         $this->validate($rules);

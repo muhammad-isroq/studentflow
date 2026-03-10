@@ -185,7 +185,7 @@ Bahasa Inggris semenyenangkan mungkin.
     </div>
 
     <div class="w-full text-center bg-white py-5 text-black px-5">
-        © Copyright 2010 – 2025 The Master of Dumai English Course
+        © Copyright 2010 – 2026 The Master of Dumai English Course
     </div>
 </footer>
 

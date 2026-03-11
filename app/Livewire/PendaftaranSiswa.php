@@ -100,7 +100,11 @@ class PendaftaranSiswa extends Component
 
     protected function registerNewSiswa()
     {
-        $photoPath = $this->photo ? $this->photo->store('photos', 'public') : null;
+        $photoPath = null;
+    if ($this->photo) {
+        $photoPath = $this->photo->store('photos', 'public');
+    }
+
     $buktiPath = $this->bukti_pembayaran->store('payments', 'public');
 
         // 1. Simpan ke tabel Registration

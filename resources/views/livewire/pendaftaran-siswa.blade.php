@@ -149,12 +149,12 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="form-control w-full">
                             <label class="label"><span class="label-text font-bold text-primary">Foto Siswa (Formal)</span></label>
-                            <input type="file" wire:model="photo" class="file-input file-input-bordered file-input-primary w-full">
+                            <input type="file" wire:model="photo" class="file-input file-input-bordered file-input-primary w-full" wire:key="upload_photo_key">
                             @error('photo') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                         <div class="form-control w-full">
                             <label class="label"><span class="label-text font-bold text-primary">Bukti Transfer Pendaftaran</span></label>
-                            <input type="file" wire:model="bukti_pembayaran" class="file-input file-input-bordered file-input-secondary w-full">
+                            <input type="file" wire:model="bukti_pembayaran" class="file-input file-input-bordered file-input-secondary w-full" wire:key="upload_payment_key">
                             @error('bukti_pembayaran') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>

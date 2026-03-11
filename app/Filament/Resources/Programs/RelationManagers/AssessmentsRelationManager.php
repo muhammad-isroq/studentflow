@@ -138,14 +138,28 @@ class AssessmentsRelationManager extends RelationManager
                                     if (!$students) return [];
 
                                     $data = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
+                                        // 1. Ambil semua nilai siswa ini
                                         $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
+                                        
+                                        // 2. Filter nilai untuk review yang MEMANG diikuti siswa ini
                                         $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
                                         $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
 
                                         $calc = function($col) use ($reviewGrades, $semesterGrade) {
+                                            // Rata-rata review hanya dihitung dari ujian yang dia punya nilainya
+                                            // Jika siswa baru join di ujian ke-3, maka pembaginya otomatis menyesuaikan
                                             $avgReview = (float)($reviewGrades->avg($col) ?? 0);
-                                            $scoreSem  = (float)($semesterGrade->$col ?? 0);
-                                            return ($avgReview + $scoreSem) / 2;
+                                            
+                                            $scoreSem = (float)($semesterGrade->$col ?? 0);
+
+                                            // LOGIKA ADIL:
+                                            // Jika belum ujian semester, nilai diambil dari rata-rata review saja
+                                            // Jika sudah ada semester, gunakan rumus (AvgReview + Semester) / 2
+                                            if ($semesterGrade) {
+                                                return ($avgReview + $scoreSem) / 2;
+                                            }
+
+                                            return $avgReview;
                                         };
 
                                         $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
@@ -165,6 +179,8 @@ class AssessmentsRelationManager extends RelationManager
                                                 'avg_g' => number_format($g, 1),
                                                 'total' => number_format($total, 1),
                                                 'final' => number_format($final, 1),
+                                                // Opsional: Tambahkan info jumlah ujian yang diikuti
+                                                'test_count' => $reviewGrades->count() + ($semesterGrade ? 1 : 0),
                                             ]
                                         ];
                                     });

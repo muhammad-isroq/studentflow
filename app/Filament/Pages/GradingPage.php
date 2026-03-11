@@ -101,38 +101,52 @@ class GradingPage extends Page implements HasTable
                                 if ($students->isEmpty()) return [];
         
                                 $data = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
-                                    $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
-                                    $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
-                                    $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
+                                // 1. Ambil semua nilai siswa ini
+                                $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
+                                
+                                // 2. Filter nilai untuk review yang MEMANG diikuti siswa ini
+                                $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
+                                $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
 
-                                    $calc = function($col) use ($reviewGrades, $semesterGrade) {
-                                        $avgReview = (float)($reviewGrades->avg($col) ?? 0);
-                                        $scoreSem  = (float)($semesterGrade->$col ?? 0);
+                                $calc = function($col) use ($reviewGrades, $semesterGrade) {
+                                    // Rata-rata review hanya dihitung dari ujian yang dia punya nilainya
+                                    // Jika siswa baru join di ujian ke-3, maka pembaginya otomatis menyesuaikan
+                                    $avgReview = (float)($reviewGrades->avg($col) ?? 0);
+                                    
+                                    $scoreSem = (float)($semesterGrade->$col ?? 0);
+
+                                    // LOGIKA ADIL:
+                                    // Jika belum ujian semester, nilai diambil dari rata-rata review saja
+                                    // Jika sudah ada semester, gunakan rumus (AvgReview + Semester) / 2
+                                    if ($semesterGrade) {
                                         return ($avgReview + $scoreSem) / 2;
-                                    };
+                                    }
 
-                                    $final_l = $calc('listening');
-                                    $final_r = $calc('reading');
-                                    $final_w = $calc('writing');
-                                    $final_s = $calc('speaking');
-                                    $final_g = $calc('grammar');
-                                    $final_total = $final_l + $final_r + $final_w + $final_s + $final_g;
-                                    $final_score_av = $final_total / 5; 
-        
-                                    return [
-                                        'raw_final' => $final_score_av,
-                                        'display' => [
-                                            'nama' => $student->nama ?? '-',
-                                            'avg_l' => number_format($final_l, 1),
-                                            'avg_r' => number_format($final_r, 1),
-                                            'avg_w' => number_format($final_w, 1),
-                                            'avg_s' => number_format($final_s, 1),
-                                            'avg_g' => number_format($final_g, 1),
-                                            'total' => number_format($final_total, 1),
-                                            'final' => number_format($final_score_av, 1),
-                                        ]
-                                    ];
-                                });
+                                    return $avgReview;
+                                };
+
+                                $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
+                                $s = $calc('speaking'); $g = $calc('grammar');
+                                
+                                $total = $l + $r + $w + $s + $g;
+                                $final = $total / 5;
+
+                                return [
+                                    'raw_final' => $final,
+                                    'display' => [
+                                        'nama' => $student->nama ?? '-',
+                                        'avg_l' => number_format($l, 1),
+                                        'avg_r' => number_format($r, 1),
+                                        'avg_w' => number_format($w, 1),
+                                        'avg_s' => number_format($s, 1),
+                                        'avg_g' => number_format($g, 1),
+                                        'total' => number_format($total, 1),
+                                        'final' => number_format($final, 1),
+                                        // Opsional: Tambahkan info jumlah ujian yang diikuti
+                                        'test_count' => $reviewGrades->count() + ($semesterGrade ? 1 : 0),
+                                    ]
+                                ];
+                            });
 
                                 return $data->sortByDesc('raw_final')->values()->map(function ($item, $index) {
                                     $d = $item['display'];
@@ -144,6 +158,7 @@ class GradingPage extends Page implements HasTable
                                 Grid::make(9)
                                     ->schema([
                                         TextEntry::make('nama')->hiddenLabel()->weight(FontWeight::Medium),
+                                        
                                         TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
                                         TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
                                         TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),

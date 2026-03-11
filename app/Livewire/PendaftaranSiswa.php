@@ -80,7 +80,7 @@ class PendaftaranSiswa extends Component
             // Validasi Username untuk pendaftaran baru
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username';
             $rules['password'] = 'required|string|min:8';
-            $rules['photo'] = 'required|image|mimes:jpeg,png,jpg|max:6048';
+            $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
             $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg|max:6048';
         } else {
             // Username tetap divalidasi tapi abaikan ID diri sendiri agar tidak error saat save
@@ -100,8 +100,8 @@ class PendaftaranSiswa extends Component
 
     protected function registerNewSiswa()
     {
-        $photoPath = $this->photo->store('photos', 'public');
-        $buktiPath = $this->bukti_pembayaran->store('payments', 'public');
+        $photoPath = $this->photo ? $this->photo->store('photos', 'public') : null;
+    $buktiPath = $this->bukti_pembayaran->store('payments', 'public');
 
         // 1. Simpan ke tabel Registration
         $regSiswa = Registration::create([

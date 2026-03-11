@@ -80,13 +80,13 @@ class PendaftaranSiswa extends Component
             // Validasi Username untuk pendaftaran baru
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username';
             $rules['password'] = 'required|string|min:8';
-            $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
-            $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg|max:6048';
+            $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:12288';
+            $rules['bukti_pembayaran'] = 'required|image|mimes:jpeg,png,jpg|max:12288';
         } else {
             // Username tetap divalidasi tapi abaikan ID diri sendiri agar tidak error saat save
             $rules['username'] = 'required|string|min:4|alpha_dash|unique:registrations,username,' . auth()->guard('registration')->id();
-            $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
-            $rules['bukti_pembayaran'] = 'nullable|image|mimes:jpeg,png,jpg|max:6048';
+            $rules['photo'] = 'nullable|image|mimes:jpeg,png,jpg|max:12288';
+            $rules['bukti_pembayaran'] = 'nullable|image|mimes:jpeg,png,jpg|max:12288';
         }
 
         $this->validate($rules);

@@ -15,8 +15,9 @@ class RegistrationsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('nama')->searchable()->sortable(),
+                TextColumn::make('nama')->searchable()->sortable()->description(fn ($record): string => "ID: REG-{$record->id}"),
                 TextColumn::make('grade')->label('Grade'),
                 TextColumn::make('no_wa_wali')->label('WA Wali'),
                 

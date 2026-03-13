@@ -42,78 +42,84 @@
             <h2 class="text-3xl font-extrabold text-primary mb-2 uppercase tracking-tighter">Informasi Pendaftaran</h2>
         </div>
 
-        {{-- SECTION Rincian Biaya (Baru ditambahkan) --}}
-        <div class="px-4 mb-20">
-            <div class="grid md:grid-cols-2 gap-8 bg-white p-8 rounded-3xl shadow-xl border border-primary/10" data-theme="light">
-                
-                {{-- Program Reguler --}}
-                <div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-2 h-8 bg-primary rounded-full"></div>
-                        <h3 class="text-2xl font-black text-primary uppercase italic">Program Reguler  <small class="text-[10px] lowercase opacity-50 block">(2x seminggu / 1semester, 6-13 Siswa)</small></h3>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 bg-base-200 rounded-xl">
-                            <span class="font-bold">Pre-school</span>
-                            <span class="badge badge-primary font-mono font-bold">Rp 530.000 <small class="ml-1">/2 bln</small></span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-base-200 rounded-xl">
-                            <span class="font-bold">Master Kids</span>
-                            <span class="badge badge-primary font-mono font-bold">Rp 500.000 <small class="ml-1">/2 bln</small></span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-base-200 rounded-xl">
-                            <span class="font-bold">Master Conversation</span>
-                            <span class="badge badge-primary font-mono font-bold">Rp 550.000 <small class="ml-1">/2 bln</small></span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-base-200 rounded-xl">
-                            <span class="font-bold">TOEFL Preparation</span>
-                            <span class="badge badge-primary font-mono font-bold">Rp 700.000 <small class="ml-1">/2 bln</small></span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Program Private --}}
-                <div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-2 h-8 bg-secondary rounded-full"></div>
-                        <h3 class="text-2xl font-black text-secondary uppercase italic">Program Private <small class="text-[10px] lowercase opacity-50 block">(1-2 Siswa)</small></h3>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-4 border-b border-dashed">
-                            <span class="font-bold text-lg">Paket 10 Jam</span>
-                            <div class="text-right">
-                                <span class="text-xl font-black text-secondary font-mono">Rp 165.000</span>
-                                <p class="text-[10px] opacity-60">per jam</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center p-4 border-b border-dashed">
-                            <span class="font-bold text-lg">Paket 20 Jam</span>
-                            <div class="text-right">
-                                <span class="text-xl font-black text-secondary font-mono">Rp 145.000</span>
-                                <p class="text-[10px] opacity-60">per jam</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center p-4 border-b border-dashed">
-                            <span class="font-bold text-lg">Paket 36 Jam</span>
-                            <div class="text-right">
-                                <span class="text-xl font-black text-secondary font-mono">Rp 135.000</span>
-                                <p class="text-[10px] opacity-60">per jam</p>
-                            </div>
-                        </div>
-                    </div>
+        {{-- SECTION Rincian Biaya --}}
+            <div class="px-4 mb-20">
+                <div class="grid md:grid-cols-2 gap-8 bg-white p-5 sm:p-8 rounded-3xl shadow-xl border border-primary/10" data-theme="light">
                     
-                    {{-- Biaya Tambahan --}}
-                    <div class="mt-6 p-4 bg-yellow-50 rounded-2xl border border-yellow-200">
-                        <h4 class="text-xs font-bold text-yellow-800 uppercase mb-2">Biaya tersebut belum termasuk:</h4>
-                        <ul class="text-xs text-yellow-700 space-y-1 italic">
-                            <li>* Kurikulum (buku paket 1 semester / 1 tahun)</li>
-                            <li>* Transportasi mulai Rp. 15.000/pertemuan (apabila private di rumah)</li>
-                            <li>* Bagi siswa yang saudara kandung akan mendapatkan diskon 10% dari harga khusus</li>
-                        </ul>
+                    {{-- Program Reguler --}}
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-8 bg-primary rounded-full"></div>
+                            <h3 class="text-xl sm:text-2xl font-black text-primary uppercase italic leading-tight">
+                                Program Reguler 
+                                <small class="text-[10px] lowercase opacity-50 block font-normal tracking-normal">(2x seminggu / 1semester, 6-13 Siswa)</small>
+                            </h3>
+                        </div>
+                        <div class="space-y-3">
+                            @php
+                                $reguler = [
+                                    ['n' => 'Pre-school', 'p' => '530.000'],
+                                    ['n' => 'Master Kids', 'p' => '500.000'],
+                                    ['n' => 'Master Conversation', 'p' => '550.000'],
+                                    ['n' => 'TOEFL Preparation', 'p' => '700.000'],
+                                ];
+                            @endphp
+                            @foreach($reguler as $r)
+                            <div class="flex justify-between items-center p-3 bg-base-200 rounded-xl gap-2">
+                                <span class="font-bold text-sm sm:text-base leading-tight">{{ $r['n'] }}</span>
+                                <div class="bg-primary text-primary-content px-3 py-1.5 rounded-lg font-mono font-bold text-xs sm:text-sm whitespace-nowrap flex-shrink-0 shadow-sm">
+                                    Rp {{ $r['p'] }} <small class="opacity-80 font-sans ml-0.5 italic">/2 bln</small>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Program Private --}}
+                    <div class="mt-4 md:mt-0">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-2 h-8 bg-secondary rounded-full"></div>
+                            <h3 class="text-xl sm:text-2xl font-black text-secondary uppercase italic leading-tight">
+                                Program Private 
+                                <small class="text-[10px] lowercase opacity-50 block font-normal tracking-normal">(1-2 Siswa)</small>
+                            </h3>
+                        </div>
+                        <div class="space-y-3">
+                            @php
+                                $private = [
+                                    ['n' => 'Paket 10 Jam', 'p' => '165.000'],
+                                    ['n' => 'Paket 20 Jam', 'p' => '145.000'],
+                                    ['n' => 'Paket 36 Jam', 'p' => '135.000'],
+                                ];
+                            @endphp
+                            @foreach($private as $p)
+                            <div class="flex justify-between items-center p-3 bg-secondary/10 border border-secondary/20 rounded-xl gap-2">
+                                <span class="font-bold text-sm sm:text-base leading-tight text-secondary-focus">{{ $p['n'] }}</span>
+                                <div class="text-right flex-shrink-0">
+                                    <div class="text-secondary font-mono font-black text-sm sm:text-lg leading-none">Rp {{ $p['p'] }}</div>
+                                    <p class="text-[9px] sm:text-[10px] opacity-60 font-bold uppercase tracking-tighter">per jam</p>
+                                </div>
+                            </div>
+                            @endforeach
+                            
+                            {{-- Biaya Tambahan --}}
+                            <div class="mt-6 p-4 bg-yellow-50 rounded-2xl border border-yellow-200">
+                                <h4 class="text-[10px] font-black text-yellow-800 uppercase mb-2 flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                    Biaya belum termasuk:
+                                </h4>
+                                <ul class="text-[10px] text-yellow-700 space-y-1 italic leading-tight">
+                                    <li>• Kurikulum (buku paket 1 semester / 6 bulan)</li>
+                                    <li>• Transportasi mulai Rp 15.000/visit (private rumah)</li>
+                                    <li>• Diskon 10% khusus bagi siswa saudara kandung</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
         {{-- ALUR PENDAFTARAN --}}
         <div class="text-center mb-12">

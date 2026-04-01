@@ -37,9 +37,17 @@ class RegistrationsTable
                 // ImageColumn::make('bukti_pembayaran')
                 //     ->label('Bukti Bayar')
                 //     ->circular(),
-                    
-                TextColumn::make('tgl_registrasi')
-                    ->date()
+                TextColumn::make('program.nama_program')
+                    ->label('Penempatan')
+                    ->badge()
+                    ->color('success')
+                    ->placeholder('Belum Ditentukan')
+                    ->visible(fn ($livewire): bool => $livewire->activeTab === 'announced' || true) 
+                    ->formatStateUsing(fn ($state, $record) => $record->status === 'announced' ? $state : '-'),
+
+                TextColumn::make('created_at')
+                    ->label('Tgl Registrasi')
+                    ->dateTime('d M Y, H:i')
                     ->sortable(),
                     ])
                     ->filters([

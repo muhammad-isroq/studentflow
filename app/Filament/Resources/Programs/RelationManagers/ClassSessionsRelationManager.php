@@ -167,12 +167,7 @@ class ClassSessionsRelationManager extends RelationManager
                         ->modalHeading('Unlock Teacher Access')
                         ->modalDescription('This will allow the teacher to fill in attendance and lesson plans for this session again, even if it has passed the 7-day limit.')
                         // Tampilkan hanya jika sudah expired dan belum di-unlock
-                        ->visible(fn (ClassSession $record) => 
-                            $record->isAccessExpired() && 
-                            !$record->is_forced_enabled && 
-                            !$record->attendances()->exists() && 
-                            empty($record->topic)
-                        )
+                        ->visible(fn (ClassSession $record) => $record->isAccessExpired() && !$record->is_forced_enabled)
                         ->action(function (ClassSession $record) {
                             $record->update([
                                 'is_forced_enabled' => true,

@@ -48,8 +48,8 @@
                         <td class="px-6 py-4">
                             {{ $attendance->classSession->program->nama_program ?? '-' }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $attendance->classSession->topic ?? '-' }}
+                        <td class="px-6 py-4 prose dark:prose-invert max-w-md">
+                            {!! $attendance->classSession->topic ?? '-' !!}
                         </td>
                         <td class="px-6 py-4 text-center">
                              @php

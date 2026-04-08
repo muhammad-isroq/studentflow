@@ -10,7 +10,7 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-bold text-red-800">READ-ONLY MODE</h3>
-                        <p class="text-xs text-red-700 mt-1">The submission deadline (over 7 days) has expired 😱. You can only view the data, Please contact staff to reactivate editing access.</p>
+                        <p class="text-xs text-red-700 mt-1">The submission deadline (over 7 days) has expired 😱. You can only view the data, Please contact Ms. Ulfa to reactivate editing access.</p>
                     </div>
                 </div>
             </div>

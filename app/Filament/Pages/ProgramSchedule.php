@@ -80,7 +80,7 @@ class ProgramSchedule extends Page implements HasTable
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-4h.01M12 9a9 9 0 110 18 9 9 0 010-18z"></path>
                 </svg>
                 <p class="text-xs font-bold text-red-700 dark:text-red-300">
-                    ATTENTION: Some sessions are locked (over 7 days). Please contact Staff to re-enable them.
+                    ATTENTION: Some sessions are locked (over 7 days). Please contact Ms. Ulfa to re-enable them.
                 </p>
             </div>';
     }
@@ -194,7 +194,7 @@ class ProgramSchedule extends Page implements HasTable
                                 </span>
                                 <div class="text-xs text-amber-700 leading-tight">
                                     <p class="font-bold uppercase">Read Only Mode</p>
-                                    <p>The deadline has passed (over 7 days) 😱. Contact staff to edit this content.</p>
+                                    <p>The deadline has passed (over 7 days) 😱. Please contact Ms. Ulfa to reactivate editing access.</p>
                                 </div>
                             </div>' : '') . '
                         </div>

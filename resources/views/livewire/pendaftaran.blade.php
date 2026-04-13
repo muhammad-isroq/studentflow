@@ -7,7 +7,7 @@
                 <p class="text-xs opacity-60 italic mt-1">Klik gambar untuk memperbesar informasi</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-1 gap-8 max-w-2xl mx-auto">
                 {{-- BROSUR 1: INFORMASI --}}
                 <div class="flex flex-col">
                     <label for="modal-brosur-info" class="cursor-zoom-in">
@@ -22,7 +22,7 @@
                     </label>
                 </div>
 
-                {{-- BROSUR 2: PROMO --}}
+                {{-- BROSUR 2: PROMO
                 <div class="flex flex-col">
                     <label for="modal-brosur-promo" class="cursor-zoom-in">
                         <div class="card bg-base-200 shadow-xl overflow-hidden border-2 border-secondary/20 transition-all hover:border-secondary">
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                     </label>
-                </div>
+                </div> --}}
             </div>
         </div>
 

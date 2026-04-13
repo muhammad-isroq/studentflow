@@ -159,27 +159,32 @@ class ClassSessionsRelationManager extends RelationManager
                     ->slideOver()
                     ->modalSubmitAction(false) // Hilangkan tombol Save
                     ->modalCancelActionLabel('✖️ Tutup'),
-                    Action::make('re_enable_access')
-                        ->label('Unlock Access')
-                        ->icon('heroicon-m-lock-open')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->modalHeading('Unlock Teacher Access')
-                        ->modalDescription('This will allow the teacher to fill in attendance and lesson plans for this session again, even if it has passed the 7-day limit.')
-                        // Tampilkan hanya jika sudah expired dan belum di-unlock
-                        ->visible(fn (ClassSession $record) => $record->isAccessExpired() && !$record->is_forced_enabled)
-                        ->action(function (ClassSession $record) {
-                            $record->update([
-                                'is_forced_enabled' => true,
-                                'manual_open_at' => now(), // Opsional: untuk log kapan diaktifkan
-                            ]);
+                   Action::make('re_enable_access')
+                    ->label('Unlock Access')
+                    ->icon('heroicon-m-lock-open')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Unlock Teacher Access')
+                    ->modalDescription('This will allow the teacher to fill in the missing data for this session.')
+                    
+                    ->visible(fn (ClassSession $record) => 
+                        $record->isAccessExpired() && 
+                        !$record->is_forced_enabled && 
+                        (!$record->attendances()->exists() || empty($record->topic))
+                    )
 
-                            Notification::make()
-                                ->title('Access Unlocked')
-                                ->body('Teacher can now edit this session.')
-                                ->success()
-                                ->send();
-                        }),
+                    ->action(function (ClassSession $record) {
+                        $record->update([
+                            'is_forced_enabled' => true,
+                            'manual_open_at' => now(),
+                        ]);
+
+                        Notification::make()
+                            ->title('Access Unlocked')
+                            ->body('Teacher can now complete the missing information.')
+                            ->success()
+                            ->send();
+                    }),
         // Action::make('resetLessonPlan')
         // ->label('Reset Lesson Plan')
         // ->icon('heroicon-m-arrow-path')

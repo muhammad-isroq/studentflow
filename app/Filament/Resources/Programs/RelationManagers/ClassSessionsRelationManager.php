@@ -185,6 +185,30 @@ class ClassSessionsRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
+                    Action::make('relock_access')
+                    ->label('Relock Access')
+                    ->icon('heroicon-m-lock-closed')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Kunci Kembali Akses Guru')
+                    ->modalDescription('Ini akan mengembalikan sesi ke status Normal. Jika sesi sudah melewati batas 7 hari, guru tidak akan bisa mengisi data lagi.')
+                    
+                    // Tombol hanya muncul jika statusnya saat ini sedang 'Unlocked' (is_forced_enabled == true)
+                    ->visible(fn (ClassSession $record) => $record->is_forced_enabled)
+                    
+                    ->action(function (ClassSession $record) {
+                        $record->update([
+                            'is_forced_enabled' => false,
+                            // Opsional: bersihkan manual_open_at jika Anda ingin reset total
+                            'manual_open_at' => null, 
+                        ]);
+
+                        Notification::make()
+                            ->title('Akses Terkunci Kembali')
+                            ->body('Sesi telah dikembalikan ke status Normal.')
+                            ->danger()
+                            ->send();
+                    }),
         // Action::make('resetLessonPlan')
         // ->label('Reset Lesson Plan')
         // ->icon('heroicon-m-arrow-path')

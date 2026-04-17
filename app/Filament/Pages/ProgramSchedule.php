@@ -63,48 +63,51 @@ class ProgramSchedule extends Page implements HasTable
     }
 
     public function getSubheading(): string | HtmlString | null
-{
-    
-    $hasLockedSessions = ClassSession::where('program_id', $this->program->id)
-        ->where('guru_id', Auth::user()->guru_id)
-        ->whereDate('session_date', '<=', now()->subDays(7)->startOfDay()) 
-        ->where('is_forced_enabled', false)
-        ->exists();
+    {
+        // 1. Cek apakah ada sesi yang terkunci
+        $hasLockedSessions = ClassSession::where('program_id', $this->program->id)
+            ->where('guru_id', Auth::user()->guru_id)
+            ->whereDate('session_date', '<=', now()->subDays(7)->startOfDay()) 
+            ->where('is_forced_enabled', false)
+            ->exists();
 
-    // 2. Siapkan pesan peringatan jika ada yang terkunci
-    $warningBanner = '';
-    if ($hasLockedSessions) {
-        $warningBanner = '
-            <div class="mt-3 flex items-center gap-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg animate-pulse">
-                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0-4h.01M12 9a9 9 0 110 18 9 9 0 010-18z"></path>
-                </svg>
-                <p class="text-xs font-bold text-red-700 dark:text-red-300">
-                    ATTENTION: Some sessions are locked (over 7 days). Please contact Ms. Ulfa to re-enable them.
-                </p>
-            </div>';
-    }
-
-    // 3. Gabungkan dengan info absensi yang sudah ada sebelumnya
-    return new HtmlString('
-        <div class="mt-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600 rounded-r-lg shadow-sm">
-            <div class="flex items-start gap-3">
-                <div class="flex-shrink-0">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Important Attendance Info</h3>
-                    <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                        "If you are unable to attend a meeting, please inform the staff who the substitute teacher will be at that meeting."
+        // 2. Siapkan banner merah hanya jika ada sesi terkunci
+        $warningBanner = '';
+        if ($hasLockedSessions) {
+            $warningBanner = '
+                <div class="mt-4 flex items-center gap-3 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg animate-pulse">
+                    <div class="flex-shrink-0">
+                        <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-[11px] font-bold text-red-700 dark:text-red-300 leading-tight uppercase italic">
+                        ATTENTION: Some sessions are locked (over 7 days). Please contact Ms. Ulfa to re-enable them.
                     </p>
-                    ' . $warningBanner . '
+                </div>';
+        }
+
+        // 3. Gabungkan: Kotak Biru selalu tampil, Kotak Merah tampil di dalamnya jika ada data
+        return new HtmlString('
+            <div class="mt-4 p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-600 rounded-r-lg shadow-sm">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="font-bold text-blue-900 dark:text-blue-100 text-sm">Important Attendance Info</h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-300 mt-1 italic">
+                            "If you are unable to attend a meeting, please inform the staff who the substitute teacher will be at that meeting."
+                        </p>
+                        
+                        ' . $warningBanner . '
+                    </div>
                 </div>
             </div>
-        </div>
-    ');
-}
+        ');
+    }
     
     protected static bool $shouldRegisterNavigation = false;
 
@@ -389,11 +392,16 @@ class ProgramSchedule extends Page implements HasTable
                     ])
                     
                     ->extraModalActions([
-                        Action::make('resetOwnLessonPlan')
-                            ->label('Reset Data')
+                        Action::make('resetData')
+                            ->label('Reset Content')
                             ->color('danger')
                             ->icon('heroicon-m-trash')
+                            ->tooltip('Delete all contents of this Lesson Plan')
                             ->requiresConfirmation()
+                            ->modalHeading('Empty Lesson Plan?')
+                            ->modalDescription('Are you sure you want to delete all the text you"ve entered? This action cannot be undone.')
+                            ->modalSubmitActionLabel('Yes, Delete All')
+                            // Tombol reset hanya muncul jika akses belum expired dan sudah ada isinya
                             ->visible(fn (ClassSession $record) => !$record->isAccessExpired() && !empty($record->topic))
                             ->action(function (ClassSession $record) {
                                 $record->update([
@@ -403,9 +411,12 @@ class ProgramSchedule extends Page implements HasTable
                                     'class_journal' => null,
                                 ]);
 
-                                Notification::make()->title('Lesson plan telah dikosongkan')->success()->send();
+                                Notification::make()
+                                    ->title('Lesson Plan Successfully Reset')
+                                    ->danger()
+                                    ->send();
                             }),
-                    ])
+                        ])
 
                     ->modalSubmitAction(fn ($action, ClassSession $record) => 
         $record->isAccessExpired() ? false : $action

@@ -44,5 +44,14 @@ class ClassSession extends Model
 
         return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
     }
+
+    public function canTeacherEdit(): bool
+    {
+        if ($this->is_forced_enabled) {
+            return true;
+        }
+
+        return !$this->isAccessExpired();
+    }
     
 }

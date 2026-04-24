@@ -9,7 +9,13 @@
 
                     @foreach ($sessions as $session)
                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
-                            {{ $session->session_date->format('d M') }}
+                            <div class="flex flex-col items-center">
+                                <span>{{ $session->session_date->format('d M') }}</span>
+                                {{-- Tambahkan Label Ramadhan --}}
+                                @if($session->is_ramadhan_session)
+                                    <span class="text-[9px] text-orange-600 font-black bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded mt-0.5 tracking-tighter">RAMADHAN</span>
+                                @endif
+                            </div>
                         </th>
                     @endforeach
 
@@ -24,7 +30,7 @@
                         $scoreDetail = $attendanceScores[$siswa->id] ?? ['score' => 0, 'total' => 0, 'hadir' => 0, 'is_moved' => false];
                     @endphp
                     <tr>
-                        <td class="sticky left-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium text-gray-900 dark:bg-gray-800 dark:text-white">
+                        <td class="sticky left-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-sm font-medium text-gray-900 dark:bg-gray-800 dark:text-white border-r dark:border-gray-700">
                             <div class="flex flex-col">
                                 <span>{{ $siswa->nama }}</span>
                                 @if($scoreDetail['is_moved'])
@@ -37,15 +43,10 @@
                             @php
                                 $status = $attendanceData[$siswa->id][$session->id] ?? '-';
                                 
-                                // LOGIKA VISUAL: Cek apakah sesi ini di luar "Jendela Waktu" siswa
-                                // Mengambil data jendela waktu dari logic di Class (Start/End Limit)
-                                // Jika tidak ada record, sel akan terlihat buram/grayed out
-                                $isInactive = false;
-                                if ($status === '-') {
-                                    // Sederhananya, jika status '-' dan siswa sudah pindah atau belum masuk, buat gray.
-                                    // Kita bisa asumsikan jika tidak ada di attendanceData berarti sesi tersebut di luar jangkauan.
-                                }
+                                // LOGIKA BARU: Jika sesi Ramadhan tapi siswa tidak ikut (tidak ada record absen)
+                                $isSkippedRamadhan = $session->is_ramadhan_session && !isset($attendanceData[$siswa->id][$session->id]);
 
+                                // Penentuan warna teks
                                 $colorClass = match($status) {
                                     'Hadir' => 'text-green-600 dark:text-green-400 font-bold',
                                     'Absen', 'Alpha' => 'text-red-600 dark:text-red-400 font-bold',
@@ -54,22 +55,31 @@
                                     default => 'text-gray-500',
                                 };
 
+                                // Jika dilewati (mutasi ke tempat lain), buat jadi sangat samar (abu-abu muda)
+                                if ($isSkippedRamadhan) {
+                                    $colorClass = 'text-gray-200 dark:text-gray-700';
+                                }
+
                                 $englishStatus = match($status) {
-                                    'Hadir' => 'Present', // Present
-                                    'Absen', 'Alpha' => 'Alpha', // Absent
-                                    'Izin' => 'Permit', // Leave/Permit
-                                    'Sakit' => 'Sick', // Sick
+                                    'Hadir' => 'Present',
+                                    'Absen', 'Alpha' => 'Alpha',
+                                    'Izin' => 'Permit',
+                                    'Sakit' => 'Sick',
                                     '-' => '•',
                                     default => $status,
                                 };
                             @endphp
                             
                             <td class="whitespace-nowrap px-6 py-4 text-center text-sm {{ $colorClass }}">
-                                <span title="{{ $status }}">{{ $englishStatus }}</span>
+                                @if($isSkippedRamadhan)
+                                    <span title="Siswa tidak mengikuti sesi mutasi Ramadhan ini">•</span>
+                                @else
+                                    <span title="{{ $status }}">{{ $englishStatus }}</span>
+                                @endif
                             </td>
                         @endforeach
 
-                        <td class="sticky right-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-center dark:bg-gray-800">
+                        <td class="sticky right-0 z-10 whitespace-nowrap bg-white px-6 py-4 text-center dark:bg-gray-800 border-l dark:border-gray-700">
                             <div class="flex flex-col items-center">
                                 <span class="text-sm font-bold text-gray-900 dark:text-white">
                                     {{ $scoreDetail['score'] }}%

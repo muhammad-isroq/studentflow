@@ -28,6 +28,7 @@ use Filament\Forms\Components\Placeholder;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\Toggle;
 
 class ClassSessionsRelationManager extends RelationManager
 {
@@ -49,6 +50,12 @@ class ClassSessionsRelationManager extends RelationManager
                 ->relationship('guru', 'nama_guru')
                 ->label('Replacement Teacher')
                 ->required(),
+            Toggle::make('is_ramadhan_session')
+                ->label('Sesi Ramadhan?')
+                ->helperText('Aktifkan jika sesi ini adalah sesi mutasi Ramadhan yang bisa diakses siswa dari kelas lain.')
+                ->default(false)
+                ->onColor('warning')
+                ->offColor('gray'),
         ];
 
         
@@ -75,6 +82,12 @@ class ClassSessionsRelationManager extends RelationManager
                     ->date('d M Y')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('is_ramadhan_session')
+                ->label('Type')
+                ->formatStateUsing(fn ($state) => $state ? 'Ramadhan' : 'Regular')
+                ->badge()
+                ->color(fn ($state) => $state ? 'warning' : 'gray')
+                ->icon(fn ($state) => $state ? 'heroicon-m-moon' : 'heroicon-m-calendar'),
                 TextInputColumn::make('unit') 
                 ->label('Unit / Materi')
                 ->placeholder('Isi Unit...') 

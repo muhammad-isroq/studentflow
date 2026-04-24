@@ -36,13 +36,13 @@ class ClassSession extends Model
 
     public function isAccessExpired(): bool
     {
-        // return false;
+        return false;
         
-        if ($this->is_forced_enabled) {
-            return false;
-        }
+        // if ($this->is_forced_enabled) {
+        //     return false;
+        // }
 
-        return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
+        // return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
     }
 
     public function canTeacherEdit(): bool

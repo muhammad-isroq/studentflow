@@ -44,6 +44,14 @@ class GradingPage extends Page implements HasTable
     protected function getHeaderActions(): array
 {
     return [
+        Action::make('print_scoring_sheet')
+            ->label('Print Scoring Sheet')
+            ->icon('heroicon-o-printer')
+            ->color('gray')
+            ->url(function () {
+                if (!$this->program_id) return '#';
+                return route('print.grades', ['program' => $this->program_id]);
+            }, shouldOpenInNewTab: true),
         Action::make('summary_average')
             ->label('Report Scoring Sheet')
             ->icon('heroicon-m-chart-bar')

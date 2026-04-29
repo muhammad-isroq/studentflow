@@ -24,6 +24,11 @@ use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Program;
+use App\Models\ClassSession;
+use App\Models\Siswa;
+use App\Models\Attendance;
+use App\Models\Grade;
 
 Route::get('/', Home::class);
 Route::get('/artikel', ArticlePage::class)->name('artikel');
@@ -108,3 +113,118 @@ Route::get('/impersonate/leave-custom', function () {
     
     return redirect()->to('/studentflow/users'); 
 })->name('impersonate.leave.custom');
+
+Route::get('/print-attendance/{program}', function (Program $program) {
+    // 1. Ambil Sesi
+    $sessions = ClassSession::where('program_id', $program->id)
+        ->orWhere('is_ramadhan_session', true)
+        ->orderBy('session_date')
+        ->get();
+
+    $sessionIds = $sessions->pluck('id');
+
+    // 2. Ambil Siswa
+    $siswas = Siswa::where('program_id', $program->id)
+        ->orderBy('nama')
+        ->get();
+
+    // 3. Ambil Data Absensi
+    $attendances = Attendance::whereIn('siswa_id', $siswas->pluck('id'))
+        ->whereIn('class_session_id', $sessionIds)
+        ->get();
+
+    $attendanceData = $attendances->groupBy('siswa_id')
+        ->map(fn($item) => $item->pluck('status', 'class_session_id'))
+        ->toArray();
+
+    // --- MULAI LOGIKA PERHITUNGAN RATE ---
+    $attendanceScores = [];
+
+    foreach ($siswas as $siswa) {
+        $dataAbsenSiswa = $attendanceData[$siswa->id] ?? [];
+        $sessionIdsPernahAbsen = array_keys($dataAbsenSiswa);
+
+        // Cari Jendela Waktu
+        $tanggalSesiPertama = $sessions->whereIn('id', $sessionIdsPernahAbsen)->min('session_date');
+        $startLimit = $tanggalSesiPertama ?: $siswa->created_at->format('Y-m-d');
+        $endLimit = $sessions->max('session_date') ?: now()->format('Y-m-d');
+
+        // Cari Sesi Efektif
+        $sesiEfektif = $sessions->filter(function ($session) use ($startLimit, $endLimit, $program, $sessionIdsPernahAbsen) {
+            $isDateValid = $session->session_date >= $startLimit && $session->session_date <= $endLimit;
+            $isRegularSession = $session->program_id === $program->id;
+            $isFollowedRamadhan = $session->is_ramadhan_session && in_array($session->id, $sessionIdsPernahAbsen);
+
+            return $isDateValid && ($isRegularSession || $isFollowedRamadhan);
+        });
+
+        $totalSesiEfektif = $sesiEfektif->count();
+        $sesiEfektifIds = $sesiEfektif->pluck('id');
+
+        // Hitung Hadir
+        $hadirCount = collect($dataAbsenSiswa)
+            ->filter(fn($status, $sessionId) => $status === 'Hadir' && $sesiEfektifIds->contains($sessionId))
+            ->count();
+
+        $score = $totalSesiEfektif > 0 ? ($hadirCount / $totalSesiEfektif) * 100 : 0;
+        
+        $attendanceScores[$siswa->id] = [
+            'score' => round(min($score, 100)),
+            'total' => $totalSesiEfektif,
+            'hadir' => $hadirCount,
+        ];
+    }
+    // --- SELESAI LOGIKA PERHITUNGAN RATE ---
+
+    return view('print.attendance-recap', [
+        'program' => $program,
+        'sessions' => $sessions,
+        'siswas' => $siswas,
+        'attendanceData' => $attendanceData,
+        'attendanceScores' => $attendanceScores, // Pastikan ini dikirim
+    ]);
+})->name('print.attendance')->middleware('auth');
+
+Route::get('/print-grades/{program}', function (Program $program) {
+    $assessments = $program->assessments()->orderBy('order')->get();
+    $students = $program->siswas()->orderBy('nama')->get();
+    
+    // Identifikasi Ujian Semester dan Review
+    $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
+    $semesterTestId = $semesterTest ? $semesterTest->id : null;
+    $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
+
+    $scoringData = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
+        $allGrades = Grade::where('student_id', $student->id)->get();
+        $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
+        $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
+
+        $calc = function($col) use ($reviewGrades, $semesterGrade) {
+            $avgReview = (float)($reviewGrades->avg($col) ?? 0);
+            $scoreSem = (float)($semesterGrade->$col ?? 0);
+
+            // Jika ada nilai semester, gunakan rumus: (Avg Review + Semester) / 2
+            if ($semesterGrade) {
+                return ($avgReview + $scoreSem) / 2;
+            }
+            return $avgReview;
+        };
+
+        $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
+        $s = $calc('speaking'); $g = $calc('grammar');
+        $total = $l + $r + $w + $s + $g;
+        $final = $total / 5;
+
+        return [
+            'nama' => $student->nama,
+            'l' => $l, 'r' => $r, 'w' => $w, 's' => $s, 'g' => $g,
+            'total' => $total,
+            'final' => $final,
+        ];
+    })->sortByDesc('final')->values();
+
+    return view('print.scoring-sheet', [
+        'program' => $program,
+        'data' => $scoringData,
+    ]);
+})->name('print.grades')->middleware('auth');

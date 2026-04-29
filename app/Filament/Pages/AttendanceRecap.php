@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use BackedEnum;
 use Filament\Support\Icons\Heroicon;
+use Filament\Actions\Action;
 
 class AttendanceRecap extends Page
 {
@@ -102,4 +103,15 @@ class AttendanceRecap extends Page
     {
         return 'Rekap Absensi: ' . $this->program->nama_program;
     }
+
+    protected function getHeaderActions(): array
+{
+    return [
+        Action::make('print_recap')
+            ->label('Print Recap')
+            ->icon('heroicon-o-printer')
+            ->color('gray')
+            ->url(fn () => route('print.attendance', ['program' => $this->program->id]), shouldOpenInNewTab: true),
+    ];
+}
 }

@@ -254,6 +254,12 @@ class AssessmentsRelationManager extends RelationManager
                                 ])
                         ])
                     ]),
+                    Action::make('print_scoring_sheet')
+                ->label('Print Scoring Sheet')
+                ->icon('heroicon-o-printer')
+                ->color('gray')
+                // Mengarahkan ke route print.grades dengan ID Program (Owner Record)
+                ->url(fn () => route('print.grades', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
             ])
             ->actions([
                 EditAction::make(),

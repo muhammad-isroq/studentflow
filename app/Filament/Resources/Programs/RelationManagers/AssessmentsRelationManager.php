@@ -92,6 +92,11 @@ class AssessmentsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->label('Tambah Ujian'),
+                Action::make('print_all_reviews')
+        ->label('Print All Reviews')
+        ->icon('heroicon-o-printer')
+        ->color('success')
+        ->url(fn () => route('print.all.reviews', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
                 Action::make('summary_average')
                     ->label('Report Scoring Sheet')
                     ->icon('heroicon-m-document-chart-bar')

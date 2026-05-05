@@ -29,6 +29,7 @@ use App\Models\ClassSession;
 use App\Models\Siswa;
 use App\Models\Attendance;
 use App\Models\Grade;
+use App\Models\Assessment;
 
 Route::get('/', Home::class);
 Route::get('/artikel', ArticlePage::class)->name('artikel');
@@ -228,3 +229,24 @@ Route::get('/print-grades/{program}', function (Program $program) {
         'data' => $scoringData,
     ]);
 })->name('print.grades')->middleware('auth');
+
+Route::get('/print-all-reviews/{program}', function (Program $program) {
+    // Ambil semua ujian (Review & Semester)
+    $assessments = Assessment::where('program_id', $program->id)
+        ->orderBy('order')
+        ->get();
+
+    // Ambil semua siswa (Maksimal 7-8 siswa per tabel agar muat ke samping)
+    $students = $program->siswas()->orderBy('nama')->get();
+
+    // Ambil data nilai
+    $grades = Grade::whereIn('assessment_id', $assessments->pluck('id'))
+        ->get();
+
+    return view('print.all-reviews', [
+        'program' => $program,
+        'assessments' => $assessments,
+        'students' => $students,
+        'grades' => $grades,
+    ]);
+})->name('print.all.reviews')->middleware('auth');

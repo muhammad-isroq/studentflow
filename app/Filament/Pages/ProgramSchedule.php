@@ -294,6 +294,7 @@ class ProgramSchedule extends Page implements HasTable
                             ->label('🎯 Activity')
                             ->helperText('Example = Warming up : Picture description (10 menit), Main activity : Role play in pairs (20 menit), Practice : Fill in the blanks worksheet (15 menit), Closing : Quick quiz (5 menit)')
                             ->placeholder('Description of the learning activities to be carried out')
+                            ->required()
                             ->columnSpanFull()
                             ->toolbarButtons([
                                 'bold',
@@ -344,6 +345,7 @@ class ProgramSchedule extends Page implements HasTable
                             ->helperText('Example = Running : Berlari (verb): The children are running in the park | Swimming : Berenang (verb): She is swimming in the pool')
                             ->placeholder('List of new vocabulary learned with their meanings')
                             ->columnSpanFull()
+                            ->required()
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -357,6 +359,7 @@ class ProgramSchedule extends Page implements HasTable
                             ->helperText('Example = Classroom Atmosphere : Students were very enthusiastic and actively participated. Challenges : Some students still had difficulty with pronunciation. Highlights : The role-play activity was very effective.')
                             ->placeholder('Observation notes during learning')
                             ->columnSpanFull()
+                            ->required()
                             ->toolbarButtons([
                                 'bold',
                                 'italic',
@@ -427,7 +430,22 @@ class ProgramSchedule extends Page implements HasTable
                     ->closeModalByClickingAway(false)
                     ->successNotificationTitle('✅ Lesson Plan successfully saved')
                     
-                    ->action(function (ClassSession $record, array $data) {
+                    ->action(function (ClassSession $record, array $data, $livewire, $action) {
+                        if (empty(strip_tags($data['topic'])) || 
+                            empty(strip_tags($data['activity'])) || 
+                            empty(strip_tags($data['vocabulary_list'])) || 
+                            empty(strip_tags($data['class_journal']))) {
+                            
+                            Notification::make()
+                                ->title('Form Incomplete')
+                                ->body('Please fill all fields before saving.')
+                                ->danger()
+                                ->send();
+
+                            $action->halt();
+                            return;
+                        }
+                        $livewire->validate();
                         $record->update($data);
                         
                         Notification::make()

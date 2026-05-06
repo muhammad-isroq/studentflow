@@ -135,7 +135,7 @@ class ProgramSchedule extends Page implements HasTable
             
             ->query(
                 ClassSession::query()
-                    ->with(['guru', 'program', 'attendances'])
+                    // ->with(['guru', 'program', 'attendances'])
                     ->where('program_id', $this->program->id)
                     ->when($guruId, function ($query) use ($guruId) {
                         

@@ -75,6 +75,7 @@ class ClassSessionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['attendances', 'guru', 'replacementGuru']))
             ->recordTitleAttribute('session_date')
             ->columns([
                 TextColumn::make('session_date')
@@ -138,8 +139,8 @@ class ClassSessionsRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->color('gray')
                     ->url(fn (ClassSession $record): string => ViewAttendance::getUrl(['record' => $record]))
-                    ->badge(fn (ClassSession $record) => $record->attendances()->exists() ? '✓ Filled' : '! Empty')
-                    ->badgeColor(fn (ClassSession $record) => $record->attendances()->exists() ? 'success' : 'warning')
+                    ->badge(fn (ClassSession $record) => $record->attendances->count() > 0 ? '✓ Filled' : '! Empty')
+                    ->badgeColor(fn (ClassSession $record) => $record->attendances->count() > 0 ? 'success' : 'warning')
                     ->extraAttributes(['class' => 'mr-7']),
                 Action::make('viewLessonPlan')
                     ->label('View Lesson Plan')

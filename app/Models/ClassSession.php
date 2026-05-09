@@ -36,13 +36,18 @@ class ClassSession extends Model
 
     public function isAccessExpired(): bool
     {
-        return false;
-        
-        // if ($this->is_forced_enabled) {
-        //     return false;
-        // }
+        // Cek status global dari Cache. Default: true (deadline aktif)
+        $isGlobalDeadlineEnabled = cache()->get('global_deadline_status', true);
 
-        // return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
+        if (!$isGlobalDeadlineEnabled) {
+            return false;
+        }
+
+        if ($this->is_forced_enabled) {
+            return false;
+        }
+
+        return now()->startOfDay()->diffInDays($this->session_date, false) <= -7;
     }
 
     public function canTeacherEdit(): bool

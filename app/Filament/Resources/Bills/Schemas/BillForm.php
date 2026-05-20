@@ -8,6 +8,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Schemas\Schema;
+use Filament\Actions\Action;
 
 
 class BillForm
@@ -41,6 +42,8 @@ class BillForm
                 FileUpload::make('proof_of_payment')
                     ->label('Proof of payment')
                     ->imagePreviewHeight('250')
+                    ->disk('public')
+                    ->directory('proofs')
                     ->downloadable()
                     ->openable(),
                 DatePicker::make('due_date')
@@ -55,5 +58,21 @@ class BillForm
                     ->default('unpaid'),
                 DateTimePicker::make('paid_at'),
             ]);
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('print_receipt')
+                ->label('Print Struk')
+                ->icon('heroicon-o-printer')
+                ->color('info')
+                // Mengambil ID dari record yang sedang diedit
+                ->url(fn () => route('print.receipt', ['bill' => $this->record->id]))
+                ->openUrlInNewTab()
+                // Tombol hanya muncul jika status tagihan sudah 'paid' (lunas)
+                ->visible(fn () => $this->record->status === 'paid'),
+            DeleteAction::make(),
+        ];
     }
 }

@@ -14,6 +14,8 @@ use Filament\Navigation\NavigationItem;
 use App\Filament\Pages\ProgramSchedule;
 // use App\Models\Bill;
 // use App\Observers\BillObserver;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Support\Assets\Js;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+            FilamentAsset::register([
+            Js::make('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11'),
+        ]);
+
         // Bill::observe(BillObserver::class);
         Siswa::observe(SiswaObserver::class);
         Filament::serving(function () {

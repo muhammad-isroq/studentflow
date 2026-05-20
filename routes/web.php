@@ -31,6 +31,79 @@ use App\Models\Attendance;
 use App\Models\Grade;
 use App\Models\Assessment;
 
+use App\Http\Controllers\ReceiptController;
+
+Route::post('/api/save-multiple-receipt-proof', function (Illuminate\Http\Request $request) {
+    try {
+        $img = $request->image;
+        $billIds = $request->bill_ids; // Menerima banyak ID sekaligus dalam bentuk array
+
+        if (!$img || empty($billIds)) {
+            return response()->json(['error' => 'Data tidak lengkap'], 400);
+        }
+
+        $img = str_replace('data:image/png;base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+
+        // Gunakan ID tagihan pertama atau timestamp untuk nama file gambarnya
+        $randomName = 'receipt-bulk-' . time() . '.png';
+        $fullPath = 'proofs/' . $randomName;
+        
+        if (!Storage::disk('public')->exists('proofs')) {
+            Storage::disk('public')->makeDirectory('proofs');
+        }
+
+        // Simpan file fisik (cukup 1 file gambar struk gabungan untuk menghemat penyimpanan VPS)
+        Storage::disk('public')->put($fullPath, $data);
+
+        // UPDATE SEMUA TAGIHAN YANG TERLIBAT
+        \App\Models\Bill::whereIn('id', $billIds)->update([
+            'proof_of_payment' => $fullPath
+        ]);
+
+        return response()->json(['success' => true, 'path' => $fullPath]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+})->name('api.save-multiple-receipt-proof');
+Route::post('/api/save-receipt-proof/{bill}', function (App\Models\Bill $bill, Illuminate\Http\Request $request) {
+    try {
+        $img = $request->image;
+        if (!$img) return response()->json(['error' => 'No image data'], 400);
+
+        $img = str_replace('data:image/png;base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+
+        // Buat nama file unik murni
+        $randomName = 'receipt-' . $bill->id . '-' . time() . '.png';
+        $fullPath = 'proofs/' . $randomName;
+        
+        // Pastikan folder 'proofs' ada di disk public
+        if (!Storage::disk('public')->exists('proofs')) {
+            Storage::disk('public')->makeDirectory('proofs');
+        }
+
+        // Simpan file fisik ke storage/app/public/proofs/receipt-xxx.png
+        Storage::disk('public')->put($fullPath, $data);
+
+        // UPDATE DATABASE
+        // Simpan nilai path relatif yang dikenali oleh Filament FileUpload
+        $bill->update([
+            'proof_of_payment' => $fullPath
+        ]);
+
+        return response()->json(['success' => true, 'path' => $fullPath]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+})->name('api.save-receipt-proof');
+
+Route::get('/print-receipt-collective', [ReceiptController::class, 'printCollective'])->name('print.receipt.collective');
+
+Route::get('/print-receipt/{bill}', [App\Http\Controllers\ReceiptController::class, 'printSingle'])->name('print.receipt');
+Route::get('/test-aja', function() { return "OK"; });
 Route::get('/', Home::class);
 Route::get('/artikel', ArticlePage::class)->name('artikel');
 Route::get('/master-preschool', Preschool::class)->name('master-preschool');
@@ -250,3 +323,4 @@ Route::get('/print-all-reviews/{program}', function (Program $program) {
         'grades' => $grades,
     ]);
 })->name('print.all.reviews')->middleware('auth');
+

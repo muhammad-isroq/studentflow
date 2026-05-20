@@ -32,6 +32,8 @@ class BillsTable
                     ->money('idr', locale: 'id'),
                 ImageColumn::make('proof_of_payment')
                     ->label('Proof of payment')
+                    ->disk('public')
+                    // ->directory('proofs')
                     ->imageWidth(100)
                     ->imageHeight(100),
                 TextColumn::make('due_date')

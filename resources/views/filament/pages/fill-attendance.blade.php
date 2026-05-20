@@ -144,6 +144,12 @@
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Yes, mark all present!',
+            backdrop: `
+    rgba(0,0,123,0.4)
+    url("/images/cat-space.gif")
+    left top
+    no-repeat
+  `,
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -162,6 +168,12 @@
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Yes, reset!',
+            backdrop: `
+    rgba(0,0,123,0.4)
+    url("/images/cat-space.gif")
+    left top
+    no-repeat
+  `,
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -179,6 +191,12 @@
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
             confirmButtonText: 'Yes, save!',
+            backdrop: `
+    rgba(0,0,123,0.4)
+    url("/images/cat-space.gif")
+    left top
+    no-repeat
+  `,
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {

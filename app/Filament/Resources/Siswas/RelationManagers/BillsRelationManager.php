@@ -7,12 +7,20 @@ use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
-
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Illuminate\Support\Facades\Redirect;
 use App\Filament\Resources\Siswas\SiswaResource;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 
-class BillsRelationManager extends RelationManager
+class BillsRelationManager extends RelationManager implements HasActions
 {
+    use InteractsWithActions;
     protected static string $relationship = 'bills';
     protected static ?string $title = 'Riwayat Tagihan';
     protected string $view = 'filament.relation-managers.bills-grouped';
@@ -49,8 +57,140 @@ class BillsRelationManager extends RelationManager
                     ->label('Tanggal Lunas')
                     ->dateTime('d M Y, H:i'),
             ])
-            ->defaultSort('due_date', 'desc');
+            ->defaultSort('due_date', 'desc')
+            ->actions([
+            // TOMBOL PRINT PER BARIS
+            Action::make('print')
+                ->label('Print')
+                ->color('info')
+                ->icon('heroicon-o-printer')
+                // Menggunakan variabel $record (model Bill) secara otomatis
+                ->url(fn (Bill $record) => route('print.receipt', ['bill' => $record]))
+                ->openUrlInNewTab()
+                // Tombol hanya muncul jika statusnya sudah lunas (paid)
+                ->visible(fn (Bill $record) => $record->status === 'paid'),
+                
+            EditAction::make()
+                ->url(fn (Bill $record) => SiswaResource::getUrl('edit-bill', [
+                    'record' => $this->getOwnerRecord()->id,
+                    'billRecord' => $record->id,
+                ])),
+            DeleteAction::make(),
+        ])
+            ->bulkActions([
+            BulkActionGroup::make([
+                BulkAction::make('markAsPaidBulk')
+                    ->label('Bayar Sekaligus')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                        $records->each(function ($bill) {
+                            if ($bill->status !== 'paid') {
+                                $bill->update([
+                                    'status' => 'paid',
+                                    'paid_at' => now(),
+                                    // Anda bisa menambahkan catatan "Pembayaran kolektif" jika perlu
+                                ]);
+                            }
+                        });
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Pembayaran Kolektif Berhasil')
+                            ->success()
+                            ->send();
+                    })
+                    ->deselectRecordsAfterCompletion(),
+                
+                DeleteBulkAction::make(),
+                Action::make('print')
+            ->label('Print Struk')
+            ->color('info')
+            ->icon('heroicon-o-printer')
+            ->url(fn () => route('print.receipt', ['bill' => $this->billRecord]))
+            ->openUrlInNewTab()
+            // Perbaikan pemanggilan status di sini
+            ->visible(fn () => ($this->form->getRawState()['status'] ?? null) === 'paid'),
+
+            ]),
+        ]);
     }
+
+    public function paySppAction(): \Filament\Actions\Action
+{
+    return \Filament\Actions\Action::make('payMultiple')
+        ->label('Bayar Banyak Bulan')
+        ->icon('heroicon-m-plus-circle')
+        ->color('success')
+        ->extraAttributes(['class' => 'w-full md:w-auto'])
+        ->form([
+            \Filament\Forms\Components\TextInput::make('month_count')
+                ->label('Jumlah Bulan yang Ingin Dibayar')
+                ->numeric()
+                ->default(1)
+                ->minValue(1)
+                ->required(),
+        ])
+        ->action(function (array $data) {
+            $this->processMultiplePayments($data['month_count']);
+        });
+}
+
+protected function getActions(): array
+{
+    return [
+        $this->paySppAction(),
+    ];
+}
+
+private function processMultiplePayments($count)
+{
+    $siswa = $this->getOwnerRecord();
+    $sppPaymentType = \App\Models\PaymentType::where('name', 'like', '%SPP%')->first();
+    
+    for ($i = 0; $i < $count; $i++) {
+        // 1. Cari apakah ada tagihan SPP yang statusnya belum lunas
+        $bill = $siswa->bills()
+            ->where('payment_type_id', $sppPaymentType->id)
+            ->where('status', '!=', 'paid')
+            ->orderBy('due_date', 'asc')
+            ->first();
+
+        if ($bill) {
+            $bill->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+                'notes' => ($bill->notes ? $bill->notes . ' ' : '') . 'Dibayar kolektif',
+            ]);
+        } else {
+            // 2. Jika tidak ada tagihan unpaid, buat tagihan baru untuk bulan selanjutnya
+            $lastBill = $siswa->bills()
+                ->where('payment_type_id', $sppPaymentType->id)
+                ->orderBy('due_date', 'desc')
+                ->first();
+
+            $nextDate = $lastBill 
+                ? $lastBill->due_date->addMonth() 
+                : now();
+
+            $siswa->bills()->create([
+                'payment_type_id' => $sppPaymentType->id,
+                'amount' => $siswa->spp_amount ?? 500000,
+                'due_date' => $nextDate->setDay($siswa->billing_day ?? 10),
+                'status' => 'paid',
+                'paid_at' => now(),
+                'notes' => 'Pembayaran di muka (Advance)',
+            ]);
+        }
+    }
+
+    $this->dispatch('bill-updated');
+    
+    \Filament\Notifications\Notification::make()
+        ->title("Berhasil memproses $count bulan")
+        ->success()
+        ->send();
+}
 
     // Method untuk mendapatkan bills berdasarkan payment type
     public function getBillsByPaymentType()
@@ -231,5 +371,10 @@ class BillsRelationManager extends RelationManager
             ->where('status', ['overdue', 'unpaid']) 
             ->whereDate('due_date', '>=', '2025-07-01') 
             ->sum('amount'); 
+    }
+
+    public function openPayMultipleModal()
+    {
+        $this->dispatch('open-pay-multiple-modal', siswaId: $this->getOwnerRecord()->id);
     }
 }

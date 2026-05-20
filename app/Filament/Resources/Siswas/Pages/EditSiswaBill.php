@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Siswas\Pages;
 
+use App\Filament\Resources\Siswas\Pages;
 use App\Filament\Resources\Siswas\SiswaResource;
 use Filament\Resources\Pages\Page;
 use Filament\Forms\Contracts\HasForms;
@@ -29,20 +30,22 @@ class EditSiswaBill extends Page implements HasForms
     protected string $view = 'filament.resources.siswas.pages.edit-siswa-bill';
 
     public ?array $data = [];
-    public Bill $bill;
-    public Siswa $record;
+    public $record;
+    public $billRecord;
+    public $status;
+    public $bill;
 
     public function mount(Siswa $record, Bill $billRecord): void
-    {
-        $this->record = $record;
-        $this->bill = $billRecord;
-        
-        if ($this->bill->siswa_id !== $this->record->id) {
-            abort(403, 'Unauthorized');
-        }
+{
+    $this->record = $record;
+    $this->billRecord = $billRecord;
+    
+    // Pastikan menggunakan ID jika findOrFail membutuhkan integer
+    $this->bill = Bill::findOrFail($billRecord->id);
 
-        $this->form->fill($this->bill->toArray());
-    }
+    $this->form->fill($this->bill->toArray());
+    $this->status = $this->bill->status;
+}
 
     public function form(Schema $schema): Schema
     {
@@ -64,6 +67,8 @@ class EditSiswaBill extends Page implements HasForms
                     ),
                 FileUpload::make('proof_of_payment')
                     ->label('Proof of payment')
+                    ->disk('public')
+                    ->directory('proofs')
                     ->imagePreviewHeight('250')
                     ->downloadable()
                     ->openable(),
@@ -81,19 +86,31 @@ class EditSiswaBill extends Page implements HasForms
     }
 
     protected function getFormActions(): array
-    {
-        return [
-            Action::make('save')
-                ->label('Simpan Perubahan')
-                ->action('save')
-                ->color('primary'),
-            
-            Action::make('cancel')
-                ->label('Batal')
-                ->url(SiswaResource::getUrl('edit', ['record' => $this->record]))
-                ->color('gray'),
-        ];
-    }
+{
+    return [
+        // Tombol Simpan bawaan
+        \Filament\Actions\Action::make('save')
+            ->label('Simpan Perubahan')
+            ->submit('save')
+            ->color('warning'), // Warna kuning sesuai gambar
+
+        // TOMBOL PRINT
+        \Filament\Actions\Action::make('print')
+            ->label('Print Struk')
+            ->color('info')
+            ->icon('heroicon-o-printer')
+            ->url(fn () => route('print.receipt', ['bill' => $this->billRecord]))
+            ->openUrlInNewTab()
+            // Perbaikan pemanggilan status di sini
+            ->visible(fn () => ($this->form->getRawState()['status'] ?? null) === 'paid'),
+
+        // Tombol Batal
+        \Filament\Actions\Action::make('cancel')
+    ->label('Batal')
+    ->url(fn() => SiswaResource::getUrl('edit', ['record' => $this->record]))
+    ->color('gray'),
+    ];
+}
 
     public function save(): void
     {

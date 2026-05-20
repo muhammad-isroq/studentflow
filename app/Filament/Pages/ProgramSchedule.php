@@ -140,7 +140,7 @@ class ProgramSchedule extends Page implements HasTable
                     ->when($guruId, function ($query) use ($guruId) {
                         
                         $query->where('guru_id', $guruId);
-                    })
+                    })->latest()
             )
             ->columns([
                 TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),
@@ -449,6 +449,7 @@ class ProgramSchedule extends Page implements HasTable
                         $livewire->validate();
                         $record->update($data);
                         
+                        
                         Notification::make()
                             ->success()
                             ->title('🎉 Saved Lesson Plan!')
@@ -457,7 +458,8 @@ class ProgramSchedule extends Page implements HasTable
                             ->iconColor('success')
                             ->duration(5000)
                             ->send();
-                        }),
+                        })
+                        ,
                     Action::make('viewLessonPlan')
                     ->label('View')
                     ->icon('heroicon-o-eye')

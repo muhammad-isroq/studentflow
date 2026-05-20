@@ -1,6 +1,7 @@
 <div class="space-y-6">
 
-<div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border-l-4 {{ $this->totalArrears > 0 ? 'border-red-500' : 'border-green-500' }}">
+
+    <div class="bg-white dark:bg-gray-900 shadow rounded-lg p-6 border-l-4 {{ $this->totalArrears > 0 ? 'border-red-500' : 'border-green-500' }}">
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -22,15 +23,12 @@
                 </div>
             </div>
             
-            {{-- Ikon Visual --}}
             <div class="p-3 rounded-full {{ $this->totalArrears > 0 ? 'bg-red-100 text-red-600 dark:bg-red-900/30' : 'bg-green-100 text-green-600 dark:bg-green-900/30' }}">
                 @if($this->totalArrears > 0)
-                    {{-- Icon Exclamation/Warning --}}
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 @else
-                    {{-- Icon Check/Aman --}}
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -39,28 +37,36 @@
         </div>
     </div>
 
-<div class="max-w-xs mb-4">
-    <label for="selectedYear" class="fi-fo-field-wrp-label text-sm font-medium leading-6 text-gray-950 dark:text-white">
-        Tampilkan Tahun
-    </label>
-    
-    <select
-        wire:model.live="selectedYear"
-        id="selectedYear"
-        class="fi-input-wrapper block w-full border-none bg-white py-1.5 pe-3 ps-3 text-base text-gray-950 shadow-sm ring-1 transition duration-75 focus:ring-2 disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 dark:disabled:ring-gray-700 fi-select-input rounded-lg ring-gray-950/10 focus:ring-primary-600 dark:ring-gray-700 dark:focus:ring-primary-500"
-    >
-        @php
-            // Ambil tahun dari tagihan tertua siswa ini
-            $firstBillYear = $this->getOwnerRecord()->bills()->min(DB::raw('YEAR(due_date)'));
-            $startYear = $firstBillYear ? (int)$firstBillYear : (int)date('Y') - 1;
-            $endYear = (int)date('Y') + 1; // Tampilkan satu tahun ke depan
-        @endphp
+    <div class="max-w-xs mb-4">
+        <label for="selectedYear" class="fi-fo-field-wrp-label text-sm font-medium leading-6 text-gray-950 dark:text-white">
+            Tampilkan Tahun
+        </label>
         
-        @for ($year = $endYear; $year >= $startYear; $year--)
-            <option value="{{ $year }}">{{ $year }}</option>
-        @endfor
-    </select>
-</div>
+        <select
+            wire:model.live="selectedYear"
+            id="selectedYear"
+            class="fi-input-wrapper block w-full border-none bg-white py-1.5 pe-3 ps-3 text-base text-gray-950 shadow-sm ring-1 transition duration-75 focus:ring-2 disabled:bg-gray-50 disabled:text-gray-500 disabled:ring-gray-200 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 dark:disabled:ring-gray-700 fi-select-input rounded-lg ring-gray-950/10 focus:ring-primary-600 dark:ring-gray-700 dark:focus:ring-primary-500"
+        >
+            @php
+                $firstBillYear = $this->getOwnerRecord()->bills()->min(DB::raw('YEAR(due_date)'));
+                $startYear = $firstBillYear ? (int)$firstBillYear : (int)date('Y') - 1;
+                $endYear = (int)date('Y') + 1;
+            @endphp
+            
+            @for ($year = $endYear; $year >= $startYear; $year--)
+                <option value="{{ $year }}">{{ $year }}</option>
+            @endfor
+        </select>
+    </div>
+
+    <div class="mb-6">
+        <x-filament::button 
+            wire:click="openPayMultipleModal" 
+            color="success" 
+            icon="heroicon-m-plus-circle">
+            Bayar Banyak Bulan
+        </x-filament::button>
+    </div>
 
     {{-- SPP Bulanan --}}
     <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
@@ -77,24 +83,12 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Bulan
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Jumlah
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Jatuh Tempo
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Status
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Tanggal Bayar
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Aksi
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bulan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jatuh Tempo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tanggal Bayar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -127,38 +121,38 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                @if($monthData['paid_at'])
-                                    {{ $monthData['paid_at']->format('d M Y, H:i') }}
-                                @else
-                                    <span class="text-gray-400">-</span>
-                                @endif
+                                {{ $monthData['paid_at'] ? $monthData['paid_at']->format('d M Y, H:i') : '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                 @if($monthData['bill'])
-                                    @if($monthData['status'] !== 'paid')
-                                        <button 
-                                            wire:click="markAsPaid({{ $monthData['bill']->id }})"
-                                            class="text-green-600 hover:text-green-900 text-xs bg-green-100 hover:bg-green-200 px-2 py-1 rounded"
+                                    @if($monthData['status'] === 'paid')
+                                        <a 
+                                            href="{{ route('print.receipt', ['bill' => $monthData['bill']->id]) }}"
+                                            target="_blank"
+                                            class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded inline-flex items-center"
                                         >
-                                            Tandai Lunas
-                                        </button>
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                            Print
+                                        </a>
+                                    @else
+                                        <button wire:click="markAsPaid({{ $monthData['bill']->id }})" class="text-green-600 hover:text-green-900 text-xs bg-green-100 hover:bg-green-200 px-2 py-1 rounded">Tandai Lunas</button>
                                     @endif
+                                    
                                     <button 
-                                        wire:click="editBill({{ $monthData['bill']->id }})"
-                                        class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded"
+                                        type="button"
+                                        onclick="confirmEditBill({{ $monthData['bill']->id }})"
+                                        class="text-yellow-600 hover:text-yellow-900 text-xs bg-yellow-100 hover:bg-yellow-200 px-2 py-1 rounded transition-colors duration-200"
                                     >
                                         Edit
                                     </button>
                                     
-                                    
                                     <button 
-                                        wire:click="deleteBill({{ $monthData['bill']->id }})"
-                                        wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."
-                                        class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded"
+                                        type="button"
+                                        onclick="confirmDeleteBill({{ $monthData['bill']->id }}, 'spp')"
+                                        class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded transition-colors duration-200"
                                     >
                                         Hapus
                                     </button>
-
                                 @else
                                     <button 
                                         wire:click="generateSppBill({{ $monthData['month_number'] }}, {{ $monthData['year'] }})"
@@ -177,38 +171,22 @@
 
     {{-- Tagihan Lainnya --}}
     @foreach($this->getNonSppBills() as $paymentTypeName => $bills)
-        <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden">
+        <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden mt-6">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    {{ $paymentTypeName }}
-                </h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ $bills->count() }} tagihan
-                </p>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $paymentTypeName }}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $bills->count() }} tagihan</p>
             </div>
             
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Jumlah
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Jatuh Tempo
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Tanggal Bayar
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Dibuat
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Aksi
-                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jumlah</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Jatuh Tempo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tanggal Bayar</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dibuat</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -238,26 +216,31 @@
                                     {{ $bill->created_at->format('d M Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                    @if($bill->status !== 'paid')
-                                        <button 
-                                            wire:click="markAsPaid({{ $bill->id }})"
-                                            class="text-green-600 hover:text-green-900 text-xs bg-green-100 hover:bg-green-200 px-2 py-1 rounded"
+                                    @if($bill->status === 'paid')
+                                        <a 
+                                            href="{{ route('print.receipt', ['bill' => $bill->id]) }}"
+                                            target="_blank"
+                                            class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded inline-flex items-center"
                                         >
-                                            Tandai Lunas
-                                        </button>
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                            Print
+                                        </a>
+                                    @else
+                                        <button wire:click="markAsPaid({{ $bill->id }})" class="text-green-600 hover:text-green-900 text-xs bg-green-100 hover:bg-green-200 px-2 py-1 rounded">Tandai Lunas</button>
                                     @endif
+
                                     <button 
-                                        wire:click="editBill({{ $bill->id }})"
-                                        class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded"
+                                        type="button"
+                                        onclick="confirmEditBill({{ $bill->id }})"
+                                        class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded transition-colors duration-200"
                                     >
                                         Edit
                                     </button>
 
-                                   
                                     <button 
-                                        wire:click="deleteBill({{ $bill->id }})"
-                                        wire:confirm="Anda yakin ingin menghapus tagihan ini? Data tidak dapat dikembalikan."
-                                        class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded"
+                                        type="button"
+                                        onclick="confirmDeleteBill({{ $bill->id }}, 'other')"
+                                        class="text-red-600 hover:text-red-900 text-xs bg-red-100 hover:bg-red-200 px-2 py-1 rounded transition-colors duration-200"
                                     >
                                         Hapus
                                     </button>
@@ -279,20 +262,69 @@
         </div>
     @endforeach
 
-    {{-- Button untuk tambah payment type baru (Tidak diubah) --}}
-    {{-- <div class="bg-white dark:bg-gray-900 shadow rounded-lg overflow-hidden p-6">
-        <button 
-            wire:click="createNewPaymentTypeBill"
-            class="w-full border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center hover:border-gray-400 dark:hover:border-gray-600 transition-colors"
-        >
-            <div class="text-gray-600 dark:text-gray-400">
-                <svg class="mx-auto h-8 w-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-                <span class="text-sm font-medium">Tambah Jenis Tagihan Baru</span>
-            </div>
-        </button>
-    </div> --}}
+    <livewire:pay-multiple-bills />
     <livewire:create-bill-modal />
     <livewire:edit-bill-modal />
 </div>
+
+@script
+<script>
+    // Fungsi Edit dengan SweetAlert2 (Sudah terintegrasi dengan FilamentAsset)
+    window.confirmEditBill = function(billId) {
+        Swal.fire({
+            title: 'Buka Halaman Edit?',
+            text: "Anda akan diarahkan ke form penyuntingan detail tagihan.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2563eb', // Blue primary
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Edit',
+            cancelButtonText: 'Batal',
+            backdrop: `
+    rgba(0,0,123,0.4)
+    url("/images/cat-space.gif")
+    left top
+    no-repeat
+  `,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.call('editBill', billId);
+            }
+        });
+    }
+
+    // Fungsi Hapus dengan SweetAlert2
+    window.confirmDeleteBill = function(billId, type) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data tagihan ini akan dihapus permanen dari sistem!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626', // Danger red
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            backdrop: `
+    rgba(0,0,123,0.4)
+    url("/images/cat-space.gif")
+    left top
+    no-repeat
+  `,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.call('deleteBill', billId);
+                
+                Swal.fire({
+                    title: 'Diproses!',
+                    text: 'Perintah hapus telah dikirim ke database.',
+                    icon: 'success',
+                    timer: 1300,
+                    showConfirmButton: false
+                });
+            }
+        });
+    }
+</script>
+@endscript

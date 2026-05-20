@@ -140,7 +140,7 @@ class ProgramSchedule extends Page implements HasTable
                     ->when($guruId, function ($query) use ($guruId) {
                         
                         $query->where('guru_id', $guruId);
-                    })->latest()
+                    })->latest('session_date')
             )
             ->columns([
                 TextColumn::make('session_date')->label('Meeting Date')->date('l, d M Y')->sortable(),

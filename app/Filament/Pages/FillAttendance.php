@@ -133,10 +133,10 @@ class FillAttendance extends Page implements HasForms, HasTable
         $this->record->attendances()->update(['status' => 'Hadir']);
         $this->dispatch('attendance-updated');
         
-        Notification::make()
-            ->title('Success!')
-            ->success()
-            ->send();
+        // Notification::make()
+        //     ->title('Success!')
+        //     ->success()
+        //     ->send();
     }
     
     public function resetAttendance()
@@ -145,21 +145,21 @@ class FillAttendance extends Page implements HasForms, HasTable
         
         $this->dispatch('attendance-updated');
         
-        Notification::make()
-            ->title('Reset Complete!')
-            ->body('All attendance has been reset to "Not Recorded"')
-            ->success()
-            ->send();
+        // Notification::make()
+        //     ->title('Reset Complete!')
+        //     ->body('All attendance has been reset to "Not Recorded"')
+        //     ->success()
+        //     ->send();
     }
     
     public function saveAll()
     {
-        Notification::make()
-            ->title('Attendance Saved Successfully!')
-            ->body('All attendance data has been recorded')
-            ->success()
-            ->duration(3000)
-            ->send();
+        // Notification::make()
+        //     ->title('Attendance Saved Successfully!')
+        //     ->body('All attendance data has been recorded')
+        //     ->success()
+        //     ->duration(3000)
+        //     ->send();
 
         return redirect(ProgramSchedule::getUrl(['program' => $this->record->program_id]));
     }

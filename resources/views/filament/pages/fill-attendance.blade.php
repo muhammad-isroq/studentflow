@@ -1,5 +1,9 @@
 <x-filament-panels::page>
     <div class="space-y-6">
+        <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
         @if($this->record->isAccessExpired())
             <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm animate-pulse">
                 <div class="flex">
@@ -58,10 +62,10 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-4">
                             <span class="text-sm text-gray-600 font-medium">Quick action:</span>
-                            <button
+                            <button 
                                 type="button"
                                 onclick="confirmSetAllPresent()"
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150 animate__animated animate__flip"
                             >
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -72,7 +76,7 @@
                             <button
                                 type="button"
                                 onclick="confirmResetAttendance()"
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-danger-600 hover:bg-danger-700 rounded-lg transition-colors duration-150"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-danger-600 hover:bg-danger-700 rounded-lg transition-colors duration-150 animate__animated animate__fadeInRightBig"
                             >
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -121,7 +125,7 @@
                     @else
                         onclick="window.location.href='{{ App\Filament\Pages\ProgramSchedule::getUrl(['program' => $this->record->program_id]) }}'"
                     @endif
-                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-150"
+                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-150 animate__animated animate__heartBeat"
                 >
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path>
@@ -135,6 +139,17 @@
     @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
     function confirmSetAllPresent() {
         Swal.fire({
             title: 'Are you sure?',
@@ -155,6 +170,10 @@
             if (result.isConfirmed) {
                 // Gunakan @this atau Livewire
                 @this.call('setAllPresent');
+                Toast.fire({
+                        icon: "success",
+                        title: "All marked as present!"
+                    });
             }
         });
     }
@@ -178,6 +197,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 @this.call('resetAttendance');
+                Toast.fire({
+                        icon: "success",
+                        title: "Attendance data reset!"
+                    });
             }
         });
     }
@@ -201,9 +224,14 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 @this.call('saveAll');
+                Toast.fire({
+                        icon: "success",
+                        title: "Attendance successfully saved!"
+                    });
             }
         });
     }
 </script>
+
 @endpush
 </x-filament-panels::page>

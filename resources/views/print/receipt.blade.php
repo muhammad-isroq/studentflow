@@ -13,6 +13,9 @@
         .divider { border-top: 1px dashed #000; margin: 5px 0; }
         table { width: 100%; }
         .total { font-weight: bold; font-size: 14px; }
+        
+        /* Tambahan styling agar label pengeluaran sedikit menonjol */
+        .expense-label { background-color: #000; color: #fff; display: inline-block; padding: 2px 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -25,16 +28,32 @@
         </div>
         
         <div class="divider"></div>
+        
+        <div class="text-center" style="margin: 5px 0;">
+            @if($bill->transaction_type === 'expense')
+                <span class="expense-label">BUKTI PENGELUARAN KAS</span>
+            @else
+                <strong>K W I T A N S I</strong>
+            @endif
+        </div>
+        
+        <div class="divider"></div>
         <table>
-            <tr><td>No. Kwitansi</td><td>: #{{ $bill->id }}</td></tr>
-            <tr><td>Tanggal</td><td>: {{ $bill->paid_at->format('d/m/Y H:i') }}</td></tr>
-            <tr><td>dibayarkan oleh</td><td>: {{ $siswa->nama }}</td></tr>
-            <tr><td>Diterima oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
+            <tr><td>No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
+            <tr><td>Tanggal</td><td>: {{ $bill->paid_at ? $bill->paid_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
+            
+            @if($bill->transaction_type === 'expense')
+                <tr><td>Dibayarkan Kpd</td><td>: {{ $bill->paid_by ?: '-' }}</td></tr>
+                <tr><td>Diserahkan Oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
+            @else
+                <tr><td>Diterima Dari</td><td>: {{ $bill->paid_by ?: ($siswa ? $siswa->nama : '-') }}</td></tr>
+                <tr><td>Diterima Oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
+            @endif
         </table>
         
         <div class="divider"></div>
         <div style="margin: 10px 0;">
-            <strong>PEMBAYARAN:</strong><br>
+            <strong>KETERANGAN:</strong><br>
             {{ $paymentType->name }}
         </div>
         
@@ -47,10 +66,16 @@
         
         <div class="divider"></div>
         <div class="text-center">
-            <br>TERIMA KASIH<br>
-            Simpan struk ini sebagai bukti pembayaran sah.
+            <br>
+            @if($bill->transaction_type === 'expense')
+                Dokumen internal pengeluaran sah.<br>
+            @else
+                TERIMA KASIH<br>
+                Simpan struk ini sebagai bukti pembayaran sah.
+            @endif
         </div>
     </div>
+    
     <div class="text-center no-print" style="margin-top: 30px;">
         <button id="btn-save-proof" style="background-color: #22c55e; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%;">
             📸 Simpan Sebagai Bukti di Sistem

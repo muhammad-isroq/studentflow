@@ -11,6 +11,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
+use Filament\Forms\Components\Textarea;
 
 class BillForm
 {
@@ -28,22 +29,59 @@ class BillForm
                     ->default('income')
                     ->inline()
                     ->live()
-                    // Jika tipe arus kas berubah, reset pilihan di bawahnya agar tidak bentrok
-                    ->afterStateUpdated(function (callable $set) {
-                        $set('payment_type_id', null);
+                    ->afterStateUpdated(function ($set, $state) {
+                        // 1. Reset field lain agar bersih
                         $set('siswa_id', null);
                         $set('paid_by', null);
+
+                        // 2. Logika Auto-Select Default Kategori
+                        if ($state === 'expense') {
+                            // Cari kategori 'Lain-lain' di database
+                            $kategoriLain = \App\Models\PaymentType::where('name', 'like', '%Lain-lain%')->first();
+
+                            // Jika ketemu, set sebagai default
+                            if ($kategoriLain) {
+                                $set('payment_type_id', $kategoriLain->id);
+                            }
+                        } else {
+                            // Jika user klik Pemasukan lagi, kosongkan field-nya
+                            $set('payment_type_id', null);
+                        }
                     })
                     ->required()
                     ->columnSpanFull(),
 
                 // 2. KATEGORI PEMBAYARAN
                 Select::make('payment_type_id')
-                    ->relationship('paymentType', 'name')
+                    ->relationship(
+                        name: 'paymentType',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query, $livewire, $get) {
+                            if ($get('transaction_type') === 'expense') {
+                                // Saat expense, hanya tampilkan & kunci ke 'Lain-lain'
+                                $query->where('name', 'like', '%Lain-lain%');
+                            } else {
+                                // Saat income, jalankan logika lama
+                                $isRelationManager = str_contains(class_basename($livewire), 'RelationManager');
+
+                                if (!$isRelationManager) {
+                                    $query->where('name', 'not like', '%spp%');
+                                }
+                            }
+                        }
+                    )
                     ->label('Kategori Transaksi')
                     ->live()
+                    ->disabled(fn ($get) => $get('transaction_type') === 'expense') // Field terkunci saat expense
+                    ->dehydrated(true) // Nilai tetap dikirim ke server walau field disabled
                     ->afterStateUpdated(fn (callable $set) => $set('siswa_id', null))
                     ->required(),
+
+                Textarea::make('notes')
+                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Rincian Keterangan Pengeluaran' : 'Catatan / Keterangan Tambahan')
+                    ->placeholder(fn ($get) => $get('transaction_type') === 'expense' ? 'Contoh: Pembelian 2 buah lampu LED untuk ruang kelas.' : 'Tambahkan catatan jika diperlukan (Opsional).')
+                    ->rows(3)
+                    ->columnSpanFull(),
 
                 // 3. LOGIKA DINAMIS KOLOM SISWA
                 Select::make('siswa_id')
@@ -53,14 +91,13 @@ class BillForm
                     ->preload()
                     ->required()
                     ->visible(function ($get) {
-                        // Jika ini adalah pengeluaran (expense), PASTI sembunyikan kolom siswa
                         if ($get('transaction_type') === 'expense') {
                             return false;
                         }
 
                         $paymentTypeId = $get('payment_type_id');
                         if (!$paymentTypeId) {
-                            return false; 
+                            return false;
                         }
 
                         $paymentType = \App\Models\PaymentType::find($paymentTypeId);
@@ -136,7 +173,6 @@ class BillForm
                 ->color('info')
                 ->url(fn () => route('print.receipt', ['bill' => $this->record->id]))
                 ->openUrlInNewTab()
-                // Tombol cetak struk hanya muncul jika status Lunas DAN transaksi ini adalah Pemasukan
                 ->visible(fn () => $this->record->status === 'paid' && $this->record->transaction_type === 'income'),
             DeleteAction::make(),
         ];

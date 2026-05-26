@@ -65,7 +65,7 @@
                             <button 
                                 type="button"
                                 onclick="confirmSetAllPresent()"
-                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150 animate__animated animate__flip"
+                                class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-success-600 hover:bg-success-700 rounded-lg transition-colors duration-150 animate__animated animate__flip animate__delay-1s"
                             >
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>

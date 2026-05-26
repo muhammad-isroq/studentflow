@@ -102,7 +102,7 @@ class PrintReportController extends Controller
         $endDate   = Carbon::createFromDate($year, 12, 31)->endOfYear()->format('Y-m-d');
     } else {
         $dateObj = Carbon::createFromDate($year, $month, 1);
-        $monthName = $dateObj->translatedFormat('F Y');
+        $monthName = $dateObj->locale('id')->translatedFormat('F Y'); 
         $startDate = $dateObj->startOfMonth()->format('Y-m-d');
         $endDate   = $dateObj->endOfMonth()->format('Y-m-d');
     }

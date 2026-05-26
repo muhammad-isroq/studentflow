@@ -9,7 +9,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use App\Models\Bill; 
-use App\Filament\Resources\Bills\BillResource; 
+use App\Filament\Resources\Bills\BillResource;
+use Filament\Actions\Action; 
 
 class TransactionsTable
 {
@@ -39,6 +40,7 @@ class TransactionsTable
                 ImageColumn::make('proof_image')
                     ->label('Bukti')        
                     ->width(60)
+                    ->disk('public')
                     ->height(60)
                     ->square()
                     ->getStateUsing(function ($record) {
@@ -88,7 +90,7 @@ class TransactionsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->recordActions([
                 EditAction::make(),
             ])
@@ -96,6 +98,34 @@ class TransactionsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                // TOMBOL HAPUS SEMUA TRANSAKSI
+                Action::make('deleteAllTransactions')
+                    ->label('Kosongkan Data Transaksi')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus SEMUA Data Transaksi?')
+                    ->modalDescription('PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH data transaksi? Tindakan ini akan membersihkan data riwayat kas secara permanen dan tidak dapat dibatalkan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Semua Permanen')
+                    ->action(function () {
+                        // 1. Menghitung jumlah data untuk ditampilkan di notifikasi
+                        $count = \App\Models\Transaction::count();
+
+                        // 2. Menghapus semua baris data di tabel transactions
+                        \App\Models\Transaction::query()->delete();
+                        
+                        // Opsi Alternatif (sama seperti Bills):
+                        // Gunakan truncate() jika Anda ingin mereset ID kembali ke 1.
+                        // \App\Models\Transaction::truncate();
+
+                        // 3. Menampilkan notifikasi sukses
+                        \Filament\Notifications\Notification::make()
+                            ->title("Berhasil membersihkan seluruh data ($count transaksi).")
+                            ->success()
+                            ->send();
+                    }),
             ]);
     }
 }

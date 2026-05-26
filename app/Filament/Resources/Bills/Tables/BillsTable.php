@@ -92,6 +92,39 @@ class BillsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                // TOMBOL HAPUS SEMUA DATA TAGIHAN
+                Action::make('deleteAllBills')
+                    ->label('Kosongkan Data Tagihan')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus SEMUA Data Tagihan?')
+                    ->modalDescription('PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH data tagihan (baik yang sudah lunas maupun belum)? Tindakan ini akan membersihkan data secara permanen dan tidak dapat dibatalkan.')
+                    ->modalSubmitActionLabel('Ya, Hapus Semua Permanen')
+                    ->action(function () {
+                        // 1. Menghitung total data sebelum dihapus (untuk notifikasi)
+                        $count = Bill::count();
+
+                        // 2. Menghapus semua data di tabel bills
+                        Bill::query()->delete(); 
+                        
+                        // Opsi Alternatif: 
+                        // Jika Anda ingin menghapus semuanya DAN mereset ID kembali ke 1,
+                        // Anda bisa mematikan baris delete() di atas, lalu menyalakan baris di bawah ini:
+                        // Bill::truncate();
+
+                        // 3. (Opsional) Reset status spp_paid_until pada tabel Siswa
+                        // Jika Anda mereset tagihan, Anda mungkin juga ingin mereset penanda lunas di data siswa
+                        \App\Models\Siswa::query()->update(['spp_paid_until' => null]);
+
+                        // 4. Menampilkan notifikasi sukses
+                        Notification::make()
+                            ->title("Berhasil membersihkan seluruh data ($count tagihan).")
+                            ->success()
+                            ->send();
+                    }),
             ]);
     }
 }

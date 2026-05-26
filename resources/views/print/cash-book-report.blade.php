@@ -31,7 +31,7 @@
 <body onload="window.print()">
 
     <div class="header">
-        <div class="title">STUDENTFLOW LEARNING CENTER</div>
+        <div class="title">THE MASTER OF DUMAI</div>
         <div class="subtitle">Buku Kas (Ringkasan): {{ $monthName }}</div>
     </div>
 
@@ -123,7 +123,7 @@
     <div style="margin-top: 40px; text-align: right; font-size: 11px;">
         <p>Dicetak otomatis pada: {{ now()->format('d F Y H:i') }}</p>
         <br><br><br>
-        <p><strong>( Admin Keuangan )</strong></p>
+        <p><strong>( Staff Keuangan )</strong></p>
     </div>
 
 </body>

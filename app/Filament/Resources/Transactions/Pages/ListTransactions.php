@@ -50,7 +50,7 @@ class ListTransactions extends ListRecords
                     'year' => $data['year'],
                 ]);
             }),
-            CreateAction::make(),
+            // CreateAction::make(),
 Actions\Action::make('cek_tunggakan')
             ->label('Check Arrears') // Label tombol
             ->icon('heroicon-o-exclamation-triangle') // Icon peringatan

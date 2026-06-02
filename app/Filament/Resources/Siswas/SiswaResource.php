@@ -38,9 +38,7 @@ class SiswaResource extends Resource
     
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'active')
-            ->where('tgl_registrasi', '<', '2026-01-01')
-            ->count();
+        return static::getModel()::where('status', 'active')->count();
     }
 
     public static function getNavigationBadgeTooltip(): ?string

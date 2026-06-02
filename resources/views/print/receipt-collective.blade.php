@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Struk Pembayaran Kolektif - {{ $siswa->nama }}</title>
-    {{-- Tambahkan library html2canvas di head --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @media print {
@@ -18,14 +17,16 @@
         .text-center { text-align: center; }
         .divider { border-top: 1px dashed #000; margin: 5px 0; }
         table { width: 100%; border-collapse: collapse; }
+        td { vertical-align: top; }
         .total { font-weight: bold; font-size: 14px; }
         .item-row td { padding: 2px 0; }
+        
+        /* Styling khusus untuk area tanda tangan */
+        .signature-table td { border: none !important; padding: 0; }
     </style>
 </head>
-{{-- REMINDER: onload="window.print();" sudah dihapus dari body --}}
 <body>
     
-    {{-- 1. BUNGKUS AREA STRUK DENGAN ID KHUSUS UNTUK DIPOTRET --}}
     <div id="capture-area" style="background: white; padding: 10px;">
         <div class="text-center">
             <strong style="font-size: 16px;">THE MASTER OF DUMAI</strong><br>
@@ -35,23 +36,39 @@
         </div>
         
         <div class="divider"></div>
+        
+        <div class="text-center" style="margin: 5px 0;">
+            <strong>K W I T A N S I   (KOLEKTIF)</strong>
+        </div>
+        
+        <div class="divider"></div>
         <table>
-            {{-- Kita ambil ID dari bill pertama sebagai referensi No. Kwitansi --}}
-            <tr><td>No. Kwitansi</td><td>: #COL-{{ $bills->first()->id }}</td></tr>
-            <tr><td>Tanggal</td><td>: {{ now()->format('d/m/Y H:i') }}</td></tr>
-            <tr><td>Dibayarkan oleh</td><td>: {{ strtoupper($siswa->nama) }}</td></tr>
-            <tr><td>Diterima oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
+            <tr><td width="35%">No. Transaksi</td><td>: {{ $bills->first()->id }}</td></tr>
+            <tr><td>Waktu</td><td>: {{ now()->format('d/m/Y H:i') }}</td></tr>
+            <tr><td>Nama Siswa</td><td>: {{ strtoupper($siswa->nama) }}</td></tr>
+            <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
         </table>
         
         <div class="divider"></div>
         <div style="margin: 5px 0;">
-            <strong>RINCIAN PEMBAYARAN SPP:</strong>
+            <strong>RINCIAN PEMBAYARAN:</strong>
         </div>
         
         <table>
             @foreach($bills as $bill)
             <tr class="item-row">
-                <td>SPP {{ $bill->due_date->format('M Y') }}</td>
+                <td>
+                    {{-- LOGIKA BARU: Cek apakah nama tagihan mengandung kata 'spp' --}}
+                    @if(stripos($bill->paymentType->name, 'spp') !== false)
+                        Periode Bulan {{ \Carbon\Carbon::parse($bill->due_date)->locale('id')->translatedFormat('F Y') }}
+                    @else
+                        {{ $bill->paymentType->name }}
+                    @endif
+
+                    @if($bill->notes)
+                        <br><span style="font-size: 10px; font-style: italic;">* {{ str_ireplace('bayar di muka', 'Cash', $bill->notes) }}</span>
+                    @endif
+                </td>
                 <td align="right">Rp {{ number_format($bill->amount, 0, ',', '.') }}</td>
             </tr>
             @endforeach
@@ -66,15 +83,32 @@
             </tr>
         </table>
         
-        <div class="divider"></div>
-        <div class="text-center">
+        <table class="signature-table text-center" style="margin-top: 15px;">
+            <tr>
+                <td style="width: 50%;">Nama Siswa,</td>
+                <td style="width: 50%;">Diterima Oleh,</td>
+            </tr>
+            <tr>
+                <td style="height: 40px;"></td>
+                <td style="height: 40px;"></td>
+            </tr>
+            <tr>
+                <td style="font-size: 11px;">
+                    ( {{ strtoupper($siswa->nama) }} )
+                </td>
+                <td style="font-size: 11px;">
+                    ( {{ strtoupper($staffName) }} )
+                </td>
+            </tr>
+        </table>
+        
+        <div class="divider" style="margin-top: 15px;"></div>
+        <div class="text-center" style="font-size: 10px;">
             <br>TERIMA KASIH<br>
-            Simpan struk ini sebagai bukti<br>pembayaran yang sah.
+            Simpan struk ini sebagai bukti pembayaran sah.
         </div>
     </div>
-    {{-- BUNGKUSAN SELESAI --}}
 
-    {{-- 2. TOMBOL MANUAL KHUSUS SIMPAN MASSAL (TIDAK IKUT TERPRINT) --}}
     <div class="text-center no-print" style="margin-top: 30px;">
         <button id="btn-save-bulk-proof" style="background-color: #22c55e; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%;">
             📸 Simpan Sebagai Bukti Masal di Sistem
@@ -82,7 +116,6 @@
         <p id="status-message" style="color: #6b7280; font-size: 11px; margin-top: 5px;">Klik tombol di atas dahulu untuk mengisi bukti pembayaran di semua bulan terkait.</p>
     </div>
 
-    {{-- 3. JAVASCRIPT LOGIC UNTUK CAPTURE ARRAY ID --}}
     <script>
     document.getElementById('btn-save-bulk-proof').addEventListener('click', function() {
         const btn = this;
@@ -93,7 +126,6 @@
         btn.innerText = "⏳ Sedang Memotret Struk Kolektif...";
         btn.style.backgroundColor = "#9ca3af";
 
-        // Inject ID tagihan dari Eloquent Collection ke Array JavaScript secara instan
         const billIds = @json($bills->pluck('id')); 
 
         html2canvas(target, {
@@ -127,12 +159,10 @@
                     btn.style.backgroundColor = "#16a34a";
                     msg.innerHTML = "<span style='color: #16a34a; font-weight: bold;'>Selesai!</span> Sinkronisasi halaman admin...";
                     
-                    // Trigger tab utama Filament untuk refresh/reload otomatis
                     if (window.opener && !window.opener.closed) {
                         window.opener.location.reload();
                     }
 
-                    // Picu printer thermal
                     setTimeout(() => {
                         window.print();
                     }, 500);

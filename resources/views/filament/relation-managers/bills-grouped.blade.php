@@ -59,12 +59,20 @@
         </select>
     </div>
 
-    <div class="mb-6">
+
+    <div class="mb-6 flex gap-3">
         <x-filament::button 
             wire:click="openPayMultipleModal" 
             color="success" 
             icon="heroicon-m-plus-circle">
             Bayar Banyak Bulan
+        </x-filament::button>
+
+        <x-filament::button 
+            wire:click="openInputMultiplePaymentsModal" 
+            color="primary" 
+            icon="heroicon-m-document-duplicate">
+            Input Pembayaran Serentak
         </x-filament::button>
     </div>
 
@@ -265,6 +273,7 @@
     <livewire:pay-multiple-bills />
     <livewire:create-bill-modal />
     <livewire:edit-bill-modal />
+    <livewire:input-multiple-payments-modal />
 </div>
 
 @script

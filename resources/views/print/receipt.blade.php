@@ -11,11 +11,12 @@
         body { font-family: 'Courier New', Courier, monospace; font-size: 12px; }
         .text-center { text-align: center; }
         .divider { border-top: 1px dashed #000; margin: 5px 0; }
-        table { width: 100%; }
+        table { width: 100%; border-collapse: collapse; }
+        td { vertical-align: top; }
         .total { font-weight: bold; font-size: 14px; }
         
-        /* Tambahan styling agar label pengeluaran sedikit menonjol */
         .expense-label { background-color: #000; color: #fff; display: inline-block; padding: 2px 5px; font-weight: bold; }
+        .signature-table td { border: none !important; padding: 0; }
     </style>
 </head>
 <body>
@@ -39,22 +40,36 @@
         
         <div class="divider"></div>
         <table>
-            <tr><td>No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
-            <tr><td>Tanggal</td><td>: {{ $bill->paid_at ? $bill->paid_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
+            <tr><td width="35%">No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
+            <tr><td>Waktu</td><td>: {{ $bill->paid_at ? $bill->paid_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
             
             @if($bill->transaction_type === 'expense')
                 <tr><td>Dibayarkan Kpd</td><td>: {{ $bill->paid_by ?: '-' }}</td></tr>
-                <tr><td>Diserahkan Oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
             @else
-                <tr><td>Diterima Dari</td><td>: {{ $bill->paid_by ?: ($siswa ? $siswa->nama : '-') }}</td></tr>
-                <tr><td>Diterima Oleh</td><td>: {{ strtoupper($staffName) }}</td></tr>
+                <tr><td>Nama Siswa</td><td>: {{ $bill->paid_by ?: ($siswa ? $siswa->nama : '-') }}</td></tr>
+                @if($siswa)
+                    <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
+                @endif
+                <!-- Baris Periode Bulan DIHAPUS dari sini -->
             @endif
         </table>
         
         <div class="divider"></div>
         <div style="margin: 10px 0;">
             <strong>KETERANGAN:</strong><br>
-            {{ $paymentType->name }}
+            @if(stripos($paymentType->name, 'spp') !== false)
+                Periode Bulan {{ \Carbon\Carbon::parse($bill->due_date)->locale('id')->translatedFormat('F Y') }}
+            @else
+                {{ $paymentType->name }}
+            @endif
+            
+            @if($bill->notes)
+                {{-- LOGIKA BARU: Timpa teks 'Bayar di Muka' menjadi 'Cash' secara otomatis saat dicetak --}}
+                @php
+                    $catatan = str_ireplace('bayar di muka', 'Cash', $bill->notes);
+                @endphp
+                <br><em>* {{ $catatan }}</em>
+            @endif
         </div>
         
         <table>
@@ -64,8 +79,39 @@
             </tr>
         </table>
         
-        <div class="divider"></div>
-        <div class="text-center">
+        <table class="signature-table text-center" style="margin-top: 15px;">
+            <tr>
+                <td style="width: 50%;">
+                    @if($bill->transaction_type === 'expense')
+                        Penerima,
+                    @else
+                        Nama Siswa,
+                    @endif
+                </td>
+                <td style="width: 50%;">
+                    @if($bill->transaction_type === 'expense')
+                        Diserahkan Oleh,
+                    @else
+                        Diterima Oleh,
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td style="height: 40px;"></td>
+                <td style="height: 40px;"></td>
+            </tr>
+            <tr>
+                <td style="font-size: 11px;">
+                    ( {{ $bill->transaction_type === 'expense' ? ($bill->paid_by ?: '________________') : ($bill->paid_by ?: ($siswa ? $siswa->nama : '________________')) }} )
+                </td>
+                <td style="font-size: 11px;">
+                    ( {{ strtoupper($staffName) }} )
+                </td>
+            </tr>
+        </table>
+        
+        <div class="divider" style="margin-top: 15px;"></div>
+        <div class="text-center" style="font-size: 10px;">
             <br>
             @if($bill->transaction_type === 'expense')
                 Dokumen internal pengeluaran sah.<br>
@@ -87,17 +133,16 @@
     document.getElementById('btn-save-proof').addEventListener('click', function() {
         const btn = this;
         const msg = document.getElementById('status-message');
-        const target = document.getElementById('capture-area'); // Target bidikan spesifik
+        const target = document.getElementById('capture-area'); 
         
         btn.disabled = true;
         btn.innerText = "⏳ Sedang Memotret...";
         btn.style.backgroundColor = "#9ca3af";
 
-        // Konfigurasi html2canvas yang lebih aman untuk browser modern
         html2canvas(target, {
-            scale: 2, // Meningkatkan resolusi gambar agar tulisan tajam
-            backgroundColor: "#ffffff", // Memaksa latar belakang warna putih
-            logging: true, // Mengaktifkan log internal untuk melacak kegagalan
+            scale: 2, 
+            backgroundColor: "#ffffff", 
+            logging: true, 
             width: target.offsetWidth,
             height: target.offsetHeight
         }).then(canvas => {
@@ -125,13 +170,10 @@
                     btn.style.backgroundColor = "#16a34a";
                     msg.innerHTML = "<span style='color: #16a34a; font-weight: bold;'>Data tersimpan!</span> Mengarahkan ke cetak...";
                     
-                    // UTAMAKAN INI: Perintahkan tab utama (Filament) untuk refresh data
                     if (window.opener && !window.opener.closed) {
-                        // Opsi 1: Muat ulang halaman Filament di tab sebelah secara penuh
                         window.opener.location.reload();
                     }
 
-                    // Picu cetak printer
                     setTimeout(() => {
                         window.print();
                     }, 500);
@@ -149,6 +191,5 @@
         });
     });
     </script>
-    
 </body>
 </html>

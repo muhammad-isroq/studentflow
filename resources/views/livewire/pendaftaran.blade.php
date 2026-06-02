@@ -7,13 +7,13 @@
                 <p class="text-xs opacity-60 italic mt-1">Klik gambar untuk memperbesar informasi</p>
             </div>
 
-            <div class="grid md:grid-cols-1 gap-8 max-w-2xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
                 {{-- BROSUR 1: INFORMASI --}}
                 <div class="flex flex-col">
                     <label for="modal-brosur-info" class="cursor-zoom-in">
                         <div class="card bg-base-200 shadow-xl overflow-hidden border-2 border-primary/20 transition-all hover:border-primary">
                             <figure class="hover:scale-105 transition-transform duration-500">
-                                <img src="{{ asset('images/brosur_informasi.jpeg') }}" alt="Brosur Informasi" class="w-full h-auto object-cover aspect-[3/4]" />
+                                <img src="{{ asset('images/promo.jpeg') }}" alt="Brosur Informasi" class="w-full h-auto object-cover aspect-[3/4]" />
                             </figure>
                             <div class="card-body bg-primary text-primary-content p-3 text-center">
                                 <p class="text-[10px] font-bold uppercase tracking-widest">Brosur Informasi Program</p>
@@ -22,19 +22,19 @@
                     </label>
                 </div>
 
-                {{-- BROSUR 2: PROMO
+                {{-- BROSUR 2: PROMO --}}
                 <div class="flex flex-col">
                     <label for="modal-brosur-promo" class="cursor-zoom-in">
                         <div class="card bg-base-200 shadow-xl overflow-hidden border-2 border-secondary/20 transition-all hover:border-secondary">
                             <figure class="hover:scale-105 transition-transform duration-500">
-                                <img src="{{ asset('images/brosur-the-master.jpeg') }}" alt="Brosur Promo" class="w-full h-auto object-cover aspect-[3/4]" />
+                                <img src="{{ asset('images/brosur_informasi.jpeg') }}" alt="Brosur Promo" class="w-full h-auto object-cover aspect-[3/4]" />
                             </figure>
                             <div class="card-body bg-secondary text-secondary-content p-3 text-center">
                                 <p class="text-[10px] font-bold uppercase tracking-widest">Promo Spesial Bulan Ini!</p>
                             </div>
                         </div>
                     </label>
-                </div> --}}
+                </div> 
             </div>
         </div>
 
@@ -178,28 +178,30 @@
             </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-6">
-            <div class="text-center flex gap-4">
-                <a href="/pendaftaran/register" class="btn btn-primary shadow-2xl border btn-lg">Daftar Sekarang</a>
-                <a href="{{ route('login') }}" class="btn btn-outline border-2 btn-primary btn-lg">Login Calon Siswa</a>
-            </div>
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mb-10">
+            <a href="/pendaftaran/register" class="btn btn-primary shadow-2xl border btn-lg gap-2">
+                ✨ Daftar Sekarang
+            </a>
+            <a href="{{ route('login') }}" class="btn btn-outline border-2 btn-primary btn-lg gap-2">
+                🔑 Login Calon Siswa
+            </a>
         </div>
 
         {{-- MODAL SECTION --}}
         <input type="checkbox" id="modal-brosur-info" class="modal-toggle" />
         <div class="modal" role="dialog">
-            <div class="modal-box max-w-5xl p-0 bg-transparent shadow-none relative">
+            <div class="modal-box max-w-3xl p-0 bg-transparent shadow-none relative">
                 <label for="modal-brosur-info" class="btn btn-sm btn-circle btn-primary absolute right-2 top-2 z-50">✕</label>
-                <img src="{{ asset('images/brosur_informasi.jpeg') }}" class="w-full rounded-lg" />
+                <img src="{{ asset('images/promo.jpeg') }}" class="w-full rounded-lg" />
             </div>
             <label class="modal-backdrop" for="modal-brosur-info">Close</label>
         </div>
 
         <input type="checkbox" id="modal-brosur-promo" class="modal-toggle" />
         <div class="modal" role="dialog">
-            <div class="modal-box max-w-5xl p-0 bg-transparent shadow-none relative">
+            <div class="modal-box max-w-3xl p-0 bg-transparent shadow-none relative">
                 <label for="modal-brosur-promo" class="btn btn-sm btn-circle btn-secondary absolute right-2 top-2 z-50">✕</label>
-                <img src="{{ asset('images/brosur-the-master.jpeg') }}" class="w-full rounded-lg" />
+                <img src="{{ asset('images/brosur_informasi.jpeg') }}" class="w-full rounded-lg" />
             </div>
             <label class="modal-backdrop" for="modal-brosur-promo">Close</label>
         </div>

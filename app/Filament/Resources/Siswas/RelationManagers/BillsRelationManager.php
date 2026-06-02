@@ -136,9 +136,90 @@ class BillsRelationManager extends RelationManager implements HasActions
         });
 }
 
+public function newPaymentAction(): \Filament\Actions\Action
+    {
+        return \Filament\Actions\Action::make('newPayment')
+            ->label('Input Pembayaran')
+            ->icon('heroicon-m-plus-circle')
+            ->color('primary')
+            ->extraAttributes(['class' => 'w-full md:w-auto'])
+            ->form([
+                \Filament\Forms\Components\Repeater::make('payments')
+                    ->label('Daftar Tagihan')
+                    ->schema([
+                        \Filament\Forms\Components\Select::make('payment_type_id')
+                            ->label('Kategori Tagihan')
+                            ->options(\App\Models\PaymentType::pluck('name', 'id'))
+                            ->required()
+                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function (callable $set, $state) {
+                                // Opsional: Set default amount berdasarkan jenis tagihan
+                                // Misalnya, jika SPP terpilih, ambil amount dari profil siswa
+                                if ($state) {
+                                    $paymentType = \App\Models\PaymentType::find($state);
+                                    if ($paymentType && stripos($paymentType->name, 'spp') !== false) {
+                                        $set('amount', $this->getOwnerRecord()->spp_amount);
+                                    }
+                                }
+                            }),
+
+                        \Filament\Forms\Components\TextInput::make('amount')
+                            ->label('Nominal (Rp)')
+                            ->numeric()
+                            ->required(),
+
+                        \Filament\Forms\Components\DatePicker::make('due_date')
+                            ->label('Tanggal Jatuh Tempo/Periode')
+                            ->default(now())
+                            ->required(),
+
+                        \Filament\Forms\Components\Textarea::make('notes')
+                            ->label('Catatan (Opsional)')
+                            ->rows(2),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(1) // Munculkan 1 baris secara default
+                    ->addActionLabel('+ Tambah Kategori Pembayaran (Buku, dll)'),
+            ])
+            ->action(function (array $data) {
+                $siswa = $this->getOwnerRecord();
+                $createdBillIds = [];
+
+                // Looping data repeater dan simpan ke database sebagai baris-baris terpisah
+                foreach ($data['payments'] as $payment) {
+                    $bill = $siswa->bills()->create([
+                        'payment_type_id' => $payment['payment_type_id'],
+                        'amount' => $payment['amount'],
+                        'due_date' => $payment['due_date'],
+                        'status' => 'paid', // Langsung dianggap lunas karena ini form "Input Pembayaran"
+                        'paid_at' => now(),
+                        'notes' => $payment['notes'] ?? 'Cash', // Jika kosong, set ke 'Cash'
+                        'transaction_type' => 'income', // Pastikan tercatat sebagai income
+                    ]);
+                    
+                    $createdBillIds[] = $bill->id;
+                }
+
+                \Filament\Notifications\Notification::make()
+                    ->title('Pembayaran berhasil dicatat!')
+                    ->success()
+                    ->send();
+                    
+                $this->dispatch('bill-updated');
+
+                // Opsional: Redirect ke halaman cetak Struk Kolektif jika tagihan lebih dari 1
+                if (count($createdBillIds) > 1) {
+                    // Anda perlu membuat rute baru atau menyesuaikan rute kolektif yang ada 
+                    // agar bisa menerima array ID. Untuk saat ini, kita biarkan saja.
+                }
+            });
+    }
+
 protected function getActions(): array
 {
     return [
+        $this->newPaymentAction(),
         $this->paySppAction(),
     ];
 }
@@ -376,5 +457,10 @@ private function processMultiplePayments($count)
     public function openPayMultipleModal()
     {
         $this->dispatch('open-pay-multiple-modal', siswaId: $this->getOwnerRecord()->id);
+    }
+
+    public function openInputMultiplePaymentsModal()
+    {
+        $this->dispatch('open-input-multiple-payments-modal', siswaId: $this->getOwnerRecord()->id);
     }
 }

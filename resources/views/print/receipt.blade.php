@@ -41,7 +41,7 @@
         <div class="divider"></div>
         <table>
             <tr><td width="35%">No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
-            <tr><td>Waktu</td><td>: {{ $bill->paid_at ? $bill->paid_at->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
+            <tr><td>Waktu</td><td>: {{ $bill->paid_at ? \Carbon\Carbon::parse($bill->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
             
             @if($bill->transaction_type === 'expense')
                 <tr><td>Dibayarkan Kpd</td><td>: {{ $bill->paid_by ?: '-' }}</td></tr>

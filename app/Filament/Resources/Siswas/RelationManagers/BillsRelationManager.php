@@ -228,7 +228,7 @@ private function processMultiplePayments($count)
 {
     $siswa = $this->getOwnerRecord();
     $sppPaymentType = \App\Models\PaymentType::where('name', 'like', '%SPP%')->first();
-    
+    $waktuLunas = now();
     for ($i = 0; $i < $count; $i++) {
         // 1. Cari apakah ada tagihan SPP yang statusnya belum lunas
         $bill = $siswa->bills()
@@ -240,7 +240,7 @@ private function processMultiplePayments($count)
         if ($bill) {
             $bill->update([
                 'status' => 'paid',
-                'paid_at' => now(),
+                'paid_at' => $waktuLunas,
                 'notes' => ($bill->notes ? $bill->notes . ' ' : '') . 'Dibayar kolektif',
             ]);
         } else {
@@ -259,7 +259,7 @@ private function processMultiplePayments($count)
                 'amount' => $siswa->spp_amount ?? 500000,
                 'due_date' => $nextDate->setDay($siswa->billing_day ?? 10),
                 'status' => 'paid',
-                'paid_at' => now(),
+                'paid_at' => $waktuLunas,
                 'notes' => 'Pembayaran di muka (Advance)',
             ]);
         }

@@ -96,6 +96,7 @@ class InputMultiplePaymentsModal extends Component implements HasForms, HasActio
         $siswa = Siswa::find($this->siswaId);
         
         $createdIds = [];
+        $waktuLunas = now();
 
         foreach ($data['payments'] as $payment) {
             $bill = $siswa->bills()->create([
@@ -103,7 +104,7 @@ class InputMultiplePaymentsModal extends Component implements HasForms, HasActio
                 'amount' => $payment['amount'],
                 'due_date' => $payment['due_date'],
                 'status' => 'paid', 
-                'paid_at' => now(),
+                'paid_at' => $waktuLunas,
                 'notes' => $payment['notes'],
                 'transaction_type' => 'income', 
             ]);
@@ -118,13 +119,11 @@ class InputMultiplePaymentsModal extends Component implements HasForms, HasActio
         $this->dispatch('bill-updated');
         $this->closeModal();
         if (count($createdIds) > 0) {
-            // Gabungkan ID menjadi teks (contoh: "15,16,17")
             $idsString = implode(',', $createdIds);
             
-            // Catatan: Pastikan nama route ('print.collective') sesuai dengan yang ada di web.php Anda
+            // UBAH BARIS INI: Gunakan nama rute asli Anda
             $url = route('print.receipt.collective', ['ids' => $idsString]);
             
-            // Perintahkan browser untuk membuka URL struk kolektif di Tab Baru
             $this->js("window.open('{$url}', '_blank');");
         }
     }

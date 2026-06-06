@@ -44,7 +44,7 @@
         <div class="divider"></div>
         <table>
             <tr><td width="35%">No. Transaksi</td><td>: {{ $bills->first()->id }}</td></tr>
-            <tr><td>Waktu</td><td>: {{ now()->format('d/m/Y H:i') }}</td></tr>
+            <tr><td>Waktu</td><td>: {{ $bills->first()->paid_at ? \Carbon\Carbon::parse($bills->first()->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
             <tr><td>Nama Siswa</td><td>: {{ strtoupper($siswa->nama) }}</td></tr>
             <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
         </table>

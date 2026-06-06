@@ -161,8 +161,8 @@
             confirmButtonText: 'Yes, mark all present!',
             backdrop: `
     rgba(0,0,123,0.4)
-    url("/images/cat-space.gif")
-    left top
+    url("/images/bango.gif")
+    left top / 250px auto
     no-repeat
   `,
             cancelButtonText: 'Cancel'
@@ -189,8 +189,8 @@
             confirmButtonText: 'Yes, reset!',
             backdrop: `
     rgba(0,0,123,0.4)
-    url("/images/cat-space.gif")
-    left top
+    url("/images/bango.gif")
+    left top / 250px auto
     no-repeat
   `,
             cancelButtonText: 'Cancel'
@@ -216,8 +216,8 @@
             confirmButtonText: 'Yes, save!',
             backdrop: `
     rgba(0,0,123,0.4)
-    url("/images/cat-space.gif")
-    left top
+    url("/images/bango.gif")
+    left top / 250px auto
     no-repeat
   `,
             cancelButtonText: 'Cancel'

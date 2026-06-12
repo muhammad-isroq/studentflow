@@ -155,6 +155,11 @@
                         <div class="form-control w-full">
                             <label class="label"><span class="label-text font-bold text-primary">Bukti Transfer Pendaftaran</span></label>
                             <input type="file" wire:model="bukti_pembayaran" class="file-input file-input-bordered file-input-secondary w-full" wire:key="upload_payment_key">
+                            <div class="mt-2 p-3 bg-base-100 rounded-lg border border-base-300 text-xs space-y-1">
+                                <div class="text-gray-600 font-medium">
+                                    Transfer ke: <span class="text-secondary font-bold">Rek Mandiri (AN: ACCA MANURUNG) 108 00 2069299 3</span>
+                                </div>
+                            </div>
                             @error('bukti_pembayaran') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>

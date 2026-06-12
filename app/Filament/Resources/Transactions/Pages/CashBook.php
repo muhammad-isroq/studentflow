@@ -150,7 +150,7 @@ class CashBook extends Page implements HasForms, HasTable
                 TextColumn::make('debit')
                     ->label('Masuk (Debit)')
                     ->state(function ($record) {
-                        return $record->type === 'income' ? $record->amount : 0;
+                        return strtolower($record->type) === 'income' ? $record->amount : 0;
                     })
                     ->money('IDR')
                     ->color('success'),
@@ -159,12 +159,12 @@ class CashBook extends Page implements HasForms, HasTable
                 TextColumn::make('credit')
                     ->label('Keluar (Kredit)')
                     ->state(function ($record) {
-                        return $record->type === 'expense' ? $record->amount : 0;
+                        return strtolower($record->type) === 'expense' ? $record->amount : 0;
                     })
                     ->money('IDR')
                     ->color('danger'),
             ])
-            ->defaultSort('date', 'asc');
+            ->defaultSort('date', 'desc');
     }
 
     // FUNGSI MENGHITUNG TOTAL (Untuk Tampilan Card)

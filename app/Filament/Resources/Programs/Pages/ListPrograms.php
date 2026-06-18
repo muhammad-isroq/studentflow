@@ -13,7 +13,7 @@ use App\Models\Siswa;
 use App\Models\Grade;
 use App\Models\SemesterReport;
 use Filament\Actions\ActionGroup;
-use App\Filament\Resources\Pages\AttendanceRecap;
+use App\Models\AttendanceRecap;
 
 class ListPrograms extends ListRecords
 {

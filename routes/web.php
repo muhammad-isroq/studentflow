@@ -30,9 +30,12 @@ use App\Models\Siswa;
 use App\Models\Attendance;
 use App\Models\Grade;
 use App\Models\Assessment;
-
+use App\Http\Controllers\PrintArsipController;
+use App\Http\Controllers\PrintAttendanceController;
 use App\Http\Controllers\ReceiptController;
 
+Route::get('/print-absensi/{program_id}/{semester_name}', [PrintAttendanceController::class, 'index'])->name('print.absensi');
+Route::get('/print-arsip/{program_id}/{semester_name}', [PrintArsipController::class, 'index'])->name('print.arsip');
 Route::post('/api/save-multiple-receipt-proof', function (Illuminate\Http\Request $request) {
     try {
         $img = $request->image;
@@ -261,14 +264,15 @@ Route::get('/print-attendance/{program}', function (Program $program) {
 
 Route::get('/print-grades/{program}', function (Program $program) {
     $assessments = $program->assessments()->orderBy('order')->get();
-    $students = $program->siswas()->orderBy('nama')->get();
+    $students = $program->siswas()->get();
     
     // Identifikasi Ujian Semester dan Review
     $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
     $semesterTestId = $semesterTest ? $semesterTest->id : null;
     $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
 
-    $scoringData = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
+    // Proses data dasar seluruh siswa
+    $processedStudents = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
         $allGrades = Grade::where('student_id', $student->id)->get();
         $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
         $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
@@ -276,30 +280,45 @@ Route::get('/print-grades/{program}', function (Program $program) {
         $calc = function($col) use ($reviewGrades, $semesterGrade) {
             $avgReview = (float)($reviewGrades->avg($col) ?? 0);
             $scoreSem = (float)($semesterGrade->$col ?? 0);
-
-            // Jika ada nilai semester, gunakan rumus: (Avg Review + Semester) / 2
-            if ($semesterGrade) {
-                return ($avgReview + $scoreSem) / 2;
-            }
-            return $avgReview;
+            return $semesterGrade ? ($avgReview + $scoreSem) / 2 : $avgReview;
         };
 
-        $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
-        $s = $calc('speaking'); $g = $calc('grammar');
-        $total = $l + $r + $w + $s + $g;
-        $final = $total / 5;
+        // A. Kalkulasi Nilai Asli (Raw)
+        $raw_l = $calc('listening'); $raw_r = $calc('reading'); $raw_w = $calc('writing');
+        $raw_s = $calc('speaking'); $raw_g = $calc('grammar');
+        $raw_total = $raw_l + $raw_r + $raw_w + $raw_s + $raw_g;
+        $raw_final = $raw_total / 5;
+
+        // B. Ambil Nilai Rapor Manual (Jika null, default ke 0)
+        $rapor_l = (float)($student->rapor_listening ?? 0);
+        $rapor_r = (float)($student->rapor_reading ?? 0);
+        $rapor_w = (float)($student->rapor_writing ?? 0);
+        $rapor_g = (float)($student->rapor_grammar ?? 0);
+        $rapor_s = (float)($student->rapor_speaking ?? 0);
+        $rapor_total = $rapor_l + $rapor_r + $rapor_w + $rapor_g + $rapor_s;
+        $rapor_final = $rapor_total / 5;
 
         return [
             'nama' => $student->nama,
-            'l' => $l, 'r' => $r, 'w' => $w, 's' => $s, 'g' => $g,
-            'total' => $total,
-            'final' => $final,
+            // Paket Nilai Asli
+            'raw_l' => $raw_l, 'raw_r' => $raw_r, 'raw_w' => $raw_w, 'raw_s' => $raw_s, 'raw_g' => $raw_g,
+            'raw_total' => $raw_total, 'raw_final' => $raw_final,
+            // Paket Nilai Rapor Manual
+            'rapor_l' => $rapor_l, 'rapor_r' => $rapor_r, 'rapor_w' => $rapor_w, 'rapor_s' => $rapor_s, 'rapor_g' => $rapor_g,
+            'rapor_total' => $rapor_total, 'rapor_final' => $rapor_final,
         ];
-    })->sortByDesc('final')->values();
+    });
+
+    // Urutkan Tabel 1 berdasarkan Nilai Asli tertinggi
+    $rawData = $processedStudents->sortByDesc('raw_final')->values();
+
+    // Urutkan Tabel 2 berdasarkan Nilai Rapor Manual tertinggi
+    $raporData = $processedStudents->sortByDesc('rapor_final')->values();
 
     return view('print.scoring-sheet', [
         'program' => $program,
-        'data' => $scoringData,
+        'rawData' => $rawData,
+        'raporData' => $raporData,
     ]);
 })->name('print.grades')->middleware('auth');
 

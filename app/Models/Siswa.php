@@ -36,6 +36,7 @@ class Siswa extends Model
         'registration_proof',
         'sumber_info',   
         'alasan_kursus',
+        'nilai_rapor',
     ];
 
     public function program(): BelongsTo

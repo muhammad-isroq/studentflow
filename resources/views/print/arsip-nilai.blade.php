@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Scoring Sheet - {{ $program->nama_program }}</title>
+    <title>Archive Scoring Sheet - {{ $program->nama_program }}</title>
     <style>
         @media print {
             @page { size: portrait; margin: 10mm; }
@@ -27,7 +27,6 @@
         .class-avg-row td { background-color: #f8fafc; font-weight: 900; font-size: 11px; border-top: 2px solid #cbd5e1; }
         .class-avg-title { color: #2563eb; text-align: left !important; }
 
-        /* Rapor Table Specifics */
         .rapor-table th { background-color: #fef3c7; border: 1px solid #fde68a; }
         .rapor-table .total-col { background-color: #fffbef; color: #b45309; }
         .rapor-table .final-col { background-color: #ecfdf5; color: #047857; }
@@ -42,9 +41,9 @@
 <body onload="window.print()">
 
     <div class="header">
-        <h2>REPORT SCORING SHEET THE MASTER</h2>
+        <h2>ARCHIVED REPORT SCORING SHEET</h2>
         <p style="font-weight: bold; margin: 4px 0; font-size: 14px;">{{ strtoupper($program->nama_program) }}</p>
-        <p style="font-size: 11px; color: #64748b; margin: 0;">Academic Period: January - June 2026</p>
+        <p style="font-size: 11px; color: #64748b; margin: 0;">Academic Period: {{ strtoupper($semester_name) }}</p>
     </div>
 
     <div class="section-title">TABLE 1: ORIGINAL STUDENT SCORES (Average of Review & Semester Test)</div>
@@ -63,44 +62,32 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($rawData as $index => $row)
+            @php $sortedRaw = $reports->sortByDesc('final_score')->values(); @endphp
+            @foreach ($sortedRaw as $index => $report)
                 <tr>
                     <td class="rank-col">{{ $index + 1 }}</td>
-                    <td class="name-col">{{ $row['nama'] }}</td>
-                    <td>{{ number_format($row['raw_l'], 1) }}</td>
-                    <td>{{ number_format($row['raw_r'], 1) }}</td>
-                    <td>{{ number_format($row['raw_w'], 1) }}</td>
-                    <td>{{ number_format($row['raw_s'], 1) }}</td>
-                    <td>{{ number_format($row['raw_g'], 1) }}</td>
-                    <td class="total-col">{{ number_format($row['raw_total'], 1) }}</td>
+                    <td class="name-col">{{ $report->siswa->nama ?? '-' }}</td>
+                    <td>{{ number_format($report->avg_listening, 1) }}</td>
+                    <td>{{ number_format($report->avg_reading, 1) }}</td>
+                    <td>{{ number_format($report->avg_writing, 1) }}</td>
+                    <td>{{ number_format($report->avg_speaking, 1) }}</td>
+                    <td>{{ number_format($report->avg_grammar, 1) }}</td>
+                    <td class="total-col">{{ number_format($report->total_score, 1) }}</td>
                     <td class="final-col">
-                        @php
-                            $color = $row['raw_final'] >= 80 ? 'badge-success' : ($row['raw_final'] >= 60 ? 'badge-warning' : 'badge-danger');
-                        @endphp
-                        <span class="{{ $color }}">{{ number_format($row['raw_final'], 1) }}</span>
+                        @php $color = $report->final_score >= 80 ? 'badge-success' : ($report->final_score >= 60 ? 'badge-warning' : 'badge-danger'); @endphp
+                        <span class="{{ $color }}">{{ number_format($report->final_score, 1) }}</span>
                     </td>
                 </tr>
             @endforeach
-
-            @php
-                $countRaw = $rawData->count();
-                $avgRawL = $countRaw > 0 ? $rawData->avg('raw_l') : 0;
-                $avgRawR = $countRaw > 0 ? $rawData->avg('raw_r') : 0;
-                $avgRawW = $countRaw > 0 ? $rawData->avg('raw_w') : 0;
-                $avgRawS = $countRaw > 0 ? $rawData->avg('raw_s') : 0;
-                $avgRawG = $countRaw > 0 ? $rawData->avg('raw_g') : 0;
-                $avgRawTotal = $countRaw > 0 ? $rawData->avg('raw_total') : 0;
-                $avgRawFinal = $countRaw > 0 ? $rawData->avg('raw_final') : 0;
-            @endphp
             <tr class="class-avg-row">
                 <td colspan="2" class="class-avg-title">CLASS AVG (ORIGINAL SCORES)</td>
-                <td>{{ number_format($avgRawL, 1) }}</td>
-                <td>{{ number_format($avgRawR, 1) }}</td>
-                <td>{{ number_format($avgRawW, 1) }}</td>
-                <td>{{ number_format($avgRawS, 1) }}</td>
-                <td>{{ number_format($avgRawG, 1) }}</td>
-                <td class="total-col" style="color: #2563eb;">{{ number_format($avgRawTotal, 1) }}</td>
-                <td class="final-col">{{ number_format($avgRawFinal, 1) }}</td>
+                <td>{{ number_format($reports->avg('avg_listening'), 1) }}</td>
+                <td>{{ number_format($reports->avg('avg_reading'), 1) }}</td>
+                <td>{{ number_format($reports->avg('avg_writing'), 1) }}</td>
+                <td>{{ number_format($reports->avg('avg_speaking'), 1) }}</td>
+                <td>{{ number_format($reports->avg('avg_grammar'), 1) }}</td>
+                <td class="total-col" style="color: #2563eb;">{{ number_format($reports->avg('total_score'), 1) }}</td>
+                <td class="final-col">{{ number_format($reports->avg('final_score'), 1) }}</td>
             </tr>
         </tbody>
     </table>
@@ -121,44 +108,41 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($raporData as $index => $row)
+            @php $sortedRapor = $reports->sortBy('rank')->values(); @endphp
+            @foreach ($sortedRapor as $report)
+                @php
+                    $rapor_total = $report->rapor_listening + $report->rapor_reading + $report->rapor_writing + $report->rapor_speaking + $report->rapor_grammar;
+                    $rapor_final = $rapor_total / 5;
+                @endphp
                 <tr>
-                    <td class="rank-col">{{ $index + 1 }}</td>
-                    <td class="name-col">{{ $row['nama'] }}</td>
-                    <td>{{ number_format($row['rapor_l'], 1) }}</td>
-                    <td>{{ number_format($row['rapor_r'], 1) }}</td>
-                    <td>{{ number_format($row['rapor_w'], 1) }}</td>
-                    <td>{{ number_format($row['rapor_s'], 1) }}</td>
-                    <td>{{ number_format($row['rapor_g'], 1) }}</td>
-                    <td class="total-col">{{ number_format($row['rapor_total'], 1) }}</td>
+                    <td class="rank-col">{{ $report->rank }}</td>
+                    <td class="name-col">{{ $report->siswa->nama ?? '-' }}</td>
+                    <td>{{ number_format($report->rapor_listening, 1) }}</td>
+                    <td>{{ number_format($report->rapor_reading, 1) }}</td>
+                    <td>{{ number_format($report->rapor_writing, 1) }}</td>
+                    <td>{{ number_format($report->rapor_speaking, 1) }}</td>
+                    <td>{{ number_format($report->rapor_grammar, 1) }}</td>
+                    <td class="total-col">{{ number_format($rapor_total, 1) }}</td>
                     <td class="final-col">
-                        @php
-                            $color = $row['rapor_final'] >= 80 ? 'badge-success' : ($row['rapor_final'] >= 60 ? 'badge-warning' : 'badge-danger');
-                        @endphp
-                        <span class="{{ $color }}">{{ number_format($row['rapor_final'], 1) }}</span>
+                        @php $color = $rapor_final >= 80 ? 'badge-success' : ($rapor_final >= 60 ? 'badge-warning' : 'badge-danger'); @endphp
+                        <span class="{{ $color }}">{{ number_format($rapor_final, 1) }}</span>
                     </td>
                 </tr>
             @endforeach
-
             @php
-                $countRapor = $raporData->count();
-                $avgRaporL = $countRapor > 0 ? $raporData->avg('rapor_l') : 0;
-                $avgRaporR = $countRapor > 0 ? $raporData->avg('rapor_r') : 0;
-                $avgRaporW = $countRapor > 0 ? $raporData->avg('rapor_w') : 0;
-                $avgRaporS = $countRapor > 0 ? $raporData->avg('rapor_s') : 0;
-                $avgRaporG = $countRapor > 0 ? $raporData->avg('rapor_g') : 0;
-                $avgRaporTotal = $countRapor > 0 ? $raporData->avg('rapor_total') : 0;
-                $avgRaporFinal = $countRapor > 0 ? $raporData->avg('rapor_final') : 0;
+                $avgL = $reports->avg('rapor_listening'); $avgR = $reports->avg('rapor_reading');
+                $avgW = $reports->avg('rapor_writing'); $avgS = $reports->avg('rapor_speaking'); $avgG = $reports->avg('rapor_grammar');
+                $avgTotal = $avgL + $avgR + $avgW + $avgS + $avgG;
             @endphp
             <tr class="class-avg-row">
                 <td colspan="2" class="class-avg-title">CLASS AVG (REPORT CARD SCORES)</td>
-                <td>{{ number_format($avgRaporL, 1) }}</td>
-                <td>{{ number_format($avgRaporR, 1) }}</td>
-                <td>{{ number_format($avgRaporW, 1) }}</td>
-                <td>{{ number_format($avgRaporS, 1) }}</td>
-                <td>{{ number_format($avgRaporG, 1) }}</td>
-                <td class="total-col" style="color: #b45309;">{{ number_format($avgRaporTotal, 1) }}</td>
-                <td class="final-col" style="color: #047857;">{{ number_format($avgRaporFinal, 1) }}</td>
+                <td>{{ number_format($avgL, 1) }}</td>
+                <td>{{ number_format($avgR, 1) }}</td>
+                <td>{{ number_format($avgW, 1) }}</td>
+                <td>{{ number_format($avgS, 1) }}</td>
+                <td>{{ number_format($avgG, 1) }}</td>
+                <td class="total-col" style="color: #b45309;">{{ number_format($avgTotal, 1) }}</td>
+                <td class="final-col" style="color: #047857;">{{ number_format($avgTotal / 5, 1) }}</td>
             </tr>
         </tbody>
     </table>

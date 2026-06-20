@@ -19,10 +19,12 @@ use Filament\Tables\Columns\TextInputColumn;
 use App\Filament\Resources\ProgramResource;
 use Filament\Actions\Action;
 use Filament\Support\Enums\FontWeight;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
+
+// 2. Komponen Data (dari Infolists)
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Schemas\Components\Section;
 use Illuminate\Support\Str;
 
 class GradingPage extends Page implements HasTable
@@ -36,6 +38,10 @@ class GradingPage extends Page implements HasTable
 
     public $program_id;
     public $activeAssessmentId = null; 
+    
+    // Properti publik untuk menyimpan ID ujian agar Livewire berjalan secepat kilat
+    public array $reviewIds = [];
+    public ?int $semesterTestId = null;
     
     protected function getHeaderActions(): array
     {
@@ -81,10 +87,6 @@ class GradingPage extends Page implements HasTable
                 ->modalSubmitAction(false)
                 ->modalCancelActionLabel('Close')
                 ->infolist([
-
-                    // =========================================================
-                    // SECTION 1: ORIGINAL SCORES TABLE (RAW DATA)
-                    // =========================================================
                     Section::make('TABLE 1: ORIGINAL STUDENT SCORES (Average of Review & Semester Test)')
                         ->schema([
                             Grid::make(9)
@@ -188,9 +190,6 @@ class GradingPage extends Page implements HasTable
                                 ])
                         ]),
 
-                    // =========================================================
-                    // SECTION 2: REPORT CARD SCORES TABLE (MANUAL INPUT)
-                    // =========================================================
                     Section::make('TABLE 2: REPORT CARD SCORES (Manual Teacher Input)')
                         ->schema([
                             Grid::make(9)
@@ -322,9 +321,19 @@ class GradingPage extends Page implements HasTable
         $this->program_id = request()->query('program_id');
         if (!$this->program_id) return redirect()->back();
 
-        $firstAssessment = Assessment::where('program_id', $this->program_id)->orderBy('order', 'asc')->first();
-        if ($firstAssessment) {
-            $this->activeAssessmentId = $firstAssessment->id;
+        $program = Program::with('assessments')->find($this->program_id);
+        if ($program) {
+            $assessments = $program->assessments;
+            
+            $firstAssessment = $assessments->sortBy('order')->first();
+            if ($firstAssessment) {
+                $this->activeAssessmentId = $firstAssessment->id;
+            }
+
+            // Simpan ID untuk mempercepat kueri render tabel
+            $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
+            $this->semesterTestId = $semesterTest ? $semesterTest->id : null;
+            $this->reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id')->toArray();
         }
     }
 
@@ -337,7 +346,8 @@ class GradingPage extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table 
-            ->query(Siswa::query()->where('program_id', $this->program_id))
+            // Optimasi Eager Loading agar kueri sangat ringan saat mode Summary
+            ->query(Siswa::query()->where('program_id', $this->program_id)->with('grades'))
             ->columns(array_merge(
                 [
                     Tables\Columns\TextColumn::make('nama')
@@ -351,6 +361,19 @@ class GradingPage extends Page implements HasTable
             ->paginated(false);
     }
 
+    // Fungsi perhitungan super cepat di sisi klien
+    protected function getCalculatedRawScore(Siswa $siswa, string $field)
+    {
+        $allGrades = $siswa->grades;
+        $reviewGrades = $allGrades->whereIn('assessment_id', $this->reviewIds);
+        $semesterGrade = $this->semesterTestId ? $allGrades->where('assessment_id', $this->semesterTestId)->first() : null;
+
+        $avgReview = (float)($reviewGrades->avg($field) ?? 0);
+        $scoreSem = (float)($semesterGrade->$field ?? 0);
+        
+        return $this->semesterTestId ? ($avgReview + $scoreSem) / 2 : $avgReview;
+    }
+
     protected function getDynamicColumns(): array
     {
         $skills = [
@@ -362,17 +385,37 @@ class GradingPage extends Page implements HasTable
         $columns = [];
 
         foreach ($skills as $field => $label) {
-            $columns[] = $this->makeInputColumn($field, substr($label, 0, 2))
+            $short = strtoupper(substr($label, 0, 2));
+
+            // 1. TAMPILAN INPUT HARIAN
+            $columns[] = $this->makeInputColumn($field, $short)
                 ->visible(fn() => $this->activeAssessmentId !== 'summary'); 
 
+            // 2. TAMPILAN SUMMARY: NILAI ASLI SEBAGAI REFERENSI BERDAMPINGAN
+            $columns[] = Tables\Columns\TextColumn::make('raw_' . $field)
+                ->label($short . ' (Asli)')
+                ->alignment(Alignment::Center)
+                ->state(fn (Siswa $record) => $this->getCalculatedRawScore($record, $field))
+                ->formatStateUsing(fn ($state) => number_format((float)$state, 1))
+                ->color('gray')
+                ->extraAttributes(['class' => 'bg-gray-50 dark:bg-gray-800/50']) // Background redup pemisah
+                ->visible(fn() => $this->activeAssessmentId === 'summary'); 
+
+            // 3. TAMPILAN SUMMARY: INPUT MANUAL RAPOR
             $columns[] = Tables\Columns\TextInputColumn::make('rapor_' . $field)
-                ->label(strtoupper(substr($label, 0, 2)))
+                ->label($short . ' (Rapor)')
                 ->alignment(Alignment::Center)
                 ->type('number')
-                ->extraAttributes(['class' => 'min-w-[80px]'])
-                ->visible(fn() => $this->activeAssessmentId === 'summary'); 
+                ->extraInputAttributes(['class' => 'text-center min-w-[100px] font-bold']) 
+                ->extraAttributes(['class' => 'min-w-[130px] bg-amber-50 dark:bg-amber-900/30 p-2']) 
+                ->visible(fn() => $this->activeAssessmentId === 'summary');
         }
 
+        // ==========================================
+        // KOLOM HASIL AKHIR
+        // ==========================================
+        
+        // AVG Unit (Mode Harian)
         $columns[] = Tables\Columns\TextColumn::make('unit_average')
             ->label('AVG Unit')
             ->alignment(Alignment::Center)
@@ -382,8 +425,25 @@ class GradingPage extends Page implements HasTable
             ->color('gray')
             ->visible(fn() => $this->activeAssessmentId !== 'summary');
 
+        // TOTAL ASLI (Mode Summary)
+        $columns[] = Tables\Columns\TextColumn::make('raw_total')
+            ->label('TOTAL (Asli)')
+            ->alignment(Alignment::Center)
+            ->state(fn (Siswa $record) => array_sum([
+                $this->getCalculatedRawScore($record, 'listening'),
+                $this->getCalculatedRawScore($record, 'reading'),
+                $this->getCalculatedRawScore($record, 'writing'),
+                $this->getCalculatedRawScore($record, 'speaking'),
+                $this->getCalculatedRawScore($record, 'grammar')
+            ]))
+            ->formatStateUsing(fn ($state) => number_format((float)$state, 1))
+            ->color('gray')
+            ->extraAttributes(['class' => 'bg-gray-50 dark:bg-gray-800/50'])
+            ->visible(fn() => $this->activeAssessmentId === 'summary');
+
+        // TOTAL RAPOR MANUAL (Mode Summary)
         $columns[] = Tables\Columns\TextColumn::make('rapor_total')
-            ->label('TOTAL')
+            ->label('TOTAL (Rapor)')
             ->alignment(Alignment::Center)
             ->state(fn (Siswa $record) => 
                 (float)$record->rapor_listening + (float)$record->rapor_reading + 
@@ -394,8 +454,25 @@ class GradingPage extends Page implements HasTable
             ->color('primary')
             ->visible(fn() => $this->activeAssessmentId === 'summary');
 
+        // FINAL AV ASLI (Mode Summary)
+        $columns[] = Tables\Columns\TextColumn::make('raw_final')
+            ->label('FINAL (Asli)')
+            ->alignment(Alignment::Center)
+            ->state(fn (Siswa $record) => array_sum([
+                $this->getCalculatedRawScore($record, 'listening'),
+                $this->getCalculatedRawScore($record, 'reading'),
+                $this->getCalculatedRawScore($record, 'writing'),
+                $this->getCalculatedRawScore($record, 'speaking'),
+                $this->getCalculatedRawScore($record, 'grammar')
+            ]) / 5)
+            ->formatStateUsing(fn ($state) => number_format((float)$state, 1))
+            ->badge()
+            ->color('gray')
+            ->visible(fn() => $this->activeAssessmentId === 'summary');
+
+        // FINAL AV RAPOR MANUAL (Mode Summary)
         $columns[] = Tables\Columns\TextColumn::make('rapor_final')
-            ->label('FINAL AV')
+            ->label('FINAL (Rapor)')
             ->alignment(Alignment::Center)
             ->state(fn (Siswa $record) => 
                 ((float)$record->rapor_listening + (float)$record->rapor_reading + 
@@ -412,7 +489,7 @@ class GradingPage extends Page implements HasTable
     protected function makeInputColumn(string $field, string $label): Tables\Columns\TextInputColumn
     {
         return Tables\Columns\TextInputColumn::make('grade_' . $field)
-            ->label(strtoupper($label))
+            ->label($label)
             ->type('number')
             ->extraInputAttributes(['class' => 'text-center']) 
             ->extraAttributes(['class' => 'min-w-[80px]'])
@@ -426,10 +503,11 @@ class GradingPage extends Page implements HasTable
             });
     }
 
+    // Menggunakan relasi yang di-Eager Load agar kueri bebas lag
     protected function getGradeValue($siswa, $field)
     {
         if (!$this->activeAssessmentId || $this->activeAssessmentId === 'summary') return null;
-        $grade = Grade::where('student_id', $siswa->id)->where('assessment_id', $this->activeAssessmentId)->first();
+        $grade = $siswa->grades->where('assessment_id', $this->activeAssessmentId)->first();
         return $grade ? $grade->$field : null;
     }
 }

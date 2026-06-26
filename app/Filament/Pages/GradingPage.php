@@ -96,8 +96,8 @@ class GradingPage extends Page implements HasTable
                                     TextEntry::make('h_l_raw')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_r_raw')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_w_raw')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_s_raw')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_g_raw')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    TextEntry::make('h_s_raw')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
                                     TextEntry::make('h_total_raw')->default('TOTAL')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('primary'),
                                     TextEntry::make('h_f_raw')->default('FINAL AV')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
                                     TextEntry::make('h_rank_raw')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
@@ -199,8 +199,8 @@ class GradingPage extends Page implements HasTable
                                     TextEntry::make('h_l_rapor')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
                                     TextEntry::make('h_r_rapor')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
                                     TextEntry::make('h_w_rapor')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
-                                    TextEntry::make('h_s_rapor')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
                                     TextEntry::make('h_g_rapor')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                    TextEntry::make('h_s_rapor')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
                                     TextEntry::make('h_total_rapor')->default('TOTAL')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
                                     TextEntry::make('h_f_rapor')->default('FINAL AV')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
                                     TextEntry::make('h_rank_rapor')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
@@ -378,8 +378,8 @@ class GradingPage extends Page implements HasTable
     {
         $skills = [
             'listening' => 'Listening', 'reading' => 'Reading',
-            'writing' => 'Writing', 'grammar' => 'Grammar',
-            'speaking' => 'Speaking',
+            'writing' => 'Writing', 
+            'speaking' => 'Speaking', 'grammar' => 'Grammar',
         ];
 
         $columns = [];

@@ -53,8 +53,8 @@
             <tr>
                 <th>RANK</th>
                 <th class="name-col">STUDENT NAME</th>
-                <th>LS</th>
-                <th>RD</th>
+                <th>LI</th>
+                <th>RE</th>
                 <th>WR</th>
                 <th>SP</th>
                 <th>GR</th>
@@ -111,8 +111,8 @@
             <tr>
                 <th>RANK</th>
                 <th class="name-col">STUDENT NAME</th>
-                <th>LS</th>
-                <th>RD</th>
+                <th>LI</th>
+                <th>RE</th>
                 <th>WR</th>
                 <th>SP</th>
                 <th>GR</th>
@@ -164,7 +164,7 @@
     </table>
 
     <div class="footer">
-        Printed on: {{ now()->format('d M Y H:i') }} | LS: Listening, RD: Reading, WR: Writing, SP: Speaking, GR: Grammar
+        Printed on: {{ now()->format('d M Y H:i') }} | LI: Listening, RE: Reading, WR: Writing, SP: Speaking, GR: Grammar
     </div>
 
     <div class="no-print" style="margin-top: 25px; text-align: center;">

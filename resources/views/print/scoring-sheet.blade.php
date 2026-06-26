@@ -56,8 +56,8 @@
                 <th>LI</th>
                 <th>RE</th>
                 <th>WR</th>
-                <th>SP</th>
                 <th>GR</th>
+                <th>SP</th>
                 <th class="total-col">TOTAL</th>
                 <th class="final-col">FINAL AV</th>
             </tr>
@@ -70,8 +70,8 @@
                     <td>{{ number_format($row['raw_l'], 1) }}</td>
                     <td>{{ number_format($row['raw_r'], 1) }}</td>
                     <td>{{ number_format($row['raw_w'], 1) }}</td>
-                    <td>{{ number_format($row['raw_s'], 1) }}</td>
                     <td>{{ number_format($row['raw_g'], 1) }}</td>
+                    <td>{{ number_format($row['raw_s'], 1) }}</td>
                     <td class="total-col">{{ number_format($row['raw_total'], 1) }}</td>
                     <td class="final-col">
                         @php
@@ -97,8 +97,8 @@
                 <td>{{ number_format($avgRawL, 1) }}</td>
                 <td>{{ number_format($avgRawR, 1) }}</td>
                 <td>{{ number_format($avgRawW, 1) }}</td>
-                <td>{{ number_format($avgRawS, 1) }}</td>
                 <td>{{ number_format($avgRawG, 1) }}</td>
+                <td>{{ number_format($avgRawS, 1) }}</td>
                 <td class="total-col" style="color: #2563eb;">{{ number_format($avgRawTotal, 1) }}</td>
                 <td class="final-col">{{ number_format($avgRawFinal, 1) }}</td>
             </tr>
@@ -114,8 +114,8 @@
                 <th>LI</th>
                 <th>RE</th>
                 <th>WR</th>
-                <th>SP</th>
                 <th>GR</th>
+                <th>SP</th>
                 <th class="total-col">TOTAL</th>
                 <th class="final-col">FINAL AV</th>
             </tr>
@@ -128,8 +128,8 @@
                     <td>{{ number_format($row['rapor_l'], 1) }}</td>
                     <td>{{ number_format($row['rapor_r'], 1) }}</td>
                     <td>{{ number_format($row['rapor_w'], 1) }}</td>
-                    <td>{{ number_format($row['rapor_s'], 1) }}</td>
                     <td>{{ number_format($row['rapor_g'], 1) }}</td>
+                    <td>{{ number_format($row['rapor_s'], 1) }}</td>
                     <td class="total-col">{{ number_format($row['rapor_total'], 1) }}</td>
                     <td class="final-col">
                         @php
@@ -155,8 +155,8 @@
                 <td>{{ number_format($avgRaporL, 1) }}</td>
                 <td>{{ number_format($avgRaporR, 1) }}</td>
                 <td>{{ number_format($avgRaporW, 1) }}</td>
-                <td>{{ number_format($avgRaporS, 1) }}</td>
                 <td>{{ number_format($avgRaporG, 1) }}</td>
+                <td>{{ number_format($avgRaporS, 1) }}</td>
                 <td class="total-col" style="color: #b45309;">{{ number_format($avgRaporTotal, 1) }}</td>
                 <td class="final-col" style="color: #047857;">{{ number_format($avgRaporFinal, 1) }}</td>
             </tr>
@@ -164,7 +164,7 @@
     </table>
 
     <div class="footer">
-        Printed on: {{ now()->format('d M Y H:i') }} | LI: Listening, RE: Reading, WR: Writing, SP: Speaking, GR: Grammar
+        Printed on: {{ now()->format('d M Y H:i') }} | LI: Listening, RE: Reading, WR: Writing, GR: Grammar, SP: Speaking
     </div>
 
     <div class="no-print" style="margin-top: 25px; text-align: center;">

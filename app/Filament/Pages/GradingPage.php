@@ -379,7 +379,7 @@ class GradingPage extends Page implements HasTable
         $skills = [
             'listening' => 'Listening', 'reading' => 'Reading',
             'writing' => 'Writing', 
-            'speaking' => 'Speaking', 'grammar' => 'Grammar',
+             'grammar' => 'Grammar','speaking' => 'Speaking',
         ];
 
         $columns = [];

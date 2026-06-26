@@ -14,13 +14,14 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+
+// Pemanggilan Infolist & Schema disesuaikan dengan Filament v4
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
 use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Str;
-
 
 class AssessmentsRelationManager extends RelationManager
 {
@@ -48,33 +49,47 @@ class AssessmentsRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
-        $calcClassAvg = function ($livewire, $column) {
+        // =========================================================
+        // FUNGSI HITUNG RATA-RATA: NILAI ASLI
+        // =========================================================
+        $calcRawClassAvg = function ($livewire, $column) {
             $program = $livewire->getOwnerRecord();
             if (!$program) return 0;
 
-            // Pisahkan Review vs Semester
             $assessments = $program->assessments;
             $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
             $semesterTestId = $semesterTest ? $semesterTest->id : null;
             $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
 
-            // Hitung Rata-rata Review (Semua Siswa)
-            $avgReviews = \App\Models\Grade::whereIn('student_id', $program->siswas->pluck('id'))
-                ->whereIn('assessment_id', $reviewIds)
-                ->avg($column) ?? 0;
+            $relevantStudentIds = $program->siswas->pluck('id');
 
-            // Hitung Rata-rata Semester (Semua Siswa)
+            $avgReviews = \App\Models\Grade::whereIn('student_id', $relevantStudentIds)->whereIn('assessment_id', $reviewIds)->avg($column) ?? 0;
+            
             $avgSemester = 0;
             if ($semesterTestId) {
-                $avgSemester = \App\Models\Grade::whereIn('student_id', $program->siswas->pluck('id'))
-                    ->where('assessment_id', $semesterTestId)
-                    ->avg($column) ?? 0;
+                $avgSemester = \App\Models\Grade::whereIn('student_id', $relevantStudentIds)->where('assessment_id', $semesterTestId)->avg($column) ?? 0;
             }
 
-            // Rumus: (AvgReview + AvgSemester) / 2
-            return ($avgReviews + $avgSemester) / 2;
+            return $semesterTestId ? ($avgReviews + $avgSemester) / 2 : $avgReviews;
         };
-        $programRecord = $this->getOwnerRecord();
+
+        // =========================================================
+        // FUNGSI HITUNG RATA-RATA: NILAI RAPOR MANUAL
+        // =========================================================
+        $calcRaporClassAvg = function ($livewire, $column) {
+            $program = $livewire->getOwnerRecord();
+            if (!$program) return 0;
+
+            $map = [
+                'listening' => 'rapor_listening', 'reading' => 'rapor_reading',
+                'writing' => 'rapor_writing', 'speaking' => 'rapor_speaking',
+                'grammar' => 'rapor_grammar',
+            ];
+            $dbCol = $map[$column] ?? $column;
+            
+            return \App\Models\Siswa::where('program_id', $program->id)->avg($dbCol) ?? 0;
+        };
+
         return $table
             ->recordTitleAttribute('name')
             ->columns([
@@ -92,179 +107,235 @@ class AssessmentsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->label('Tambah Ujian'),
+                    
                 Action::make('print_all_reviews')
-        ->label('Print All Reviews')
-        ->icon('heroicon-o-printer')
-        ->color('success')
-        ->url(fn () => route('print.all.reviews', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
+                    ->label('Print All Reviews')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn () => route('print.all.reviews', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
+                    
                 Action::make('summary_average')
                     ->label('Report Scoring Sheet')
                     ->icon('heroicon-m-document-chart-bar')
                     ->color('success')
-                    
-                    // Mount Record
                     ->mountUsing(fn (Action $action, $livewire) => $action->record($livewire->getOwnerRecord()))
-                    
-                    ->modalHeading('Report Scoring Sheet (Rumus: [Avg Review + Semester] / 2)')
+                    ->modalHeading('Report Scoring Sheet')
                     ->modalWidth('full')
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup')
-                    
                     ->infolist([
-                        Section::make()->schema([
-                            // A. HEADER (9 Kolom)
-                            Grid::make(9)
-                                ->extraAttributes(['class' => 'border-b pb-2 mb-2'])
-                                ->schema([
-                                    TextEntry::make('h_nama')->default('NAMA')->hiddenLabel()->weight(FontWeight::Bold),
-                                    TextEntry::make('h_l')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_r')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_w')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_s')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_g')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                    TextEntry::make('h_total')->default('TL (Total)')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('primary'),
-                                    TextEntry::make('h_f')->default('AV (Final)')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
-                                    TextEntry::make('h_rank')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
-                                ]),
 
-                            // B. ISI DATA SISWA
-                            RepeatableEntry::make('summary_data')
-                                ->label('')
-                                ->state(function ($livewire) {
-                                    $program = $livewire->getOwnerRecord();
-                                    if (!$program) return [];
-
-                                    $assessments = $program->assessments;
-                                    $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
-                                    $semesterTestId = $semesterTest ? $semesterTest->id : null;
-                                    $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
-
-                                    $students = $program->siswas;
-                                    if (!$students) return [];
-
-                                    $data = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
-                                        // 1. Ambil semua nilai siswa ini
-                                        $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
+                        // =========================================================
+                        // SECTION 1: ORIGINAL SCORES TABLE (RAW DATA)
+                        // =========================================================
+                        Section::make('TABLE 1: ORIGINAL STUDENT SCORES (Average of Review & Semester Test)')
+                            ->schema([
+                                Grid::make(9)
+                                    ->extraAttributes(['class' => 'border-b pb-2 mb-2'])
+                                    ->schema([
+                                        TextEntry::make('h_nama_raw')->default('STUDENT NAME')->hiddenLabel()->weight(FontWeight::Bold),
+                                        TextEntry::make('h_l_raw')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                        TextEntry::make('h_r_raw')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                        TextEntry::make('h_w_raw')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                        TextEntry::make('h_s_raw')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                        TextEntry::make('h_g_raw')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                        TextEntry::make('h_total_raw')->default('TOTAL')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('primary'),
+                                        TextEntry::make('h_f_raw')->default('FINAL AV')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
+                                        TextEntry::make('h_rank_raw')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    ]),
+            
+                                RepeatableEntry::make('raw_summary_data')
+                                    ->label('')
+                                    ->state(function ($livewire) {
+                                        $program = $livewire->getOwnerRecord();
+                                        if (!$program) return [];
                                         
-                                        // 2. Filter nilai untuk review yang MEMANG diikuti siswa ini
-                                        $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
-                                        $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
-
-                                        $calc = function($col) use ($reviewGrades, $semesterGrade) {
-                                            // Rata-rata review hanya dihitung dari ujian yang dia punya nilainya
-                                            // Jika siswa baru join di ujian ke-3, maka pembaginya otomatis menyesuaikan
-                                            $avgReview = (float)($reviewGrades->avg($col) ?? 0);
-                                            
-                                            $scoreSem = (float)($semesterGrade->$col ?? 0);
-
-                                            // LOGIKA ADIL:
-                                            // Jika belum ujian semester, nilai diambil dari rata-rata review saja
-                                            // Jika sudah ada semester, gunakan rumus (AvgReview + Semester) / 2
-                                            if ($semesterGrade) {
-                                                return ($avgReview + $scoreSem) / 2;
-                                            }
-
-                                            return $avgReview;
-                                        };
-
-                                        $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
-                                        $s = $calc('speaking'); $g = $calc('grammar');
+                                        $students = $program->siswas;
+                                        if ($students->isEmpty()) return [];
                                         
-                                        $total = $l + $r + $w + $s + $g;
-                                        $final = $total / 5;
+                                        $assessments = $program->assessments;
+                                        $semesterTest = $assessments->first(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'));
+                                        $semesterTestId = $semesterTest ? $semesterTest->id : null;
+                                        $reviewIds = $assessments->reject(fn($a) => \Illuminate\Support\Str::contains(strtolower($a->name), 'semester'))->pluck('id');
 
-                                        return [
-                                            'raw_final' => $final,
-                                            'display' => [
-                                                'nama' => $student->nama ?? '-',
-                                                'avg_l' => number_format($l, 1),
-                                                'avg_r' => number_format($r, 1),
-                                                'avg_w' => number_format($w, 1),
-                                                'avg_s' => number_format($s, 1),
-                                                'avg_g' => number_format($g, 1),
-                                                'total' => number_format($total, 1),
-                                                'final' => number_format($final, 1),
-                                                // Opsional: Tambahkan info jumlah ujian yang diikuti
-                                                'test_count' => $reviewGrades->count() + ($semesterGrade ? 1 : 0),
-                                            ]
-                                        ];
-                                    });
+                                        $data = $students->map(function ($student) use ($reviewIds, $semesterTestId) {
+                                            $allGrades = \App\Models\Grade::where('student_id', $student->id)->get();
+                                            $reviewGrades = $allGrades->whereIn('assessment_id', $reviewIds);
+                                            $semesterGrade = $semesterTestId ? $allGrades->where('assessment_id', $semesterTestId)->first() : null;
 
-                                    return $data->sortByDesc('raw_final')->values()->map(function ($item, $index) {
-                                        $d = $item['display'];
-                                        $d['rank'] = $index + 1;
-                                        return $d;
-                                    });
-                                })
-                                ->schema([
-                                    Grid::make(9)
-                                        ->schema([
-                                            TextEntry::make('nama')->hiddenLabel()->weight(FontWeight::Medium),
-                                            TextEntry::make('avg_l')->hiddenLabel()->alignCenter(),
-                                            TextEntry::make('avg_r')->hiddenLabel()->alignCenter(),
-                                            TextEntry::make('avg_w')->hiddenLabel()->alignCenter(),
-                                            TextEntry::make('avg_s')->hiddenLabel()->alignCenter(),
-                                            TextEntry::make('avg_g')->hiddenLabel()->alignCenter(),
-                                            TextEntry::make('total')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->color('primary'),
-                                            TextEntry::make('final')->hiddenLabel()->alignCenter()->badge()->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
-                                            TextEntry::make('rank')->hiddenLabel()->alignCenter()->weight(FontWeight::Black),
+                                            $calc = function($col) use ($reviewGrades, $semesterGrade) {
+                                                $avgReview = (float)($reviewGrades->avg($col) ?? 0);
+                                                $scoreSem = (float)($semesterGrade->$col ?? 0);
+                                                return $semesterGrade ? ($avgReview + $scoreSem) / 2 : $avgReview;
+                                            };
+
+                                            $l = $calc('listening'); $r = $calc('reading'); $w = $calc('writing');
+                                            $s = $calc('speaking'); $g = $calc('grammar');
+                                            $total = $l + $r + $w + $s + $g;
+                                            $final = $total / 5;
+
+                                            return [
+                                                'raw_final_score' => $final,
+                                                'display' => [
+                                                    'raw_nama' => $student->nama ?? '-',
+                                                    'raw_l' => number_format($l, 1),
+                                                    'raw_r' => number_format($r, 1),
+                                                    'raw_w' => number_format($w, 1),
+                                                    'raw_s' => number_format($s, 1),
+                                                    'raw_g' => number_format($g, 1),
+                                                    'raw_total' => number_format($total, 1),
+                                                    'raw_final' => number_format($final, 1),
+                                                ]
+                                            ];
+                                        });
+
+                                        return $data->sortByDesc('raw_final_score')->values()->map(function ($item, $index) {
+                                            $d = $item['display'];
+                                            $d['raw_rank'] = $index + 1;
+                                            return $d;
+                                        });
+                                    })
+                                    ->schema([
+                                        Grid::make(9)->schema([
+                                            TextEntry::make('raw_nama')->hiddenLabel()->weight(FontWeight::Medium),
+                                            TextEntry::make('raw_l')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('raw_r')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('raw_w')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('raw_s')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('raw_g')->hiddenLabel()->alignCenter(),
+                                            TextEntry::make('raw_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->color('primary'),
+                                            TextEntry::make('raw_final')->hiddenLabel()->alignCenter()->badge()
+                                                ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
+                                            TextEntry::make('raw_rank')->hiddenLabel()->alignCenter()->weight(FontWeight::Black),
                                         ]),
-                                ]),
+                                    ]),
+            
+                                Grid::make(9)
+                                    ->extraAttributes(['class' => 'border-t-2 border-gray-200 pt-4 mt-2 bg-gray-50 rounded-lg'])
+                                    ->schema([
+                                        TextEntry::make('f_lbl_raw')->default('CLASS AVG (ORIGINAL)')->hiddenLabel()->weight(FontWeight::Black)->color('primary'),
+                                        TextEntry::make('c_raw_l')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRawClassAvg($livewire, 'listening'), 1)),
+                                        TextEntry::make('c_raw_r')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRawClassAvg($livewire, 'reading'), 1)),
+                                        TextEntry::make('c_raw_w')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRawClassAvg($livewire, 'writing'), 1)),
+                                        TextEntry::make('c_raw_s')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRawClassAvg($livewire, 'speaking'), 1)),
+                                        TextEntry::make('c_raw_g')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRawClassAvg($livewire, 'grammar'), 1)),
+                                        TextEntry::make('c_raw_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('primary')
+                                            ->state(function ($livewire) use ($calcRawClassAvg) {
+                                                $total = (float)$calcRawClassAvg($livewire, 'listening') + (float)$calcRawClassAvg($livewire, 'reading') + (float)$calcRawClassAvg($livewire, 'writing') + (float)$calcRawClassAvg($livewire, 'speaking') + (float)$calcRawClassAvg($livewire, 'grammar');
+                                                return number_format($total, 1);
+                                            }),
+                                        TextEntry::make('c_raw_f')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('success')
+                                            ->state(function ($livewire) use ($calcRawClassAvg) {
+                                                $total = (float)$calcRawClassAvg($livewire, 'listening') + (float)$calcRawClassAvg($livewire, 'reading') + (float)$calcRawClassAvg($livewire, 'writing') + (float)$calcRawClassAvg($livewire, 'speaking') + (float)$calcRawClassAvg($livewire, 'grammar');
+                                                return number_format($total / 5, 1);
+                                            }),
+                                        TextEntry::make('c_raw_rank')->default('')->hiddenLabel(),
+                                    ])
+                            ]),
 
-                            // C. FOOTER (CLASS AVERAGE) - MENGGUNAKAN VARIABEL $calcClassAvg
-                            Grid::make(9)
-                                ->extraAttributes(['class' => 'border-t-2 border-gray-200 pt-4 mt-2 bg-gray-50 rounded-lg'])
-                                ->schema([
-                                    TextEntry::make('footer_label')->default('CLASS AVG')->hiddenLabel()->weight(FontWeight::Black)->color('primary'),
-                                    
-                                    // Panggil variabel $calcClassAvg menggunakan 'use'
-                                    TextEntry::make('c_l')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
-                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'listening'), 1)),
+                        // =========================================================
+                        // SECTION 2: REPORT CARD SCORES TABLE (MANUAL INPUT)
+                        // =========================================================
+                        Section::make('TABLE 2: REPORT CARD SCORES (Manual Teacher Input)')
+                            ->schema([
+                                Grid::make(9)
+                                    ->extraAttributes(['class' => 'border-b pb-2 mb-2'])
+                                    ->schema([
+                                        TextEntry::make('h_nama_rapor')->default('STUDENT NAME')->hiddenLabel()->weight(FontWeight::Bold),
+                                        TextEntry::make('h_l_rapor')->default('LS')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_r_rapor')->default('RD')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_w_rapor')->default('WR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_s_rapor')->default('SP')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_g_rapor')->default('GR')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_total_rapor')->default('TOTAL')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('warning'),
+                                        TextEntry::make('h_f_rapor')->default('FINAL AV')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter()->color('success'),
+                                        TextEntry::make('h_rank_rapor')->default('RANK')->hiddenLabel()->weight(FontWeight::Bold)->alignCenter(),
+                                    ]),
+            
+                                RepeatableEntry::make('rapor_summary_data')
+                                    ->label('')
+                                    ->state(function ($livewire) {
+                                        $program = $livewire->getOwnerRecord();
+                                        if (!$program) return [];
 
-                                    TextEntry::make('c_r')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
-                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'reading'), 1)),
+                                        $students = $program->siswas;
+                                        if ($students->isEmpty()) return [];
+            
+                                        $data = $students->map(function ($student) {
+                                            $l = (float)($student->rapor_listening ?? 0);
+                                            $r = (float)($student->rapor_reading ?? 0);
+                                            $w = (float)($student->rapor_writing ?? 0);
+                                            $g = (float)($student->rapor_grammar ?? 0);
+                                            $s = (float)($student->rapor_speaking ?? 0);
+                                            
+                                            $total = $l + $r + $w + $s + $g;
+                                            $final = $total / 5;
 
-                                    TextEntry::make('c_w')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
-                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'writing'), 1)),
+                                            return [
+                                                'rapor_final_score' => $final,
+                                                'display' => [
+                                                    'rapor_nama' => $student->nama ?? '-',
+                                                    'rapor_l' => number_format($l, 1),
+                                                    'rapor_r' => number_format($r, 1),
+                                                    'rapor_w' => number_format($w, 1),
+                                                    'rapor_s' => number_format($s, 1),
+                                                    'rapor_g' => number_format($g, 1),
+                                                    'rapor_total' => number_format($total, 1),
+                                                    'rapor_final' => number_format($final, 1),
+                                                ]
+                                            ];
+                                        });
 
-                                    TextEntry::make('c_s')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
-                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'speaking'), 1)),
-
-                                    TextEntry::make('c_g')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)
-                                        ->state(fn ($livewire) => number_format($calcClassAvg($livewire, 'grammar'), 1)),
-
-                                    // Total Class Avg
-                                    TextEntry::make('c_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('primary')
-                                        ->state(function ($livewire) use ($calcClassAvg) {
-                                            $total = $calcClassAvg($livewire, 'listening') + 
-                                                     $calcClassAvg($livewire, 'reading') +
-                                                     $calcClassAvg($livewire, 'writing') +
-                                                     $calcClassAvg($livewire, 'speaking') +
-                                                     $calcClassAvg($livewire, 'grammar');
-                                            return number_format($total, 1);
-                                        }),
-
-                                    // Final Class Avg
-                                    TextEntry::make('c_f')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('success')
-                                        ->state(function ($livewire) use ($calcClassAvg) {
-                                            $total = $calcClassAvg($livewire, 'listening') + 
-                                                     $calcClassAvg($livewire, 'reading') +
-                                                     $calcClassAvg($livewire, 'writing') +
-                                                     $calcClassAvg($livewire, 'speaking') +
-                                                     $calcClassAvg($livewire, 'grammar');
-                                            return number_format($total / 5, 1);
-                                        }),
-
-                                    TextEntry::make('c_rank')->default('')->hiddenLabel(),
-                                ])
-                        ])
+                                        return $data->sortByDesc('rapor_final_score')->values()->map(function ($item, $index) {
+                                            $d = $item['display'];
+                                            $d['rapor_rank'] = $index + 1;
+                                            return $d;
+                                        });
+                                    })
+                                    ->schema([
+                                        Grid::make(9)->schema([
+                                            TextEntry::make('rapor_nama')->hiddenLabel()->weight(FontWeight::Medium),
+                                            TextEntry::make('rapor_l')->hiddenLabel()->alignCenter()->color('warning'),
+                                            TextEntry::make('rapor_r')->hiddenLabel()->alignCenter()->color('warning'),
+                                            TextEntry::make('rapor_w')->hiddenLabel()->alignCenter()->color('warning'),
+                                            TextEntry::make('rapor_s')->hiddenLabel()->alignCenter()->color('warning'),
+                                            TextEntry::make('rapor_g')->hiddenLabel()->alignCenter()->color('warning'),
+                                            TextEntry::make('rapor_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->color('warning'),
+                                            TextEntry::make('rapor_final')->hiddenLabel()->alignCenter()->badge()
+                                                ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 60 ? 'warning' : 'danger')),
+                                            TextEntry::make('rapor_rank')->hiddenLabel()->alignCenter()->weight(FontWeight::Black),
+                                        ]),
+                                    ]),
+            
+                                Grid::make(9)
+                                    ->extraAttributes(['class' => 'border-t-2 border-orange-200 pt-4 mt-2 bg-orange-50 rounded-lg'])
+                                    ->schema([
+                                        TextEntry::make('f_lbl_rapor')->default('CLASS AVG (REPORT CARD)')->hiddenLabel()->weight(FontWeight::Black)->color('warning'),
+                                        TextEntry::make('c_rapor_l')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRaporClassAvg($livewire, 'listening'), 1)),
+                                        TextEntry::make('c_rapor_r')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRaporClassAvg($livewire, 'reading'), 1)),
+                                        TextEntry::make('c_rapor_w')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRaporClassAvg($livewire, 'writing'), 1)),
+                                        TextEntry::make('c_rapor_s')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRaporClassAvg($livewire, 'speaking'), 1)),
+                                        TextEntry::make('c_rapor_g')->hiddenLabel()->alignCenter()->weight(FontWeight::Bold)->state(fn ($livewire) => number_format($calcRaporClassAvg($livewire, 'grammar'), 1)),
+                                        TextEntry::make('c_rapor_total')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('warning')
+                                            ->state(function ($livewire) use ($calcRaporClassAvg) {
+                                                $total = (float)$calcRaporClassAvg($livewire, 'listening') + (float)$calcRaporClassAvg($livewire, 'reading') + (float)$calcRaporClassAvg($livewire, 'writing') + (float)$calcRaporClassAvg($livewire, 'speaking') + (float)$calcRaporClassAvg($livewire, 'grammar');
+                                                return number_format($total, 1);
+                                            }),
+                                        TextEntry::make('c_rapor_f')->hiddenLabel()->alignCenter()->weight(FontWeight::Black)->color('success')
+                                            ->state(function ($livewire) use ($calcRaporClassAvg) {
+                                                $total = (float)$calcRaporClassAvg($livewire, 'listening') + (float)$calcRaporClassAvg($livewire, 'reading') + (float)$calcRaporClassAvg($livewire, 'writing') + (float)$calcRaporClassAvg($livewire, 'speaking') + (float)$calcRaporClassAvg($livewire, 'grammar');
+                                                return number_format($total / 5, 1);
+                                            }),
+                                        TextEntry::make('c_rapor_rank')->default('')->hiddenLabel(),
+                                    ])
+                            ])
                     ]),
-                    Action::make('print_scoring_sheet')
-                ->label('Print Scoring Sheet')
-                ->icon('heroicon-o-printer')
-                ->color('gray')
-                // Mengarahkan ke route print.grades dengan ID Program (Owner Record)
-                ->url(fn () => route('print.grades', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
+                    
+                Action::make('print_scoring_sheet')
+                    ->label('Print Scoring Sheet')
+                    ->icon('heroicon-o-printer')
+                    ->color('gray')
+                    ->url(fn () => route('print.grades', ['program' => $this->getOwnerRecord()->id]), shouldOpenInNewTab: true),
             ])
             ->actions([
                 EditAction::make(),
@@ -321,8 +392,6 @@ class AssessmentsRelationManager extends RelationManager
                                     ->grid(2) 
                                     ->columnSpanFull()
                             ])
-                            
-                        
                     ]),
             ])
             ->bulkActions([

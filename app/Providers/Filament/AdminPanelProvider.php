@@ -14,7 +14,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -33,6 +32,8 @@ use App\Http\Controllers\PrintReportController;
 use Illuminate\Support\Facades\Route;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\Facades\Blade;
+use App\Filament\Widgets\ActiveUsersWidget;
+use App\Http\Middleware\LogUserActivity;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -79,7 +80,7 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->routes(function () { // <-- INI BENAR (CLOSURE)
+            ->routes(function () { 
                 \Illuminate\Support\Facades\Route::get('/print/inventory', [PrintReportController::class, 'printInventory'])
                     ->name('print.inventory');
                 \Illuminate\Support\Facades\Route::get('/print/borrowings', [PrintReportController::class, 'printBorrowings'])
@@ -93,12 +94,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
                 StudentRegistrationChart::class,
                 OverdueBillsAlert::class,
                 BirthdayWidget::class,
                 BirthdayNotifierWidget::class,
-                UpcomingMeetingsWidget::class
+                UpcomingMeetingsWidget::class,
+                ActiveUsersWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -110,10 +111,10 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                LogUserActivity::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
-                
             ])
             ->globalSearch(false)
             ->viteTheme('resources/css/filament/admin/theme.css');

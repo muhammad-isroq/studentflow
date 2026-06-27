@@ -1,0 +1,13 @@
+@media print {
+    @page { 
+        margin: 0; /* Hapus tulisan size: 80mm... dst */
+    }
+    body { 
+        width: 70mm; 
+        margin: 0 auto; 
+        padding-top: 5mm; /* Sedikit jarak di atas agar tidak terlalu mepet pisau potong */
+    }
+    .no-print { 
+        display: none; 
+    }
+}

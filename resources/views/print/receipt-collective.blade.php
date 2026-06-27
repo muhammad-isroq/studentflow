@@ -5,19 +5,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @media print {
-    @page { 
-        size: 80mm auto; /* Ganti 200mm menjadi auto */
-        margin: 0; 
-    }
-    body { 
-        width: 70mm; 
-        margin: 0 auto; /* Menggunakan margin minimal agar tidak memicu space kosong */
-        padding: 2mm 0; /* Memberikan sedikit ruang di atas dan bawah konten */
-    }
-    .no-print { 
-        display: none; 
-    }
-}
+            @page { 
+                margin: 0; /* Hapus tulisan size: 80mm... dst */
+            }
+            body { 
+                width: 70mm; 
+                margin: 0 auto; 
+                padding-top: 5mm; /* Sedikit jarak di atas agar tidak terlalu mepet pisau potong */
+            }
+            .no-print { 
+                display: none; 
+            }
+        }
         body { 
             font-family: 'Courier New', Courier, monospace; 
             font-size: 12px; 

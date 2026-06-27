@@ -63,7 +63,12 @@ class TransactionForm
                 TextInput::make('description')
                     ->default(null),
                 FileUpload::make('proof_image')
-                    ->image(),
+                    ->label(fn ($get) => $get('type') === 'expense' ? 'Bukti Nota/Struk Keluar' : 'Bukti Transfer/Pembayaran')
+                    ->imagePreviewHeight('250')
+                    ->disk('public')
+                    ->directory('proofs')
+                    ->downloadable()
+                    ->openable(),
                 DatePicker::make('date')
                     ->label('Tanggal')
                     ->default(now())

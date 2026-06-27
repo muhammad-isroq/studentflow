@@ -95,7 +95,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 StudentRegistrationChart::class,
-                OverdueBillsAlert::class,
+                // OverdueBillsAlert::class,
                 BirthdayWidget::class,
                 BirthdayNotifierWidget::class,
                 UpcomingMeetingsWidget::class,

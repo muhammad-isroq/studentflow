@@ -18,31 +18,37 @@ class OverdueBillsAlert extends Widget
     // Method ini dijalankan saat widget dimuat
     public function mount(): void
     {
-        $this->overdueBills = Bill::query()
-            // PERBAIKAN 1: Ambil status 'unpaid' ATAU 'overdue'
-            ->whereIn('status', ['unpaid', 'overdue'])
-            ->where('due_date', '<', Carbon::now()) // Cari yang jatuh temponya sudah lewat
-            ->whereHas('paymentType', function ($query) {
-                $query->where('name', 'Monthly spp'); // Khusus untuk Monthly spp
-            })
-            ->with('siswa') // Ambil data siswa yang terkait
-            ->get();
+        // $this->overdueBills = Bill::query()
+
+        //     ->whereIn('status', ['unpaid', 'overdue'])
+        //     ->where('due_date', '<', Carbon::now()) 
+        //     ->whereHas('paymentType', function ($query) {
+        //         $query->where('name', 'Monthly spp'); 
+        //     })
+        //     ->with('siswa') 
+        //     ->get();
+
+        //nonaktifkan widget
+        $this->overdueBills = collect();
     }
 
-    // Method ini untuk menyembunyikan widget jika tidak ada tagihan telat
+    
     public static function canView(): bool
     {
-        if (!Auth::check() || !Auth::user()->hasAnyRole(['admin', 'staff', 'super_staff'])) {
-            return false;
-        }
+        // if (!Auth::check() || !Auth::user()->hasAnyRole(['admin', 'staff', 'super_staff'])) {
+        //     return false;
+        // }
 
-        // Hanya tampilkan widget jika ada tagihan SPP yang telat
-        return Bill::query()
-            ->whereIn('status', ['unpaid', 'overdue'])
-            ->where('due_date', '<', Carbon::now())
-            ->whereHas('paymentType', function ($query) {
-                $query->where('name', 'Monthly spp');
-            })
-            ->exists();
+        
+        // return Bill::query()
+        //     ->whereIn('status', ['unpaid', 'overdue'])
+        //     ->where('due_date', '<', Carbon::now())
+        //     ->whereHas('paymentType', function ($query) {
+        //         $query->where('name', 'Monthly spp');
+        //     })
+        //     ->exists();
+
+        //nonaktifkan widget
+        return false;
     }
 }

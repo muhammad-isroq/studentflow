@@ -4,24 +4,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @media print {
-    @page { 
-        margin: 0; /* Hapus tulisan size: 80mm... dst */
-    }
-    body { 
-        width: 70mm; 
-        margin: 0 auto; 
-        padding-top: 5mm; /* Sedikit jarak di atas agar tidak terlalu mepet pisau potong */
-    }
-    .no-print { 
-        display: none; 
-    }
-}
-        body { font-family: 'Courier New', Courier, monospace; font-size: 12px; }
+            @page { 
+                margin: 0; 
+            }
+            body { 
+                width: 70mm; 
+                margin: 0 auto; 
+                padding-top: 5mm; 
+            }
+            .no-print { 
+                display: none; 
+            }
+        }
+        
+        /* --- PERBAIKAN KETEBALAN FONT UNTUK PRINTER THERMAL --- */
+        body { 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 12px; 
+            color: #000000 !important; /* Paksa hitam pekat murni */
+            font-weight: bold !important; /* Paksa tebal */
+        }
+        
+        /* Paksa semua elemen menjadi tebal */
+        * {
+            font-weight: bold !important;
+        }
+        /* ----------------------------------------------------- */
+
         .text-center { text-align: center; }
-        .divider { border-top: 1px dashed #000; margin: 5px 0; }
+        .divider { border-top: 1.5px dashed #000; margin: 5px 0; } /* Dipertebal menjadi 1.5px */
         table { width: 100%; border-collapse: collapse; }
         td { vertical-align: top; }
-        .total { font-weight: bold; font-size: 14px; }
+        .total { font-size: 14px; }
         
         .expense-label { background-color: #000; color: #fff; display: inline-block; padding: 2px 5px; font-weight: bold; }
         .signature-table td { border: none !important; padding: 0; }
@@ -58,7 +72,6 @@
                 @if($siswa)
                     <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
                 @endif
-                <!-- Baris Periode Bulan DIHAPUS dari sini -->
             @endif
         </table>
         

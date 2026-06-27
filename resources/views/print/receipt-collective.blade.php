@@ -6,27 +6,37 @@
     <style>
         @media print {
             @page { 
-                margin: 0; /* Hapus tulisan size: 80mm... dst */
+                margin: 0; 
             }
             body { 
                 width: 70mm; 
                 margin: 0 auto; 
-                padding-top: 5mm; /* Sedikit jarak di atas agar tidak terlalu mepet pisau potong */
+                padding-top: 5mm; 
             }
             .no-print { 
                 display: none; 
             }
         }
+        
+        /* --- PERBAIKAN KETEBALAN FONT UNTUK PRINTER THERMAL --- */
         body { 
             font-family: 'Courier New', Courier, monospace; 
             font-size: 12px; 
-            color: #000;
+            color: #000000 !important; /* Paksa hitam pekat murni */
+            font-weight: bold !important; /* Paksa tebal */
         }
+        
+        /* Paksa semua elemen (tabel, span, div) menjadi tebal */
+        * {
+            font-weight: bold !important;
+        }
+        /* ----------------------------------------------------- */
+
         .text-center { text-align: center; }
-        .divider { border-top: 1px dashed #000; margin: 5px 0; }
+        .divider { border-top: 1.5px dashed #000; margin: 5px 0; } /* Dipertebal sedikit dari 1px menjadi 1.5px */
         table { width: 100%; border-collapse: collapse; }
         td { vertical-align: top; }
-        .total { font-weight: bold; font-size: 14px; }
+        .total { font-size: 14px; }
         .item-row td { padding: 2px 0; }
         
         /* Styling khusus untuk area tanda tangan */

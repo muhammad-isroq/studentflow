@@ -57,6 +57,7 @@ class ProgramsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('nama_program', 'asc')
             ->filters([
                 //
             ])

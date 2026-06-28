@@ -20,6 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('bills:generate-monthly')->everyMinute();
+        // $schedule->command('bills:generate-monthly')->everyMinute();
     })
     ->create();

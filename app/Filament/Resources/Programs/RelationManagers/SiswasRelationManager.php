@@ -29,6 +29,7 @@ class SiswasRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('nama')
+            ->defaultSort('nama', 'asc')
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_urut')
                     ->label('No.')

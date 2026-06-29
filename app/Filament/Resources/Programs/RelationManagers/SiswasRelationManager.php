@@ -44,6 +44,26 @@ class SiswasRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('kelas_disekolah')->label('grade'),
             ])
             ->headerActions([
+                Action::make('printAbsensi')
+                ->label('Print Absensi')
+                ->icon('heroicon-o-printer')
+                ->color('success')
+                ->form([
+                    \Filament\Forms\Components\DatePicker::make('tanggal_cetak')
+                        ->label('Tanggal Pengambilan Rapor')
+                        ->default(now())
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    $program = $this->getOwnerRecord();
+                    
+                    $url = route('programs.print-absensi', [
+                        'program' => $program->id,
+                        'tanggal' => $data['tanggal_cetak'],
+                    ]);
+                    
+                    return redirect()->away($url);
+                }),
                 Action::make('addSiswa')
                     ->label('Add Student')
                     ->icon('heroicon-o-plus')

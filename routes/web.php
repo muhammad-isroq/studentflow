@@ -34,6 +34,17 @@ use App\Http\Controllers\PrintArsipController;
 use App\Http\Controllers\PrintAttendanceController;
 use App\Http\Controllers\ReceiptController;
 
+
+Route::get('/programs/{program}/print-absensi', function (Program $program, \Illuminate\Http\Request $request) {
+    $program->load('guru'); 
+    
+    $siswas = $program->siswas()->orderBy('nama', 'asc')->get();
+    $tanggal = $request->query('tanggal');
+    
+    $guru = $program->guru ? $program->guru->nama_guru : 'Nama Guru Tidak Ditemukan';
+    
+    return view('pdf.absensi-rapor', compact('program', 'siswas', 'tanggal', 'guru'));
+})->name('programs.print-absensi');
 Route::get('/print-absensi/{program_id}/{semester_name}', [PrintAttendanceController::class, 'index'])->name('print.absensi');
 Route::get('/print-arsip/{program_id}/{semester_name}', [PrintArsipController::class, 'index'])->name('print.arsip');
 Route::post('/api/save-multiple-receipt-proof', function (Illuminate\Http\Request $request) {

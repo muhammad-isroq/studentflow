@@ -29,76 +29,64 @@ class PayMultipleBills extends Component
     }
 
     public function processPayment()
-    {
-        $siswa = Siswa::find($this->siswaId);
-        $sppPaymentType = PaymentType::where('name', 'like', '%SPP%')->first();
-        
-        $paidBillIds = [];
+{
+    $siswa = Siswa::find($this->siswaId);
+    $sppPaymentType = PaymentType::where('name', 'like', '%SPP%')->first();
+    $waktuLunas = now();
+    
+    // Titik awal pencarian: Juli 2026
+    $startDate = \Carbon\Carbon::create(2026, 7, 1);
+    $paidBillIds = [];
 
-        for ($i = 0; $i < $this->monthCount; $i++) {
-            // 1. Cari tagihan SPP tertua yang sudah ada tapi belum lunas
-            $bill = $siswa->bills()
-                ->where('payment_type_id', $sppPaymentType->id)
-                ->where('status', '!=', 'paid') 
-                ->orderBy('due_date', 'asc')
-                ->first();
+    // Cari tagihan terakhir yang sudah ada di database (setelah Juli 2026)
+    // untuk menentukan di mana kita harus melanjutkan pembayaran
+    $lastBill = $siswa->bills()
+        ->where('payment_type_id', $sppPaymentType->id)
+        ->where('due_date', '>=', $startDate)
+        ->orderBy('due_date', 'desc')
+        ->first();
 
-            if ($bill) {
-                $bill->update([
-                    'status' => 'paid', 
-                    'paid_at' => now(), 
-                    'notes' => 'Bayar Kolektif'
-                ]);
-                $paidBillIds[] = $bill->id;
-            } else {
-                // 2. LOGIKA BARU: Jika tidak ada tunggakan, cari bulan kosong pertama di tahun ini
-                $currentYear = now()->year;
-                
-                // Ambil semua bulan yang sudah punya tagihan di tahun ini
-                $existingMonths = $siswa->bills()
-                    ->where('payment_type_id', $sppPaymentType->id)
-                    ->whereYear('due_date', $currentYear)
-                    ->pluck('due_date')
-                    ->map(fn($date) => (int)$date->format('m'))
-                    ->toArray();
+    // Jika sudah ada tagihan, mulai dari bulan setelah tagihan terakhir
+    // Jika belum ada tagihan, mulai dari Juli 2026
+    $currentDate = $lastBill ? $lastBill->due_date->copy()->addMonth() : $startDate->copy();
 
-                // Cari bulan pertama (1-12) yang belum ada di database
-                $targetMonth = 1; 
-                for ($m = 1; $m <= 12; $m++) {
-                    if (!in_array($m, $existingMonths)) {
-                        $targetMonth = $m;
-                        break;
-                    }
-                }
+    for ($i = 0; $i < $this->monthCount; $i++) {
+        // Cari apakah tagihan untuk bulan ini sudah ada
+        $bill = $siswa->bills()
+            ->where('payment_type_id', $sppPaymentType->id)
+            ->whereMonth('due_date', $currentDate->month)
+            ->whereYear('due_date', $currentDate->year)
+            ->first();
 
-                // Jika tahun ini sudah penuh semua (Jan-Des), baru pindah ke tahun depan
-                if (count($existingMonths) >= 12) {
-                    $lastBillGlobal = $siswa->bills()
-                        ->where('payment_type_id', $sppPaymentType->id)
-                        ->orderBy('due_date', 'desc')
-                        ->first();
-                    $nextDate = $lastBillGlobal->due_date->copy()->addMonth();
-                } else {
-                    $nextDate = \Carbon\Carbon::create($currentYear, $targetMonth, 1);
-                }
-
-                $newBill = $siswa->bills()->create([
-                    'payment_type_id' => $sppPaymentType->id,
-                    'amount' => $siswa->spp_amount ?? 500000,
-                    'due_date' => $nextDate->setDay($siswa->billing_day ?? 10),
-                    'status' => 'paid',
-                    'paid_at' => now(),
-                    'notes' => 'Bayar di Muka',
-                ]);
-                $paidBillIds[] = $newBill->id;
-            }
+        if ($bill) {
+            $bill->update([
+                'status' => 'paid',
+                'paid_at' => $waktuLunas,
+                'notes' => 'Bayar Kolektif',
+            ]);
+            $paidBillIds[] = $bill->id;
+        } else {
+            $newBill = $siswa->bills()->create([
+                'payment_type_id' => $sppPaymentType->id,
+                'amount' => $siswa->spp_amount ?? 500000,
+                'due_date' => $currentDate->copy()->setDay($siswa->billing_day ?? 10),
+                'status' => 'paid',
+                'paid_at' => $waktuLunas,
+                'notes' => 'Bayar Kolektif',
+            ]);
+            $paidBillIds[] = $newBill->id;
         }
-
-        Notification::make()->title("Berhasil memproses $this->monthCount bulan")->success()->send();
-        $this->dispatch('print-collective-receipt', billIds: $paidBillIds);
-        $this->dispatch('bill-updated');
-        $this->closeModal();
+        
+        // Geser ke bulan berikutnya untuk iterasi selanjutnya
+        $currentDate->addMonth();
     }
+
+    Notification::make()->title("Berhasil memproses $this->monthCount bulan")->success()->send();
+    
+    $this->dispatch('print-collective-receipt', billIds: $paidBillIds);
+    $this->dispatch('bill-updated');
+    $this->closeModal();
+}
 
     public function render()
     {

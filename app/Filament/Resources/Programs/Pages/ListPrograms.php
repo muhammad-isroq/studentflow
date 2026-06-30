@@ -14,6 +14,7 @@ use App\Models\Grade;
 use App\Models\SemesterReport;
 use Filament\Actions\ActionGroup;
 use App\Models\AttendanceRecap;
+use App\Models\ClassSession;
 
 class ListPrograms extends ListRecords
 {
@@ -24,6 +25,40 @@ class ListPrograms extends ListRecords
         $isDeadlineEnabled = cache()->get('global_deadline_status', true);
 
         return [
+            Action::make('delete_meeting_by_date')
+    ->label('Hapus Sesi (Tanggal Merah)')
+    ->icon('heroicon-o-trash')
+    ->color('danger')
+    ->form([
+        \Filament\Forms\Components\DatePicker::make('target_date')
+            ->label('Pilih Tanggal Sesi yang Ingin Dihapus')
+            ->required(),
+    ])
+    ->modalHeading('Hapus Seluruh Sesi pada Tanggal Ini?')
+    ->modalDescription('Tindakan ini akan menghapus semua sesi dan data absensi terkait pada tanggal yang dipilih.')
+    ->requiresConfirmation()
+    ->action(function (array $data) {
+        $targetDate = $data['target_date'];
+
+        // 1. Ambil semua sesi yang sesuai tanggal
+        $sessions = \App\Models\ClassSession::whereDate('session_date', $targetDate)->get();
+
+        $deletedCount = 0;
+        foreach ($sessions as $session) {
+            // 2. Hapus data kehadiran yang berelasi dengan sesi tersebut terlebih dahulu
+            $session->attendances()->delete(); 
+            
+            // 3. Hapus sesi itu sendiri
+            $session->delete();
+            $deletedCount++;
+        }
+
+        \Filament\Notifications\Notification::make()
+            ->title('Penghapusan Sesi Berhasil')
+            ->body("Sebanyak {$deletedCount} sesi beserta data absensi terkait telah dihapus.")
+            ->success()
+            ->send();
+    }),
             Action::make('toggleGlobalDeadline')
                 ->label($isDeadlineEnabled ? 'Deadline: ACTIVE' : 'Deadline: DISABLED')
                 ->icon($isDeadlineEnabled ? 'heroicon-m-clock' : 'heroicon-m-no-symbol')

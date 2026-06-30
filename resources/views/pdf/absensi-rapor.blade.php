@@ -5,7 +5,15 @@
     <style>
         body { font-family: sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        /* padding atas-bawah 15px, kiri-kanan 8px. text-align: center membuat isi jadi di tengah */
+        th, td { 
+            border: 1px solid black; 
+            padding: 15px 8px; 
+            text-align: center; 
+        }
+        /* Khusus untuk kolom Nama Siswa jika ingin tetap rata kiri */
+        td:nth-child(2) { text-align: left; }
+        
         .header { text-align: center; }
     </style>
 </head>
@@ -32,7 +40,7 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $siswa->nama }}</td>
-                <td></td> <!-- Kosong untuk diisi manual -->
+                <td></td> 
                 <td></td>
                 <td></td>
                 <td></td>
@@ -40,11 +48,12 @@
             @endforeach
         </tbody>
     </table>
+    
     <div style="margin-top: 30px; float: right; width: 200px; text-align: center;">
-    <p>{{ \Carbon\Carbon::parse($tanggal)->format('l, F j, Y') }}</p>
-    <p>Teacher</p>
-    <br><br><br>
-    <p><strong>{{ $guru }}</strong></p>
-</div>
+        <p>{{ \Carbon\Carbon::parse($tanggal)->format('l, F j, Y') }}</p>
+        <p>Teacher</p>
+        <br><br><br>
+        <p><strong>{{ $guru }}</strong></p>
+    </div>
 </body>
 </html>

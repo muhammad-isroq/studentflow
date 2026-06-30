@@ -21,7 +21,7 @@
     <div class="header">
         <h3>THE MASTER OF DUMAI</h3>
         <h4>DAFTAR HADIR PENGAMBILAN RAPOR - {{ $program->nama_program }}</h4>
-        <h4>PERIODE JULY - DECEMBER 2026</h4>
+        <h4>PERIODE JANUARY - JUNE 2026</h4>
     </div>
 
     <table>

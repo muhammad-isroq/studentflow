@@ -9,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Textarea; // Tambahkan ini jika perlu
 use Filament\Forms\Get;
+
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,11 +63,20 @@ class TransactionForm
                     ->required(),
                 TextInput::make('description')
                     ->default(null),
-                FileUpload::make('proof_image')
-                    ->label(fn ($get) => $get('type') === 'expense' ? 'Bukti Nota/Struk Keluar' : 'Bukti Transfer/Pembayaran')
+                FileUpload::make('proof_of_payment')
+                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Bukti Nota/Struk Keluar' : 'Bukti Transfer/Pembayaran')
                     ->imagePreviewHeight('250')
                     ->disk('public')
-                    ->directory('proofs')
+                    ->downloadable()
+                    ->openable(),
+
+                FileUpload::make('transfer_proof')
+                    ->label('Bukti Transfer Bank (Internal Staff)')
+                    ->helperText('Diunggah oleh staf untuk verifikasi pembayaran via transfer bank.')
+                    ->disk('public')
+                    // ->directory('transfer-proofs')
+                    ->image()
+                    ->maxSize(5120) // Maksimal 5MB
                     ->downloadable()
                     ->openable(),
                 DatePicker::make('date')

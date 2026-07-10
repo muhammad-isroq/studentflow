@@ -72,6 +72,15 @@ class EditSiswaBill extends Page implements HasForms
                     ->imagePreviewHeight('250')
                     ->downloadable()
                     ->openable(),
+                    FileUpload::make('transfer_proof')
+                    ->label('Bukti Transfer Bank (Internal Staff)')
+                    ->helperText('Diunggah oleh staf untuk verifikasi pembayaran via transfer bank.')
+                    ->disk('public')
+                    ->directory('transfer-proofs')
+                    ->image()
+                    ->maxSize(5120) // Maksimal 5MB
+                    ->downloadable()
+                    ->openable(),
                 DatePicker::make('due_date')
                     ->label('Due Date')
                     ->required(),

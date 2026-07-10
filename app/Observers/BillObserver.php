@@ -10,7 +10,6 @@ class BillObserver
 {
     /**
      * Handle the Bill "saved" event.
-     * Fungsi 'saved' dipanggil otomatis baik saat Create maupun Update.
      */
     public function saved(Bill $bill): void
     {
@@ -32,21 +31,25 @@ class BillObserver
                 $kategoriSlug = 'lainnya';
             }
 
+            // --- MODIFIKASI DISINI: Mengatasi error Property [nama] on collection ---
+            // Mengambil semua nama siswa dan menggabungkannya menjadi string
+            $namaSiswa = $bill->siswa->isNotEmpty() 
+                ? $bill->siswa->pluck('nama')->implode(', ') 
+                : '-';
+
             // Menentukan subjek pihak transaksi (Siswa / Pihak Luar)
-            $pihak = $bill->paid_by ?: ($bill->siswa ? $bill->siswa->nama : '-');
+            $pihak = $bill->paid_by ?: $namaSiswa;
             
             // Menambahkan notes jika diisi
             $catatan = $bill->notes ? " | Catatan: {$bill->notes}" : '';
 
-            // Merakit kalimat deskripsi cerdas berdasarkan Arus Kas
+            // Merakit kalimat deskripsi cerdas
             if ($bill->transaction_type === 'expense') {
                 $deskripsi = "Pengeluaran ({$namaKategori}) Kpd: {$pihak}{$catatan}";
             } else {
                 $deskripsi = "Pemasukan ({$namaKategori}) Dari: {$pihak}{$catatan}";
             }
 
-            // Gunakan updateOrCreate agar tidak terjadi duplikasi data 
-            // jika admin menyimpan ulang tagihan yang sudah lunas
             Transaction::updateOrCreate(
                 [
                     'reference_type' => Bill::class,

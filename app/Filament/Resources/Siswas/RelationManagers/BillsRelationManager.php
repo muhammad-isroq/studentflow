@@ -183,37 +183,35 @@ public function newPaymentAction(): \Filament\Actions\Action
                     ->addActionLabel('+ Tambah Kategori Pembayaran (Buku, dll)'),
             ])
             ->action(function (array $data) {
-                $siswa = $this->getOwnerRecord();
-                $createdBillIds = [];
+    $siswaIds = $data['siswa_ids']; // Array ID siswa
+    $months = (int)($data['months_count'] ?? 1);
+    $paymentTypeId = $data['payment_type_id'];
+    $amountPerMonth = $data['amount'] / $months; // Mengembalikan nilai per bulan
+    
+    foreach ($siswaIds as $siswaId) {
+        $siswa = \App\Models\Siswa::find($siswaId);
+        
+        for ($i = 0; $i < $months; $i++) {
+            // Tentukan tanggal jatuh tempo bulan ke-i
+            $dueDate = \Carbon\Carbon::parse($data['due_date'])->addMonths($i);
+            
+            $bill = \App\Models\Bill::create([
+                'payment_type_id'  => $paymentTypeId,
+                'amount'           => $amountPerMonth,
+                'due_date'         => $dueDate,
+                'status'           => $data['status'],
+                'paid_at'          => $data['paid_at'] ?? now(),
+                'notes'            => ($data['notes'] ?? '') . " (Bulan ke-" . ($i + 1) . ")",
+                'transaction_type' => $data['transaction_type'],
+            ]);
+            
+            $bill->siswa()->attach($siswaId);
+        }
+    }
 
-                // Looping data repeater dan simpan ke database sebagai baris-baris terpisah
-                foreach ($data['payments'] as $payment) {
-                    $bill = $siswa->bills()->create([
-                        'payment_type_id' => $payment['payment_type_id'],
-                        'amount' => $payment['amount'],
-                        'due_date' => $payment['due_date'],
-                        'status' => 'paid', // Langsung dianggap lunas karena ini form "Input Pembayaran"
-                        'paid_at' => now(),
-                        'notes' => $payment['notes'] ?? 'Cash', // Jika kosong, set ke 'Cash'
-                        'transaction_type' => 'income', // Pastikan tercatat sebagai income
-                    ]);
-                    
-                    $createdBillIds[] = $bill->id;
-                }
-
-                \Filament\Notifications\Notification::make()
-                    ->title('Pembayaran berhasil dicatat!')
-                    ->success()
-                    ->send();
-                    
-                $this->dispatch('bill-updated');
-
-                // Opsional: Redirect ke halaman cetak Struk Kolektif jika tagihan lebih dari 1
-                if (count($createdBillIds) > 1) {
-                    // Anda perlu membuat rute baru atau menyesuaikan rute kolektif yang ada 
-                    // agar bisa menerima array ID. Untuk saat ini, kita biarkan saja.
-                }
-            });
+    \Filament\Notifications\Notification::make()->title('Tagihan berhasil dibuat untuk ' . $months . ' bulan')->success()->send();
+    $this->dispatch('bill-updated');
+});
     }
 
 protected function getActions(): array
@@ -284,47 +282,47 @@ private function processMultiplePayments($count)
         return $bills;
     }
 
-    // Method khusus untuk mendapatkan SPP bulanan
     public function getMonthlySppBills()
-    {
-        $sppPaymentType = $this->getOwnerRecord()->bills()
-            ->whereHas('paymentType', function ($query) {
-                $query->where('name', 'like', '%spp%')
-                      ->orWhere('name', 'like', '%SPP%')
-                      ->orWhere('name', 'like', '%Monthly%');
-            })
-            ->with('paymentType')
-            ->get();
+{
+    $owner = $this->getOwnerRecord();
+    
+    $sppBills = $owner->bills()
+        ->whereHas('paymentType', function ($query) {
+            $query->where('name', 'like', '%spp%')
+                  ->orWhere('name', 'like', '%SPP%')
+                  ->orWhere('name', 'like', '%Monthly%');
+        })
+        ->with('paymentType')
+        ->get();
 
-        // Generate 12 bulan untuk tahun ini
-        $months = [];
-        $currentYear = $this->selectedYear;
+    $months = [];
+    $currentYear = $this->selectedYear;
+    
+    for ($i = 1; $i <= 12; $i++) {
+        $monthName = date('F', mktime(0, 0, 0, $i, 1));
+        $monthDate = $currentYear . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
         
-        for ($i = 1; $i <= 12; $i++) {
-            $monthName = date('F', mktime(0, 0, 0, $i, 1));
-            $monthDate = $currentYear . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
-            
-            // Cari bill untuk bulan ini
-            $monthBill = $sppPaymentType->first(function ($bill) use ($monthDate) {
-                return $bill->due_date && $bill->due_date->format('Y-m') === $monthDate;
-            });
-            
-            $months[] = [
-                'month' => $monthName,
-                'month_number' => $i,
-                'year' => $currentYear,
-                'bill' => $monthBill,
-                'status' => $monthBill ? $monthBill->status : 'not_generated',
-                'amount' => $monthBill ? $monthBill->amount : ($this->getOwnerRecord()->spp_amount ?? 0),
-                'due_date' => $monthBill ? $monthBill->due_date : null,
-                'paid_at' => $monthBill ? $monthBill->paid_at : null,
-            ];
-        }
+        $monthBill = $sppBills->first(function ($bill) use ($monthDate) {
+            return $bill->due_date && $bill->due_date->format('Y-m') === $monthDate;
+        });
         
-        return collect($months);
+        $months[] = [
+            'month' => $monthName,
+            'month_number' => $i,
+            'year' => $currentYear,
+            'bill' => $monthBill,
+            'status' => $monthBill ? $monthBill->status : 'not_generated',
+            // Nominal di sini sekarang akan selalu Rp 500.000 (per bulan)
+            'amount' => $monthBill ? $monthBill->amount : ($owner->spp_amount ?? 0),
+            'due_date' => $monthBill ? $monthBill->due_date : null,
+            'paid_at' => $monthBill ? $monthBill->paid_at : null,
+        ];
     }
+    
+    return collect($months);
+}
 
-    // Method untuk mendapatkan payment types lainnya
+    // Method untuk mendapatkan payment types lainnya   
     public function getNonSppBills()
     {
         return $this->getOwnerRecord()->bills()
@@ -360,23 +358,20 @@ private function processMultiplePayments($count)
     public function generateSppBill($month, $year)
     {
         $siswa = $this->getOwnerRecord();
-        
-        // Cari atau buat payment type untuk SPP
-        $sppPaymentType = \App\Models\PaymentType::firstOrCreate([
-            'name' => 'Monthly SPP'
-        ]);
-
-        // Hitung tanggal jatuh tempo (misalnya tanggal billing_day setiap bulan)
+        $sppPaymentType = \App\Models\PaymentType::firstOrCreate(['name' => 'Monthly SPP']);
         $billingDay = $siswa->billing_day ?? 10;
         $dueDate = \Carbon\Carbon::create($year, $month, $billingDay);
 
-        // Buat tagihan baru
-        $siswa->bills()->create([
+        // Buat bill
+        $bill = \App\Models\Bill::create([
             'payment_type_id' => $sppPaymentType->id,
             'amount' => $siswa->spp_amount ?? 500000,
             'due_date' => $dueDate,
             'status' => 'unpaid',
         ]);
+
+        // Hubungkan ke siswa
+        $bill->siswas()->attach($siswa->id);
         
         \Filament\Notifications\Notification::make()
             ->title('Tagihan SPP berhasil dibuat')

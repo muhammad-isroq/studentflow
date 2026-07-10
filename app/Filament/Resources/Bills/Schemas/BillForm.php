@@ -12,155 +12,139 @@ use Filament\Schemas\Schema;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Textarea;
+use App\Models\Siswa;
+use App\Models\PaymentType;
 
 class BillForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $hitungTotal = function ($get, $set) {
+            $siswaIds = $get('siswa_ids') ?? [];
+            $totalSppPerSiswa = \App\Models\Siswa::whereIn('id', $siswaIds)->sum('spp_amount');
+            
+            // Set amount = SPP per bulan (tidak dikalikan bulan)
+            $set('amount', $totalSppPerSiswa); 
+        };
+
         return $schema
             ->components([
-                // 1. KONTROL UTAMA: JENIS TRANSAKSI
                 Radio::make('transaction_type')
-                    ->label('Arus Kas (Cash Flow)')
-                    ->options([
-                        'income' => '🟢 Pemasukan (Income)',
-                        'expense' => '🔴 Pengeluaran (Expense)',
-                    ])
-                    ->default('income')
-                    ->inline()
-                    ->live()
-                    ->afterStateUpdated(function ($set, $state) {
-                        // 1. Reset field lain agar bersih
-                        $set('siswa_id', null);
-                        $set('paid_by', null);
-
-                        // 2. Logika Auto-Select Default Kategori
-                        if ($state === 'expense') {
-                            // Cari kategori 'Lain-lain' di database
-                            $kategoriLain = \App\Models\PaymentType::where('name', 'like', '%Lain-lain%')->first();
-
-                            // Jika ketemu, set sebagai default
-                            if ($kategoriLain) {
-                                $set('payment_type_id', $kategoriLain->id);
-                            }
-                        } else {
-                            // Jika user klik Pemasukan lagi, kosongkan field-nya
-                            $set('payment_type_id', null);
+                ->label('Arus Kas (Cash Flow)')
+                ->options([
+                    'income' => '🟢 Pemasukan (Income)',
+                    'expense' => '🔴 Pengeluaran (Expense)',
+                ])
+                ->default('income')
+                ->inline()
+                ->live()
+                ->afterStateUpdated(function ($set, $state) {
+                    $set('siswa_ids', null);
+                    $set('paid_by', null);
+                    
+                    // LOGIKA OTOMATIS KATEGORI
+                    if ($state === 'expense') {
+                        $kategoriLain = PaymentType::where('name', 'like', '%Lain-lain%')->first();
+                        if ($kategoriLain) {
+                            $set('payment_type_id', $kategoriLain->id);
                         }
-                    })
-                    ->required()
-                    ->columnSpanFull(),
+                    } else {
+                        $set('payment_type_id', null);
+                    }
+                })
+                ->required()
+                ->columnSpanFull(),
 
-                // 2. KATEGORI PEMBAYARAN
-                Select::make('payment_type_id')
-                    ->relationship(
-                        name: 'paymentType',
-                        titleAttribute: 'name',
-                        modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query, $livewire, $get) {
-                            if ($get('transaction_type') === 'expense') {
-                                // Saat expense, hanya tampilkan & kunci ke 'Lain-lain'
-                                $query->where('name', 'like', '%Lain-lain%');
-                            } else {
-                                // Saat income, jalankan logika lama
-                                $isRelationManager = str_contains(class_basename($livewire), 'RelationManager');
+            // 2. KATEGORI PEMBAYARAN
+            Select::make('payment_type_id')
+                ->relationship('paymentType', 'name', function ($query, $get) {
+                    if ($get('transaction_type') === 'expense') {
+                        $query->where('name', 'like', '%Lain-lain%');
+                    }
+                })
+                ->label('Kategori Transaksi')
+                ->live()
+                // TAMBAHKAN dehydrated(true) agar data tetap terkirim ke DB meski disabled
+                ->dehydrated(true) 
+                // ->disabled(fn ($get) => $get('transaction_type') === 'expense')
+                ->afterStateUpdated(function ($set) {
+                    $set('siswa_ids', null);
+                    $set('months_count', 1);
+                })
+                ->required(),
 
-                                if (!$isRelationManager) {
-                                    $query->where('name', 'not like', '%spp%');
-                                }
-                            }
-                        }
-                    )
-                    ->label('Kategori Transaksi')
-                    ->live()
-                    ->disabled(fn ($get) => $get('transaction_type') === 'expense') // Field terkunci saat expense
-                    ->dehydrated(true) // Nilai tetap dikirim ke server walau field disabled
-                    ->afterStateUpdated(fn (callable $set) => $set('siswa_id', null))
-                    ->required(),
-
-                Textarea::make('notes')
-                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Rincian Keterangan Pengeluaran' : 'Catatan / Keterangan Tambahan')
-                    ->placeholder(fn ($get) => $get('transaction_type') === 'expense' ? 'Contoh: Pembelian 2 buah lampu LED untuk ruang kelas.' : 'Tambahkan catatan jika diperlukan (Opsional).')
-                    ->rows(3)
-                    ->columnSpanFull(),
-
-                // 3. LOGIKA DINAMIS KOLOM SISWA
-                Select::make('siswa_id')
+                // 4. NAMA SISWA (Multiple)
+                Select::make('siswa_ids')
                     ->relationship('siswa', 'nama')
                     ->label('Nama Siswa')
+                    ->multiple()
                     ->searchable()
                     ->preload()
                     ->required()
-                    ->visible(function ($get) {
-                        if ($get('transaction_type') === 'expense') {
-                            return false;
-                        }
+                    ->live()
+                    ->saveRelationshipsUsing(fn ($record, $state) => $record?->siswa()->sync($state ?? []))
+                    ->afterStateHydrated(fn ($component, $record) => $component->state($record?->siswa->pluck('id')->toArray() ?? []))
+                    ->afterStateUpdated($hitungTotal)
+                    ->visible(fn ($get) => str_contains(strtolower(PaymentType::find($get('payment_type_id'))?->name ?? ''), 'spp')),
 
-                        $paymentTypeId = $get('payment_type_id');
-                        if (!$paymentTypeId) {
-                            return false;
-                        }
+                TextInput::make('months_count')
+                    ->label('Jumlah Bulan yang Dibayar')
+                    ->numeric()
+                    ->default(1)
+                    ->minValue(1)
+                    ->live()
+                    ->dehydrated(false) // Data ini hanya untuk logika, tidak disimpan ke kolom tabel bills
+                    ->afterStateUpdated(function ($state, $get, $set) {
+                        $siswaIds = $get('siswa_ids') ?? [];
+                        // Hitung total: (Jumlah Siswa * SPP Per Siswa) * Bulan
+                        $sppPerBulanPerSiswa = \App\Models\Siswa::whereIn('id', $siswaIds)->sum('spp_amount');
+                        $set('amount', $sppPerBulanPerSiswa * (int)$state);
+                    })
+                    ->visible(fn ($get) => str_contains(strtolower(PaymentType::find($get('payment_type_id'))?->name ?? ''), 'spp')),
 
-                        $paymentType = \App\Models\PaymentType::find($paymentTypeId);
-                        if (!$paymentType) {
-                            return false;
-                        }
+                // 5. DATA LAINNYA
+                Textarea::make('notes')
+                    ->label('Catatan / Keterangan')
+                    ->rows(3)
+                    ->columnSpanFull(),
 
-                        $name = strtolower($paymentType->name);
-                        $keywords = ['spp', 'buku', 'registration', 'certificate'];
+                
 
-                        foreach ($keywords as $keyword) {
-                            if (str_contains($name, $keyword)) {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    }),
-
-                // 4. LABEL DINAMIS: DIBAYAR OLEH / DIBAYARKAN KEPADA
                 TextInput::make('paid_by')
-                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Dibayarkan Kepada (Penerima)' : 'Diterima Dari (Penyetor)')
-                    ->placeholder(fn ($get) => $get('transaction_type') === 'expense' ? 'Contoh: PLN / Toko ATK' : 'Contoh: Ayah Budi / PT Sponsor')
-                    ->helperText(fn ($get) => $get('transaction_type') === 'expense' ? 'Tuliskan nama pihak yang menerima uang pengeluaran ini.' : 'Kosongkan jika dibayar langsung oleh siswa terkait.')
-                    ->maxLength(255),
+                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Dibayarkan Kepada' : 'Diterima Dari'),
 
-                // 5. DATA NOMINAL & BUKTI
                 TextInput::make('amount')
                     ->label('Nominal (Rp)')
                     ->prefix('Rp')
                     ->required()
-                    ->afterStateUpdated(fn ($state, callable $set) =>
-                        $set('registration_fee', $state ? number_format((int) str_replace('.', '', $state), 0, ',', '.') : null)
-                    )
-                    ->dehydrateStateUsing(fn ($state) =>
-                        $state ? (int) str_replace('.', '', $state) : null
-                    )
-                    ->formatStateUsing(fn ($state) =>
-                        $state ? number_format($state, 0, ',', '.') : null
-                    ),
+                    
+                    ->dehydrateStateUsing(fn ($state) => (int) str_replace(['Rp', '.', ','], '', $state))
+                    ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.')),
 
                 FileUpload::make('proof_of_payment')
-                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Bukti Nota/Struk Keluar' : 'Bukti Transfer/Pembayaran')
-                    ->imagePreviewHeight('250')
+                ->label('Proof of payment')
+                ->disk('public'),
+
+                FileUpload::make('transfer_proof')
+                    ->label('Bukti Transfer Bank (Internal Staff)')
+                    ->helperText('Diunggah oleh staf untuk verifikasi pembayaran via transfer bank.')
                     ->disk('public')
-                    ->directory('proofs')
+                    ->directory('transfer-proofs')
+                    ->image()
+                    ->maxSize(5120) // Maksimal 5MB
                     ->downloadable()
                     ->openable(),
 
                 DatePicker::make('due_date')
-                    ->label(fn ($get) => $get('transaction_type') === 'expense' ? 'Tanggal Pengeluaran' : 'Due Date (Jatuh Tempo)')
-                    ->required(),
+                    ->label('Tanggal Awal Pembayaran')
+                    ->disabled(fn ($get) => (int)$get('months_count') > 1),
 
                 Select::make('status')
-                    ->options([
-                        'unpaid' => 'Belum Lunas / Pending',
-                        'paid' => 'Selesai / Lunas',
-                    ])
-                    ->required()
-                    ->default('unpaid'),
+                    ->options(['unpaid' => 'Belum Lunas', 'paid' => 'Lunas'])
+                    ->default('unpaid')
+                    ->required(),
 
-                DateTimePicker::make('paid_at')
-                    ->label('Waktu Transaksi Selesai'),
+                DateTimePicker::make('paid_at')->label('Waktu Transaksi'),
             ]);
     }
 
@@ -171,9 +155,9 @@ class BillForm
                 ->label('Print Struk')
                 ->icon('heroicon-o-printer')
                 ->color('info')
-                ->url(fn () => route('print.receipt', ['bill' => $this->record->id]))
+                ->url(fn ($livewire) => route('print.receipt', ['bill' => $livewire->record->id]))
                 ->openUrlInNewTab()
-                ->visible(fn () => $this->record->status === 'paid' && $this->record->transaction_type === 'income'),
+                ->visible(fn ($livewire) => $livewire->record->status === 'paid'),
             DeleteAction::make(),
         ];
     }

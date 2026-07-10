@@ -44,9 +44,8 @@ class Siswa extends Model
         return $this->belongsTo(Program::class);
     }
 
-    public function bills(): HasMany
-    {
-        return $this->hasMany(Bill::class);
+    public function bills() {
+        return $this->belongsToMany(Bill::class, 'bill_siswa');
     }
 
     public function getActivitylogOptions(): LogOptions

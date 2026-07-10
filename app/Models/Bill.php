@@ -10,6 +10,7 @@ use Spatie\Activitylog\LogOptions;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\BillObserver;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[ObservedBy([BillObserver::class])]
 class Bill extends Model
@@ -25,9 +26,9 @@ class Bill extends Model
         'paid_at' => 'datetime',
     ];
 
-    public function siswa(): BelongsTo
+    public function siswa(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsToMany(Siswa::class, 'bill_siswa', 'bill_id', 'siswa_id');
     }
 
     public function paymentType(): BelongsTo
@@ -39,7 +40,7 @@ class Bill extends Model
     {
         return LogOptions::defaults()
             ->useLogName('bill') 
-            ->logOnly(['siswa_id', 'payment_type_id', 'amount', 'due_date', 'status', 'paid_at', 'proof_of_payment']) 
+            ->logOnly(['siswa_id', 'payment_type_id', 'amount', 'due_date', 'status', 'paid_at', 'proof_of_payment', 'transfer_proof']) 
             ->logOnlyDirty() 
             ->dontSubmitEmptyLogs(); 
     }
@@ -234,5 +235,9 @@ class Bill extends Model
                 $bill->status = 'overdue';
             }
         });
+    }
+    public function getHasTransferProofAttribute(): bool
+    {
+        return !empty($this->transfer_proof);
     }
 }

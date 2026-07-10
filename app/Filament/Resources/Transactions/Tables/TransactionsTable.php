@@ -57,8 +57,7 @@ class TransactionsTable
                     ->sortable()
                     ->toggleable(),
 
-                // USER FRIENDLY: Sumber Transaksi (Smart Badge)
-                TextColumn::make('reference_type')
+                    TextColumn::make('reference_type')
                     ->label('Sumber')
                     ->badge()
                     ->formatStateUsing(function ($state, $record) {
@@ -67,17 +66,17 @@ class TransactionsTable
                         }
                         
                         // Jika referensinya adalah Bill
-                        if ($state === Bill::class) {
-                            // Gunakan operator aman (?->)
-                            $namaSiswa = $record->reference?->siswa?->nama ?? 'Siswa';
-                            return "Tagihan SPP {$namaSiswa}";
+                        if ($state === Bill::class && $record->reference) {
+                            // Kita ambil koleksi siswa, lalu ambil nama-namanya dan gabungkan menjadi string
+                            $namaSiswa = $record->reference->siswa->pluck('nama')->implode(', ');
+                            
+                            return "Tagihan SPP " . ($namaSiswa ?: 'Siswa Tidak Ditemukan');
                         }
-
+                
                         return 'System';
                     })
                     ->color(fn ($state, $record) => $record->reference_id ? 'info' : 'gray')
                     ->url(function ($record) {
-                        // Pastikan ID ada dan class BillResource valid
                         if ($record->reference_type === Bill::class && $record->reference_id) {
                             return BillResource::getUrl('edit', ['record' => $record->reference_id]);
                         }

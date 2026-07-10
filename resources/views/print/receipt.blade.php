@@ -62,30 +62,46 @@
         
         <div class="divider"></div>
         <table>
-            <tr><td width="35%">No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
-            <tr><td>Waktu</td><td>: {{ $bill->paid_at ? \Carbon\Carbon::parse($bill->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
-            
-            @if($bill->transaction_type === 'expense')
-                <tr><td>Dibayarkan Kpd</td><td>: {{ $bill->paid_by ?: '-' }}</td></tr>
-            @else
-                <tr><td>Nama Siswa</td><td>: {{ $bill->paid_by ?: ($siswa ? $siswa->nama : '-') }}</td></tr>
-                @if($siswa)
-                    <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
-                @endif
-            @endif
-        </table>
+    <tr><td width="35%">No. Transaksi</td><td>: #{{ $bill->id }}</td></tr>
+    <tr><td>Waktu</td><td>: {{ $bill->paid_at ? \Carbon\Carbon::parse($bill->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
+    
+    @if($bill->transaction_type === 'expense')
+        <tr><td>Dibayarkan Kpd</td><td>: {{ $bill->paid_by ?: '-' }}</td></tr>
+    @else
+        <tr>
+            <td>Nama Siswa</td>
+            {{-- Menggunakan null coalescing: jika paid_by ada, pakai itu. Jika tidak, ambil dari relasi siswas --}}
+            <td>: {{ $bill->paid_by ?: ($siswas->isNotEmpty() ? $siswas->pluck('nama')->implode(', ') : '-') }}</td>
+        </tr>
+        
+        @if($siswas->isNotEmpty())
+            <tr>
+                <td>Program</td>
+                <td>: {{ $siswas->first()->program->nama_program ?? '-' }}</td>
+            </tr>
+        @endif
+    @endif
+</table>
         
         <div class="divider"></div>
         <div style="margin: 10px 0;">
             <strong>KETERANGAN:</strong><br>
             @if(stripos($paymentType->name, 'spp') !== false)
-                Periode Bulan {{ \Carbon\Carbon::parse($bill->due_date)->locale('id')->translatedFormat('F Y') }}
+                @php
+                    $startDate = \Carbon\Carbon::parse($bill->due_date);
+                    $monthsCount = $bill->months_count ?? 1; // Mengambil data bulan dari bill
+                    $endDate = $startDate->copy()->addMonths($monthsCount - 1);
+                @endphp
+                
+                Periode: {{ $startDate->locale('id')->translatedFormat('F Y') }}
+                @if($monthsCount > 1)
+                    s/d {{ $endDate->locale('id')->translatedFormat('F Y') }}
+                @endif
             @else
                 {{ $paymentType->name }}
             @endif
             
             @if($bill->notes)
-                {{-- LOGIKA BARU: Timpa teks 'Bayar di Muka' menjadi 'Cash' secara otomatis saat dicetak --}}
                 @php
                     $catatan = str_ireplace('bayar di muka', 'Cash', $bill->notes);
                 @endphp
@@ -123,7 +139,11 @@
             </tr>
             <tr>
                 <td style="font-size: 11px;">
-                    ( {{ $bill->transaction_type === 'expense' ? ($bill->paid_by ?: '________________') : ($bill->paid_by ?: ($siswa ? $siswa->nama : '________________')) }} )
+                    ( {{ 
+                        $bill->transaction_type === 'expense' 
+                        ? ($bill->paid_by ?: '________________') 
+                        : ($bill->paid_by ?: ($siswas->isNotEmpty() ? $siswas->pluck('nama')->implode(', ') : '________________')) 
+                    }} )
                 </td>
                 <td style="font-size: 11px;">
                     ( {{ strtoupper($staffName) }} )

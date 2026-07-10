@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Struk Pembayaran Kolektif - {{ $siswa->nama }}</title>
+    <title>Struk Pembayaran Kolektif - {{ $allSiswa->pluck('nama')->implode(', ') }}</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @media print {
@@ -61,10 +61,15 @@
         
         <div class="divider"></div>
         <table>
-            <tr><td width="35%">No. Transaksi</td><td>: {{ $bills->first()->id }}</td></tr>
-            <tr><td>Waktu</td><td>: {{ $bills->first()->paid_at ? \Carbon\Carbon::parse($bills->first()->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
-            <tr><td>Nama Siswa</td><td>: {{ strtoupper($siswa->nama) }}</td></tr>
-            <tr><td>Program</td><td>: {{ $siswa->program->nama_program ?? '-' }}</td></tr>
+        <tr><td width="35%">No. Transaksi</td><td>: #{{ $firstBill->id }}</td></tr>
+        <tr><td>Waktu</td><td>: {{ $firstBill->paid_at ? \Carbon\Carbon::parse($firstBill->paid_at)->format('d/m/Y H:i') : now()->format('d/m/Y H:i') }}</td></tr>
+            
+        @foreach($allSiswa as $index => $siswa)
+    <tr>
+        <td>{{ $index == 0 ? 'Nama Siswa' : '' }}</td>
+        <td>: {{ $siswa->nama }} ({{ $siswa->program->nama_program ?? 'Tanpa Program' }})</td>
+    </tr>
+    @endforeach
         </table>
         
         <div class="divider"></div>
@@ -112,7 +117,7 @@
             </tr>
             <tr>
                 <td style="font-size: 11px;">
-                    ( {{ strtoupper($siswa->nama) }} )
+                    ( {{ $allSiswa->pluck('nama')->implode(', ') }} )
                 </td>
                 <td style="font-size: 11px;">
                     ( {{ strtoupper($staffName) }} )

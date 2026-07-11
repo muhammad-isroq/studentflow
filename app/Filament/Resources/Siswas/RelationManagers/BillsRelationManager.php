@@ -371,7 +371,7 @@ private function processMultiplePayments($count)
         ]);
 
         // Hubungkan ke siswa
-        $bill->siswas()->attach($siswa->id);
+        $bill->siswa()->attach($siswa->id);
         
         \Filament\Notifications\Notification::make()
             ->title('Tagihan SPP berhasil dibuat')

@@ -75,7 +75,7 @@ class ClassSessionsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with(['attendances', 'guru', 'replacementGuru'])->latest('session_date'))
+            ->modifyQueryUsing(fn ($query) => $query->with(['attendances', 'guru', 'replacementGuru'])->oldest('session_date'))
             ->recordTitleAttribute('session_date')
             ->columns([
                 TextColumn::make('session_date')

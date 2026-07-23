@@ -20,11 +20,18 @@ class BillForm
     public static function configure(Schema $schema): Schema
     {
         $hitungTotal = function ($get, $set) {
-            $siswaIds = $get('siswa_ids') ?? [];
-            $totalSppPerSiswa = \App\Models\Siswa::whereIn('id', $siswaIds)->sum('spp_amount');
-            
-            // Set amount = SPP per bulan (tidak dikalikan bulan)
-            $set('amount', $totalSppPerSiswa); 
+            $paymentType = PaymentType::find($get('payment_type_id'));
+            if (!$paymentType) return;
+
+            $name = strtolower($paymentType->name);
+
+            // Jika SPP, hitung otomatis berdasarkan jumlah siswa
+            if (str_contains($name, 'spp')) {
+                $siswaIds = $get('siswa_ids') ?? [];
+                $totalSppPerSiswa = \App\Models\Siswa::whereIn('id', $siswaIds)->sum('spp_amount');
+                $set('amount', $totalSppPerSiswa * (int)($get('months_count') ?: 1));
+            } 
+            // Jika Buku atau lainnya, jangan lakukan apa-apa (user isi manual)
         };
 
         return $schema
@@ -73,7 +80,6 @@ class BillForm
                 })
                 ->required(),
 
-                // 4. NAMA SISWA (Multiple)
                 Select::make('siswa_ids')
                     ->relationship('siswa', 'nama')
                     ->label('Nama Siswa')
@@ -82,10 +88,13 @@ class BillForm
                     ->preload()
                     ->required()
                     ->live()
-                    ->saveRelationshipsUsing(fn ($record, $state) => $record?->siswa()->sync($state ?? []))
-                    ->afterStateHydrated(fn ($component, $record) => $component->state($record?->siswa->pluck('id')->toArray() ?? []))
                     ->afterStateUpdated($hitungTotal)
-                    ->visible(fn ($get) => str_contains(strtolower(PaymentType::find($get('payment_type_id'))?->name ?? ''), 'spp')),
+                    ->visible(function ($get) {
+                        $paymentType = PaymentType::find($get('payment_type_id'));
+                        if (!$paymentType) return false;
+                        $name = strtolower($paymentType->name);
+                        return str_contains($name, 'spp') || str_contains($name, 'buku');
+                    }),
 
                 TextInput::make('months_count')
                     ->label('Jumlah Bulan yang Dibayar')
@@ -117,9 +126,13 @@ class BillForm
                     ->label('Nominal (Rp)')
                     ->prefix('Rp')
                     ->required()
-                    
-                    ->dehydrateStateUsing(fn ($state) => (int) str_replace(['Rp', '.', ','], '', $state))
-                    ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.')),
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, $set) {
+                        $clean = (int) str_replace(['Rp', '.', ',', ' '], '', $state ?? '');
+                        $set('amount', number_format($clean, 0, ',', '.'));
+                    })
+                    ->dehydrateStateUsing(fn ($state) => (int) str_replace(['Rp', '.', ',', ' '], '', $state ?? ''))
+                    ->formatStateUsing(fn ($state) => is_numeric($state) ? number_format($state, 0, ',', '.') : $state),
 
                 FileUpload::make('proof_of_payment')
                 ->label('Proof of payment')

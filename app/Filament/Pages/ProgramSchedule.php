@@ -159,7 +159,8 @@ class ProgramSchedule extends Page implements HasTable
                 Action::make('fill_attendance')
                     ->label('Fill Attendance')
                     ->icon('heroicon-o-pencil-square')
-                    
+                    ->disabled(fn (ClassSession $record) => $record->session_date->startOfDay() > now()->startOfDay())
+                    ->tooltip(fn (ClassSession $record) => $record->session_date->startOfDay() > now()->startOfDay() ? 'Attendance can only be filled on or after the meeting date.' : null)
                     ->url(fn (ClassSession $record): string => FillAttendance::getUrl(['record' => $record]))
                     // ->disabled(fn (ClassSession $record) => $record->isAccessExpired())
                     ->badge(fn (ClassSession $record) => $record->attendances()->where('status', '!=', 'Belum Diisi')->exists() ? '✓ Filled' : '! Empty')
